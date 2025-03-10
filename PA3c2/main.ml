@@ -1,5 +1,4 @@
 (* Steven Alvarado & 
-
    PA3c2
 *)
 
@@ -23,9 +22,34 @@ let rec convert (a : ast) : (tac_instr list * tac_expr) =
                 | ... 
 
 *)
-let main () =  begin 
-    
-    
-end ;;
+let main () =
+  let fname = Sys.argv.(1) in
+  let fin = open_in fname in
+
+  let read () = input_line fin in
+  (* simalar to python range(k)
+           reads up to element*)
+  let rec range k =
+    if k <= 0 then
+      []
+    else
+      k :: range (k - 1)
+  in
+
+  let read_list worker =
+    let k = int_of_string (read ()) in
+    let lst = range k in
+    List.map (fun _ -> worker ()) lst
+  in
+  (* Many mutually recursive procedures to read in the cl-type file *)
+  (*TODO*)
+  close_in fin;
+
+  (* Emit the cl-tac program *)
+  let tacname = Filename.chop_extension fname ^ ".cl-tac" in
+  let fout = open_out tacname in
+    (*TODO*)
+  close_out fout
+;;
 
 main ()
