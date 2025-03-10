@@ -1,0 +1,31 @@
+(* Steven Alvarado & 
+
+   PA3c2
+*)
+
+(* The traditional approach to converting expressions to three-address 
+   code involves a recursive descent traversal of the abstract syntax tree. 
+   The recursive descent traversal returns both a three-address code instruction as well as a list of additional instructions that should be prepended to the output.
+
+
+let rec convert (a : ast) : (tac_instr list * tac_expr) =
+                match a with
+                | AST_Variable(v) -> [], TAC_Variable(v)
+                | AST_Int(i) -> 
+                        let new_var = fresh_variable () in
+                        [TAC_Assign_Int(new_var, i)], (TAC_Variable(new_var)
+                | AST_Plus(a1,a2) ->
+                        let i1, ta1 = convert a1 in 
+                        let i2, ta2 = convert a2 in 
+                        let new_var = fresh_variable () in
+                        let to_output = TAC_Assign_Plus(new_var, ta1, ta2) in
+                        (i1 @ i2 @ [to_output]), (TAC_Variable(new_var))
+                | ... 
+
+*)
+let main () =  begin 
+    
+    
+end ;;
+
+main ()
