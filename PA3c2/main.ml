@@ -8,7 +8,7 @@
 open Printf
 
 (* class name -> (attribute list, method list with parameter types) *)
-type class_map = (string, string list * (string * string) list) Hashtbl.t
+type class_map = (string, string list * (string * string) list) Hashtbl.t (* <- UNSURE on data struct *)
 
 (* (class_name, method_name) -> defining class *)
 type impl_map = (string * string, string) Hashtbl.t
@@ -41,6 +41,7 @@ and tac_expr =
   | TAC_BinaryOp of string * tac_expr * tac_expr
   | TAC_UnaryOp of string * tac_expr
   | TAC_FunctionCall of string * tac_expr list
+(*TODO*)
 
 type tac_instr =
   | TAC_Assign of string * string
@@ -49,9 +50,10 @@ type tac_instr =
   | TAC_Jump of string
   | TAC_ConditionalJump of string * string
   | TAC_Return of string
+(*TODO*)
 
+(* count variables*)
 let temp_var_counter = ref 0
-
 let fresh_variable () =
   let v = "temp" ^ string_of_int !temp_var_counter in
   temp_var_counter := !temp_var_counter + 1;
@@ -63,6 +65,7 @@ let fresh_variable () =
    instruction as well as a list of additional instructions that should be 
    prepended to the output.
 *)
+
 let main () =
   let fname = Sys.argv.(1) in
   let fin = open_in fname in
@@ -86,7 +89,6 @@ let main () =
     List.map (fun _ -> worker ()) lst
   in
 
-  (* Read class map in *)
   let read_class_map () =
     let tbl = Hashtbl.create 10 in
     let num_classes = read_int () in
