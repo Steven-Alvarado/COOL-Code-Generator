@@ -34,22 +34,30 @@ type ast =
   | AST_IsVoid of ast
   | AST_Negate of ast
   | AST_Not of ast
+(* Debug and double check ast definition*)
 
-and tac_expr =
-  | TAC_Variable of string
-  | TAC_Constant of int
+type tac_expr =
+  | TAC_Variable of string (* Named variables and temporaries *)
+  | TAC_Constant_Int of int (* Integer constants*)
+  | TAC_Constant_Bool of bool  (* Boolean constants *)
   | TAC_BinaryOp of string * tac_expr * tac_expr
   | TAC_UnaryOp of string * tac_expr
   | TAC_FunctionCall of string * tac_expr list
 (*TODO*)
 
 type tac_instr =
-  | TAC_Assign of string * string
+  | TAC_Assign_Int of string * int (* temp1 <- int 5*)
+  | TAC_Assign_Var of string * string (* temp1 <- x *)
+  | TAC_Assign_Plus of string * tac_expr * tac_expr (* temp3 <- + temp1 temp2 *)
+  | TAC_Assign_Minus of string * tac_expr * tac_expr
+  | TAC_Assign_Times of string * tac_expr * tac_expr
+  | TAC_Assign_Div of string * tac_expr * tac_expr
+  | TAC_Assign_Bool of string * bool  (* temp1 <- bool true *)
   | TAC_Binary of string * string * string * string
-  | TAC_Label of string
-  | TAC_Jump of string
-  | TAC_ConditionalJump of string * string
-  | TAC_Return of string
+  | TAC_Label of string (* label L1 *)
+  | TAC_Jump of string (* jmp L1 *)
+  | TAC_ConditionalJump of string * string (* bt x L2 *)
+  | TAC_Return of string (* return x *)
 (*TODO*)
 
 (* count variables*)
@@ -89,6 +97,7 @@ let main () =
     List.map (fun _ -> worker ()) lst
   in
 
+  (* Many mutually recursive procedures to read in the cl-type file *)
   let read_class_map () =
     let tbl = Hashtbl.create 10 in
     let num_classes = read_int () in
@@ -177,12 +186,14 @@ let main () =
     (* TODO*)
   in
 
+(* Main logic for parsing ast and converting to tac *)
+(*
 let rec convert (a : ast) : (tac_instr list * tac_expr) =
                 match a with
                 | AST_Variable(v) -> [], TAC_Variable(v)
                 | AST_Int(i) -> 
                         let new_var = fresh_variable () in
-                        [TAC_Assign_Int(new_var, i)], (TAC_Variable(new_var)
+                 [TAC_Assign_Int(new_var, i)], (TAC_Variable(new_var))
                 | AST_Plus(a1,a2) ->
                         let i1, ta1 = convert a1 in 
                         let i2, ta2 = convert a2 in 
@@ -191,14 +202,34 @@ let rec convert (a : ast) : (tac_instr list * tac_expr) =
                         (i1 @ i2 @ [to_output]), (TAC_Variable(new_var))
 
 
-  (* Many mutually recursive procedures to read in the cl-type file *)
+*)
 
-  close_in fin;
+    close_in fin;
+
+
 
   (* Emit the cl-tac program *)
   let tacname = Filename.chop_extension fname ^ ".cl-tac" in
   let fout = open_out tacname in
-  (*TODO*)
+(*
+    List.iter (fun tac -> 
+    match tac with
+  | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
+  | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
+  | TAC_Assign_Plus (x, y, z) -> fprintf fout "%s <- + %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Minus (x, y, z) -> fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Times (x, y, z) -> fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Div (x, y, z) -> fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
+  | TAC_Label lbl -> fprintf fout "label %s\n" lbl
+  | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
+  | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
+  | TAC_Return x -> fprintf fout "return %s\n" x
+        (* TODO *)
+) tac_instr;
+*)
+
+
   close_out fout
 ;;
 
