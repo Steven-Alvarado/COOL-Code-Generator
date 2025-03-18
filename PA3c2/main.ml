@@ -58,6 +58,12 @@ type tac_instr =
   | TAC_Jump of string (* jmp L1 *)
   | TAC_ConditionalJump of string * string (* bt x L2 *)
   | TAC_Return of string (* return x *)
+  | TAC_Assign_LessThen of string * tac_expr * tac_expr (*temp3 <- < temp2 temp1*)
+  | TAC_Assign_Equal of string * tac_expr * tac_expr (*temp3 <- <= temp2 temp1*)
+  | TAC_Assign_LessThenOrEqual of string * tac_expr * tac_expr (*temp3 <- = temp2 temp1*)
+  | TAC_Assign_Not of string * tac_expr (* temp <- not y*)
+  | TAC_Assign_Neg of string * tac_expr (* temp <- ~ y *)
+
 (*TODO*)
 
 (* count variables*)
@@ -92,9 +98,8 @@ let main () =
   let read_string () = read () in
 
   let read_list worker =
-    let k = int_of_string (read ()) in
-    let lst = range k in
-    List.map (fun _ -> worker ()) lst
+    let k = read_int () in
+    List.init k (fun _ -> worker())
   in
 
   (* Many mutually recursive procedures to read in the cl-type file *)
@@ -103,15 +108,15 @@ let main () =
     let num_classes = read_int () in
     for _ = 1 to num_classes do
       let class_name = read_string () in
-      let attrs = read_list read_string in
-      let num_methods = read_int () in
-      let methods =
-        read_list (fun () ->
-            let method_name = read_string () in
-            let params = read_list read_string in
-            (method_name, params))
-      in
-      Hashtbl.add tbl class_name (attrs, methods)
+      let attr_num = read_int ()
+      let attrs = 
+        List.init attr_num (fun _ ->
+          let attr_name = read_string () in
+          let attr_type = read_string () in
+        (attr_name, attr_type)
+        )
+        in
+      Hashtbl.add tbl class_name attrs
     done;
     tbl
   in
@@ -225,6 +230,11 @@ let rec convert (a : ast) : (tac_instr list * tac_expr) =
   | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
   | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
   | TAC_Return x -> fprintf fout "return %s\n" x
+  | TAC_Assign_LessThen(x, y, z) -> fprintf fout "%s <- < %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Equal of string(x, y, z) ->  "%s <- = %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_LessThenOrEqual(x, y, z) ->  "%s <- <= %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
+  | TAC_Assign_Not of string * tac_expr(x, y) "%s <- not %s" x y
+  | TAC_Assign_Neg of string * tac_expr(x, y) "%s <- not %s" x (tac_expr_to_string y)
         (* TODO *)
 ) tac_instr;
 *)
