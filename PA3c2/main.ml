@@ -22,11 +22,11 @@ type impl_map = (string * string, string) Hashtbl.t
 type parent_map = (string, string) Hashtbl.t
 
 type ast =
-  | AST_Attribute of ast (* UNSURE*)
-  | AST_Method of ast (* UNSURE*)
+  | AST_Attribute of string * string * ast option (* UNSURE*)
+  | AST_Method of string * (string * string) list * string * ast (* UNSURE*)
   | AST_Assign of string * ast
-  | AST_DynamicDispatch of ast (* Unsure*)
-  | AST_StaticDispatch of ast (* UNSURE*)
+  | AST_DynamicDispatch of ast * string * ast list (* Unsure*)
+  | AST_StaticDispatch of ast * string * string * ast list (* UNSURE*)
   | AST_SelfDispatch of string * ast list (*UNSURE*)
   | AST_If of ast * ast * ast
   | AST_While of ast * ast
@@ -43,13 +43,13 @@ type ast =
   | AST_Not of ast
   | AST_Negate of ast
   | AST_Int of int
-  | AST_String of ast
-  | AST_True of bool
-  | AST_False of bool
+  | AST_String of string
+  | AST_True
+  | AST_False
   | AST_Let of (ast * ast * ast option) list * ast
   | AST_Case of ast * (ast * ast * ast) list
   | AST_Variable of string
-  | AST_Identfier of string
+  | AST_Identifier of string
 
 (* Debug and double check ast definition*)
 
@@ -57,6 +57,7 @@ type tac_expr =
   | TAC_Variable of string (* Named variables and temporaries *)
   | TAC_Constant_Int of int (* Integer constants*)
   | TAC_Constant_Bool of bool (* Boolean constants *)
+  | TAC_Constant_String of string
   | TAC_BinaryOp of string * tac_expr * tac_expr
   | TAC_UnaryOp of string * tac_expr
   | TAC_FunctionCall of string * tac_expr list
@@ -64,12 +65,13 @@ type tac_expr =
 
 type tac_instr =
   | TAC_Assign_Int of string * int (* temp1 <- int 5*)
-  | TAC_Assign_Var of string * string (* temp1 <- x *)
+  | TAC_Assign_Variable of string * string (* temp1 <- x *)
   | TAC_Assign_Plus of string * tac_expr * tac_expr (* temp3 <- + temp1 temp2 *)
   | TAC_Assign_Minus of string * tac_expr * tac_expr
   | TAC_Assign_Times of string * tac_expr * tac_expr
-  | TAC_Assign_Div of string * tac_expr * tac_expr
+  | TAC_Assign_Divide of string * tac_expr * tac_expr
   | TAC_Assign_Bool of string * bool (* temp1 <- bool true *)
+  | TAC_Assign_String of string * string (* temp1 <- string "hi" *)
   | TAC_Binary of string * string * string * string
   | TAC_Label of string (* label L1 *)
   | TAC_Jump of string (* jmp L1 *)
@@ -78,6 +80,20 @@ type tac_instr =
 
 (* return x *)
 (*TODO*)
+
+let rec tac_expr_to_string expr =
+  match expr with
+  | TAC_Variable v -> v (* Just return the variable name *)
+  | TAC_Constant_Int i -> string_of_int i
+  | TAC_Constant_Bool b -> string_of_bool b
+  | TAC_Constant_String s -> "\"" ^ s ^ "\""
+  | TAC_BinaryOp (op, e1, e2) ->
+      Printf.sprintf "(%s %s %s)" (tac_expr_to_string e1) op
+        (tac_expr_to_string e2)
+  | TAC_UnaryOp (op, e) -> Printf.sprintf "(%s %s)" op (tac_expr_to_string e)
+  | TAC_FunctionCall (f, args) ->
+      let args_str = String.concat ", " (List.map tac_expr_to_string args) in
+      Printf.sprintf "%s(%s)" f args_str
 
 (* count variables*)
 let temp_var_counter = ref 0
@@ -164,7 +180,18 @@ let main () =
     tbl
   in
 
-  let rec read_ast () = read_list read_cool_class
+  let rec read_ast () =
+    let classes = read_list read_cool_class in
+    let rec find_main_method features =
+      match features with
+      | AST_Method ("main", _, _, body) :: _ -> body
+      | _ :: rest -> find_main_method rest
+      | [] -> failwith "Error: no 'main' method found in Main class"
+    in
+    let _, _, features =
+      List.find (fun (class_name, _, _) -> class_name = "Main") classes
+    in
+    find_main_method features
   and read_id () =
     let loc = read () in
     let name = read () in
@@ -179,31 +206,30 @@ let main () =
           Some super
       | x -> failwith ("cannot happen: " ^ x)
     in
-
     let features = read_list read_feature in
-    (cname, inherits, features)
+    (snd cname, inherits, features)
   and read_feature () =
     match read () with
     | "attribute_no_init" ->
         let fname = read_id () in
         let ftype = read_id () in
-        AST_Attribute (fname, ftype, None)
+        AST_Attribute (snd fname, snd ftype, None)
     | "attribute_init" ->
         let fname = read_id () in
         let ftype = read_id () in
         let finit = read_exp () in
-        AST_Attribute (fname, ftype, Some finit)
+        AST_Attribute (snd fname, snd ftype, Some finit)
     | "method" ->
         let mname = read_id () in
         let formals = read_list read_formal in
         let mtype = read_id () in
         let mbody = read_exp () in
-        AST_Method (mname, formals, mtype, mbody)
+        AST_Method (snd mname, formals, snd mtype, mbody)
     | x -> failwith ("cannot happen: " ^ x)
   and read_formal () =
     let fname = read_id () in
     let ftype = read_id () in
-    (fname, ftype)
+    (snd fname, snd ftype)
   and read_exp () =
     let eloc = read () in
     let ekind =
@@ -216,17 +242,17 @@ let main () =
           let e = read_exp () in
           let mname = read_id () in
           let args = read_list read_exp in
-          AST_DynamicDispatch (e, mname, args)
+          AST_DynamicDispatch (e, snd mname, args)
       | "static_dispatch" ->
           let e = read_exp () in
           let tname = read_id () in
           let mname = read_id () in
           let args = read_list read_exp in
-          AST_StaticDispatch (e, tname, mname, args)
+          AST_StaticDispatch (e, snd tname, snd mname, args)
       | "self_dispatch" ->
           let mname = read_id () in
           let args = read_list read_exp in
-          AST_SelfDispatch (mname, args)
+          AST_SelfDispatch (snd mname, args)
       | "if" ->
           let predicate = read_exp () in
           let then_branch = read_exp () in
@@ -241,7 +267,7 @@ let main () =
           AST_Block body
       | "new" ->
           let cname = read_id () in
-          AST_New (snd cname)
+          AST_New (AST_Identifier (snd cname))
       | "isvoid" ->
           let e = read_exp () in
           AST_IsVoid e
@@ -280,13 +306,13 @@ let main () =
           let x = read_exp () in
           AST_Negate x
       | "integer" ->
-          let ival = read () in
-          AST_Integer ival
+          let ival = int_of_string (read ()) in
+          AST_Int ival
       | "string" ->
           let sval = read () in
           AST_String sval
       | "identifier" ->
-          let variable = read_id () in
+          let _, variable = read_id () in
           AST_Identifier variable
       | "true" -> AST_True
       | "false" -> AST_False
@@ -297,12 +323,16 @@ let main () =
                 | "let_binding_no_init" ->
                     let var = read_id () in
                     let var_type = read_id () in
-                    (var, var_type, None)
+                    ( AST_Identifier (snd var),
+                      AST_Identifier (snd var_type),
+                      None )
                 | "let_binding_init" ->
                     let var = read_id () in
                     let var_type = read_id () in
                     let value = read_exp () in
-                    (var, var_type, Some value)
+                    ( AST_Identifier (snd var),
+                      AST_Identifier (snd var_type),
+                      Some value )
                 | x -> failwith ("Unexpected binding type: " ^ x))
           in
           let body = read_exp () in
@@ -314,15 +344,13 @@ let main () =
                 let var = read_id () in
                 let var_type = read_id () in
                 let body = read_exp () in
-                (var, var_type, body))
+                (AST_Identifier (snd var), AST_Identifier (snd var_type), body))
           in
           AST_Case (expr, case_elements)
       | x -> failwith (" expression kind unhandled: " ^ x)
     in
-    { loc = eloc; exp_kind = ekind; static_type = None }
-    (* not annotated yet*)
-  in
-  let class_map = read_class_map () in
+    ekind
+  and class_map = read_class_map () in
   let implementation_map = read_implementation_map () in
   let parent_map = read_parent_map () in
   let ast = read_ast () in
@@ -330,44 +358,52 @@ let main () =
   (* TODO*)
 
   (* Main logic for parsing ast and converting to tac *)
-  (*
-let rec convert (a : ast) : (tac_instr list * tac_expr) =
-                match a with
-                | AST_Variable(v) -> [], TAC_Variable(v)
-                | AST_Int(i) -> 
-                        let new_var = fresh_variable () in
-                 [TAC_Assign_Int(new_var, i)], (TAC_Variable(new_var))
-                | AST_Plus(a1,a2) ->
-                        let i1, ta1 = convert a1 in 
-                        let i2, ta2 = convert a2 in 
-                        let new_var = fresh_variable () in
-                        let to_output = TAC_Assign_Plus(new_var, ta1, ta2) in
-                        (i1 @ i2 @ [to_output]), (TAC_Variable(new_var))
+  let rec convert (a : ast) : tac_instr list * tac_expr =
+    match a with
+    | AST_Variable v -> ([], TAC_Variable v)
+    | AST_Int i ->
+        let new_var = fresh_variable () in
+        ([ TAC_Assign_Int (new_var, i) ], TAC_Variable new_var)
+    | AST_Plus (a1, a2) ->
+        let i1, ta1 = convert a1 in
+        let i2, ta2 = convert a2 in
+        let new_var = fresh_variable () in
+        let to_output = TAC_Assign_Plus (new_var, ta1, ta2) in
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+  in
 
-
-*)
   close_in fin;
 
   (* Emit the cl-tac program *)
   let tacname = Filename.chop_extension fname ^ ".cl-tac" in
   let fout = open_out tacname in
-  (*
-    List.iter (fun tac -> 
-    match tac with
-  | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
-  | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
-  | TAC_Assign_Plus (x, y, z) -> fprintf fout "%s <- + %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
-  | TAC_Assign_Minus (x, y, z) -> fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
-  | TAC_Assign_Times (x, y, z) -> fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
-  | TAC_Assign_Div (x, y, z) -> fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
-  | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
-  | TAC_Label lbl -> fprintf fout "label %s\n" lbl
-  | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
-  | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
-  | TAC_Return x -> fprintf fout "return %s\n" x
-        (* TODO *)
-) tac_instr;
-*)
+
+  let tac_instrs, _ = convert ast in
+
+  List.iter
+    (fun tac ->
+      match tac with
+      | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
+      | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
+      | TAC_Assign_Plus (x, y, z) ->
+          fprintf fout "%s <- + %s %s\n" x (tac_expr_to_string y)
+            (tac_expr_to_string z)
+      | TAC_Assign_Minus (x, y, z) ->
+          fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y)
+            (tac_expr_to_string z)
+      | TAC_Assign_Times (x, y, z) ->
+          fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y)
+            (tac_expr_to_string z)
+      | TAC_Assign_Divide (x, y, z) ->
+          fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y)
+            (tac_expr_to_string z)
+      | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
+      | TAC_Label lbl -> fprintf fout "label %s\n" lbl
+      | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
+      | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
+      | TAC_Return x -> fprintf fout "return %s\n" x
+      (* TODO *))
+    tac_instrs;
 
   close_out fout
 ;;
