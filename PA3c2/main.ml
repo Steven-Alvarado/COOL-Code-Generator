@@ -108,7 +108,7 @@ let main () =
     let num_classes = read_int () in
     for _ = 1 to num_classes do
       let class_name = read_string () in
-      let attr_num = read_int ()
+      let attr_num = read_int () in
       let attrs = 
         List.init attr_num (fun _ ->
           let attr_name = read_string () in
@@ -234,7 +234,7 @@ let rec convert (a : ast) : (tac_instr list * tac_expr) =
   | TAC_Assign_Equal of string(x, y, z) ->  "%s <- = %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
   | TAC_Assign_LessThenOrEqual(x, y, z) ->  "%s <- <= %s %s\n" x (tac_expr_to_string y) (tac_expr_to_string z)
   | TAC_Assign_Not of string * tac_expr(x, y) "%s <- not %s" x y
-  | TAC_Assign_Neg of string * tac_expr(x, y) "%s <- not %s" x (tac_expr_to_string y)
+  | TAC_Assign_Neg of string * tac_expr(x,y) "%s <- not %s" x (tac_expr_to_string y)
         (* TODO *)
 ) tac_instr;
 *)
