@@ -129,10 +129,19 @@ let main () =
       let num_methods = read_int () in
       for _ = 1 to num_methods do
         let method_name = read_string () in
-        let _ = read_int () in
+        let num_params = read_int() in 
+        let params = ref [] in
+        for _ = 1 to num_params do 
+          let param_name = read_string() in 
+          let param_type = read_string() in 
+          params := (param_name, param_type) :: !params
+        done;
         (* Number of parameters, unused *)
         let defined_in = read_string () in
-        Hashtbl.add tbl (class_name, method_name) defined_in
+        let return_type = read_string () in 
+        let _ = read_string() in 
+        let method_reference = read_string () in
+        Hashtbl.add tbl (class_name, method_name) (defined_in, return_type, !params, method_reference)
       done
     done;
     tbl
