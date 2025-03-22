@@ -1,0 +1,20 @@
+comment start
+label Main_main_0
+jmp Main_main_1
+comment while-pred
+label Main_main_1
+t$0 <- int 30
+t$1 <- <= x t$0
+t$4 <- not t$1
+bt t$4 Main_main_2
+bt t$1 Main_main_3
+comment while-join
+label Main_main_2
+ERROR unhadled TAC Instruciton
+return t$0
+comment while-body
+label Main_main_3
+t$2 <- int 5
+t$3 <- + x t$2
+x <- t$3
+jmp Main_main_1
