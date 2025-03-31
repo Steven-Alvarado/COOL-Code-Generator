@@ -12,9 +12,6 @@ type static_type = Class of string | SELF_TYPE of string
 (* class name -> (attribute list, method list with parameter types) *)
 type class_map = (string, string list * (string * string) list) Hashtbl.t
 
-(* (class_name, method_name) -> defining class *)
-type impl_map = (string * string, string) Hashtbl.t
-
 (* class name -> parent class *)
 type parent_map = (string, string) Hashtbl.t
 
@@ -37,34 +34,6 @@ and exp = {
 }
 
 and exp_kind =
-  (*| AST_Attribute of string * string * ast option (* UNSURE*)*)
-  (*| AST_Method of string * (string * string) list * string * ast (* UNSURE*)*)
-  (*| AST_Assign of string * ast*)
-  (*| AST_DynamicDispatch of ast * string * ast list (* Unsure*)*)
-  (*| AST_StaticDispatch of ast * string * string * ast list (* UNSURE*)*)
-  (*| AST_SelfDispatch of string * ast list (*UNSURE*)*)
-  (*| AST_If of ast * ast * ast*)
-  (*| AST_While of ast * ast*)
-  (*| AST_Block of ast list*)
-  (*| AST_New of string*)
-  (*| AST_IsVoid of ast*)
-  (*| AST_Plus of (ast * ast)*)
-  (*| AST_Minus of ast * ast*)
-  (*| AST_Times of ast * ast*)
-  (*| AST_Divide of ast * ast*)
-  (*| AST_Lt of ast * ast*)
-  (*| AST_Le of ast * ast*)
-  (*| AST_Eq of ast * ast*)
-  (*| AST_Not of ast*)
-  (*| AST_Negate of ast*)
-  (*| AST_Int of int*)
-  (*| AST_String of string*)
-  (*| AST_True*)
-  (*| AST_False*)
-  (*| AST_Let of (ast * ast * ast option) list * ast*)
-  (*| AST_Case of ast * (ast * ast * ast) list*)
-  (*| AST_Variable of string*)
-  (*| AST_Identifier of string*)
   | AST_Integer of string (* "really an integer"*)
   | AST_Assign of id * exp
   | AST_DynamicDispatch of exp * id * exp list
@@ -104,6 +73,10 @@ and tac_expr =
 
 (*TODO*)
 
+(* (class_name, method_name) -> formals, defining_class, method_body *)
+type impl_map =
+  (string * string, string list * string list * string * exp) Hashtbl.t
+
 type tac_instr =
   | TAC_Assign_Int of string * int (* temp1 <- int 5*)
   | TAC_Assign_Variable of string * string (* temp1 <- x *)
@@ -126,7 +99,7 @@ type tac_instr =
   | TAC_Jump of string (* jmp L1 *)
   | TAC_ConditionalJump of string * string (* bt x L2 *)
   | TAC_Return of string
-  | TAC_Assignment of string * tac_expr
+  | TAC_Assign of string * tac_expr
   | TAC_Call of string * string * string list
   | TAC_StaticCall of string * string * string * string list
   | TAC_New of string * string
@@ -137,6 +110,41 @@ type tac_instr =
   | TAC_Assign_StaticCall of string * string * string * string list
   | TAC_Comment of string
   | TAC_Assign_Default of string * string
+
+let tac_instr_to_str x =
+  match x with
+  | TAC_Assign_Int _ -> "TAC_Assign_Int"
+  | TAC_Assign_Variable _ -> "TAC_Assign_Variable"
+  | TAC_Assign_Plus _ -> "TAC_Assign_Plus"
+  | TAC_Assign_Minus _ -> "TAC_Assign_Minus"
+  | TAC_Assign_Times _ -> "TAC_Assign_Times"
+  | TAC_Assign_Divide _ -> "TAC_Assign_Divide"
+  | TAC_Assign_Bool _ -> "TAC_Assign_Bool"
+  | TAC_Assign_String _ -> "TAC_Assign_String"
+  | TAC_Assign_Lt _ -> "TAC_Assign_Lt"
+  | TAC_Assign_Le _ -> "TAC_Assign_Le"
+  | TAC_Assign_Not _ -> "TAC_Assign_Not"
+  | TAC_Assign_Negate _ -> "TAC_Assign_Negate"
+  | TAC_Assign_IsVoid _ -> "TAC_Assign_IsVoid"
+  | TAC_Assign_New _ -> "TAC_Assign_New"
+  | TAC_Assign_Call _ -> "TAC_Assign_Call"
+  | TAC_Assign_Eq _ -> "TAC_Assign_Eq"
+  | TAC_Binary _ -> "TAC_Binary"
+  | TAC_Label _ -> "TAC_Label"
+  | TAC_Jump _ -> "TAC_Jump"
+  | TAC_ConditionalJump _ -> "TAC_ConditionalJump"
+  | TAC_Return _ -> "TAC_Return"
+  | TAC_Assign _ -> "TAC_Assignment"
+  | TAC_Call _ -> "TAC_Call"
+  | TAC_StaticCall _ -> "TAC_StaticCall"
+  | TAC_New _ -> "TAC_New"
+  | TAC_IsVoid _ -> "TAC_IsVoid"
+  | TAC_Compare _ -> "TAC_Compare"
+  | TAC_Not _ -> "TAC_Not"
+  | TAC_Negate _ -> "TAC_Negate"
+  | TAC_Assign_StaticCall _ -> "TAC_Assign_StaticCall"
+  | TAC_Comment _ -> "TAC_Comment"
+  | TAC_Assign_Default _ -> "TAC_Assign_Default"
 
 let ast_to_string x =
   match x with
@@ -210,7 +218,9 @@ let fresh_label class_name method_name =
 (* Main logic for parsing ast and converting to tac *)
 let rec convert (a : exp) : tac_instr list * tac_expr =
   match a.exp_kind with
-  | AST_Identifier (_, var_name) -> ([], TAC_Variable var_name)
+  | AST_Identifier var_name ->
+      let temp = fresh_variable () in
+      ([ TAC_Assign_Variable (temp, snd var_name) ], TAC_Variable (snd var_name))
   | AST_Integer i ->
       let new_var = fresh_variable () in
       let ival = int_of_string i in
@@ -288,9 +298,12 @@ let rec convert (a : exp) : tac_instr list * tac_expr =
       (* Variable might cause problems*)
   | AST_Assign (var_name, expr) ->
       let instrs, var_expr = convert expr in
-      ( instrs
-        @ [ TAC_Assign_Variable (snd var_name, tac_expr_to_string var_expr) ],
-        TAC_Variable (snd var_name) )
+      let temp = fresh_variable () in
+      let assign_to_var =
+        TAC_Assign_Variable (snd var_name, tac_expr_to_string var_expr)
+      in
+      let assign_to_temp = TAC_Assign_Variable (temp, snd var_name) in
+      (instrs @ [ assign_to_var; assign_to_temp ], TAC_Variable temp)
   | AST_Block exprs ->
       (* For blocks, evaluate each expression sequentially and return the last one *)
       let rec process_block exprs =
@@ -304,27 +317,19 @@ let rec convert (a : exp) : tac_instr list * tac_expr =
             (first_instrs @ rest_instrs, rest_expr)
       in
       process_block exprs
-  (*| AST_If (cond, then_branch, else_branch) ->*)
-     
+      (*| AST_If (cond, then_branch, else_branch) ->*)
   | AST_While (cond, body) ->
       (* Reset label counter for consistent naming *)
       label_counter := 0;
-
       let while_start = fresh_label "Main" "main" in
       let while_pred = fresh_label "Main" "main" in
       let while_join = fresh_label "Main" "main" in
       let while_body = fresh_label "Main" "main" in
-
       let cond_instrs, cond_expr = convert cond in
-      let body_instrs, _ = convert body in
+      let body_instrs, body_expr = convert body in
 
-      let cond_var =
-        match cond_expr with
-        | TAC_Variable v -> v
-        | _ ->
-            let temp = fresh_variable () in
-            temp
-      in
+      (* Create a result variable for the condition evaluation *)
+      let cond_var = fresh_variable () in
 
       (* Not condition for branch to exit *)
       let not_cond_var = fresh_variable () in
@@ -339,7 +344,9 @@ let rec convert (a : exp) : tac_instr list * tac_expr =
         ]
         @ cond_instrs
         @ [
-            TAC_Assign_Not (not_cond_var, cond_expr);
+            (* Store the result of condition in cond_var *)
+            TAC_Assign (cond_var, cond_expr);
+            TAC_Assign_Not (not_cond_var, TAC_Variable cond_var);
             TAC_ConditionalJump (not_cond_var, while_join);
             TAC_ConditionalJump (cond_var, while_body);
             TAC_Comment "while-join";
@@ -835,73 +842,81 @@ let main () =
   in
 
   (* Read class map, stopping at the next section *)
-  let class_map = read_class_map () in
+  let _class_map = read_class_map () in
   let impl_map = read_implementation_map () in
-  let parent_map = read_parent_map () in
-  let ast = read_ast () in
+  let _parent_map = read_parent_map () in
+  let _ast = read_ast () in
 
   (* TODO*)
   close_in fin;
 
-  let main_body = find_main_method ast in
-  (*convert main body to TAC*)
-  let tac_instrs, _ = convert main_body in
+  Hashtbl.iter
+    (fun (class_name, method_name) (formals, defining_class, method_body) ->
+      (*convert main body to TAC*)
+      let tac_instrs, _ = convert method_body in
 
-  (* Emit the cl-tac program *)
-  let tacname = Filename.chop_extension fname ^ ".cl-tac" in
-  let fout = open_out tacname in
-  List.iter
-    (fun tac ->
-      match tac with
-      | TAC_Comment text -> fprintf fout "comment %s\n" text
-      | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
-      | TAC_Assign_String (x, s) -> fprintf fout "%s <- string %s\n" x s
-      | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
-      | TAC_Assign_Plus (x, y, z) ->
-          let op1 = tac_expr_to_string y in
-          let op2 = tac_expr_to_string z in
-          fprintf fout "%s <- + %s %s\n" x op1 op2
-      | TAC_Assign_Minus (x, y, z) ->
-          fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Times (x, y, z) ->
-          fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Divide (x, y, z) ->
-          fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Lt (x, y, z) ->
-          fprintf fout "%s <- < %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Le (x, y, z) ->
-          fprintf fout "%s <- <= %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Eq (x, y, z) ->
-          fprintf fout "%s <- = %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Not (x, y) ->
-          fprintf fout "%s <- not %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_Negate (x, y) ->
-          fprintf fout "%s <- ~ %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_IsVoid (x, y) ->
-          fprintf fout "%s <- isvoid %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_New (x, y) ->
-          fprintf fout "%s <- new %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
-      | TAC_Label lbl -> fprintf fout "label %s\n" lbl
-      | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
-      | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
-      | TAC_Return x -> fprintf fout "return %s\n" x
-      | TAC_Call (result, method_name, args) ->
-          fprintf fout "%s <- call %s(%s)\n" result method_name
-            (String.concat ", " args)
-      | TAC_Assign_StaticCall (result, obj, method_name, args) ->
-          fprintf fout "%s <- static_call %s.%s(%s)\n" result obj method_name
-            (String.concat ", " args)
-      | _ -> fprintf fout "ERROR unhadled TAC Instruciton\n")
-    tac_instrs;
+      (* Emit the cl-tac program *)
+      let tacname = Filename.chop_extension fname ^ ".cl-tac" in
+      let fout = open_out tacname in
+      List.iter
+        (fun tac ->
+          match tac with
+          | TAC_Comment text -> fprintf fout "comment %s\n" text
+          | TAC_Assign (target, expr) ->
+              fprintf fout "%s <- %s\n" target (tac_expr_to_string expr)
+          | TAC_Assign_Default (target, type_name) ->
+              fprintf fout "%s <- default %s\n" target type_name
+          | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
+          | TAC_Assign_String (x, s) -> fprintf fout "%s <- string %s\n" x s
+          | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
+          | TAC_Assign_Plus (x, y, z) ->
+              let op1 = tac_expr_to_string y in
+              let op2 = tac_expr_to_string z in
+              fprintf fout "%s <- + %s %s\n" x op1 op2
+          | TAC_Assign_Minus (x, y, z) ->
+              fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Times (x, y, z) ->
+              fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Divide (x, y, z) ->
+              fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Lt (x, y, z) ->
+              fprintf fout "%s <- < %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Le (x, y, z) ->
+              fprintf fout "%s <- <= %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Eq (x, y, z) ->
+              fprintf fout "%s <- = %s %s\n" x (tac_expr_to_string y)
+                (tac_expr_to_string z)
+          | TAC_Assign_Not (x, y) ->
+              fprintf fout "%s <- not %s\n" x (tac_expr_to_string y)
+          | TAC_Assign_Negate (x, y) ->
+              fprintf fout "%s <- ~ %s\n" x (tac_expr_to_string y)
+          | TAC_Assign_IsVoid (x, y) ->
+              fprintf fout "%s <- isvoid %s\n" x (tac_expr_to_string y)
+          | TAC_Assign_New (x, y) ->
+              fprintf fout "%s <- new %s\n" x (tac_expr_to_string y)
+          | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
+          | TAC_Label lbl -> fprintf fout "label %s\n" lbl
+          | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
+          | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
+          | TAC_Return x -> fprintf fout "return %s\n" x
+          | TAC_Call (result, method_name, args) ->
+              fprintf fout "%s <- call %s(%s)\n" result method_name
+                (String.concat ", " args)
+          | TAC_Assign_StaticCall (result, obj, method_name, args) ->
+              fprintf fout "%s <- static_call %s.%s(%s)\n" result obj
+                method_name (String.concat ", " args)
+          | x ->
+              fprintf fout "ERROR: unhandled TAC Instruction: %s\n"
+                (tac_instr_to_str x))
+        tac_instrs)
+    impl_map;
 
-  close_out fout
+
 ;;
 
 main ()
