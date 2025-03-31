@@ -218,6 +218,7 @@ let fresh_label class_name method_name =
 (* Main logic for parsing ast and converting to tac *)
 let rec convert (a : exp) : tac_instr list * tac_expr =
   match a.exp_kind with
+
   | AST_Identifier var_name ->
       let temp = fresh_variable () in
       ([ TAC_Assign_Variable (temp, snd var_name) ], TAC_Variable (snd var_name))
@@ -850,14 +851,14 @@ let main () =
   (* TODO*)
   close_in fin;
 
+  let tacname = Filename.chop_extension fname ^ ".cl-tac" in
+  let fout = open_out tacname in
   Hashtbl.iter
     (fun (class_name, method_name) (formals, defining_class, method_body) ->
       (*convert main body to TAC*)
       let tac_instrs, _ = convert method_body in
 
       (* Emit the cl-tac program *)
-      let tacname = Filename.chop_extension fname ^ ".cl-tac" in
-      let fout = open_out tacname in
       List.iter
         (fun tac ->
           match tac with
@@ -916,7 +917,7 @@ let main () =
         tac_instrs)
     impl_map;
 
-
+  close_out fout
 ;;
 
 main ()
