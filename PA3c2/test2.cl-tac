@@ -1,3 +1,0 @@
-t$0 <- string \n
-t$1 <- call out_string(t$0)
-t$2 <- string do nothing

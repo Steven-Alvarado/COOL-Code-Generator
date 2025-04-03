@@ -1,0 +1,24 @@
+comment start
+label Main_main_0
+t$2 <- i
+t$3 <- x
+t$1 <- < t$2 t$3
+t$8 <- not t$1
+bt t$8 Main_main_2
+bt t$1 Main_main_1
+comment then branch
+label Main_main_1
+t$4 <- x
+t$5 <- int 1
+i <- + t$4 t$5
+t$0 <- i
+jmp Main_main_3
+comment else branch
+label Main_main_2
+t$6 <- x
+t$7 <- int 3
+t$0 <- = t$6 t$7
+jmp Main_main_3
+comment if-join
+label Main_main_3
+return t$0
