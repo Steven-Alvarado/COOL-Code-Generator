@@ -1,3 +1,7 @@
 digraph main_post {
-  n0 [label="(Node 0)\nstart\nt$2 <- x\nx <- t$2 - 5\nt$5 <- x\nx <- t$5 * 10\nt$8 <- x\nx <- t$8 / 15\nt$11 <- x\nx <- t$11 + 20\nt$0 <- x\nt$0 <- return\n"];
+  n0 [label="(Node 0)\nstart\n"];
+ n0 -> n1 [label="true"];
+  n1 [label="(Node 1)\nfcall-pre to out_string\nt$0 <- self.out_string(\"\\\\n\",)\n"];
+ n1 -> n2 [label="true"];
+  n2 [label="(Node 2)\nfcall-post to out_string\nt$0 <- return\n"];
 }
