@@ -1,6 +1,6 @@
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..vtable
-Bool..vtable:           ## virtual function table for Bool
+Bool..vtable:				## virtual function table for Bool
 						.quad string1
 						.quad Bool..new
 						.quad Object.abort
@@ -8,7 +8,7 @@ Bool..vtable:           ## virtual function table for Bool
 						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO..vtable
-IO..vtable:           ## virtual function table for IO
+IO..vtable:				## virtual function table for IO
 						.quad string2
 						.quad IO..new
 						.quad Object.abort
@@ -20,7 +20,7 @@ IO..vtable:           ## virtual function table for IO
 						.quad IO.out_string
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Int..vtable
-Int..vtable:           ## virtual function table for Int
+Int..vtable:				## virtual function table for Int
 						.quad string3
 						.quad Int..new
 						.quad Object.abort
@@ -28,7 +28,7 @@ Int..vtable:           ## virtual function table for Int
 						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main..vtable
-Main..vtable:           ## virtual function table for Main
+Main..vtable:				## virtual function table for Main
 						.quad string4
 						.quad Main..new
 						.quad Object.abort
@@ -41,7 +41,7 @@ Main..vtable:           ## virtual function table for Main
 						.quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
-Object..vtable:           ## virtual function table for Object
+Object..vtable:				## virtual function table for Object
 						.quad string5
 						.quad Object..new
 						.quad Object.abort
@@ -49,7 +49,7 @@ Object..vtable:           ## virtual function table for Object
 						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String..vtable
-String..vtable:           ## virtual function table for String
+String..vtable:				## virtual function table for String
 						.quad string6
 						.quad String..new
 						.quad Object.abort
@@ -58,12 +58,186 @@ String..vtable:           ## virtual function table for String
 						.quad String.concat
 						.quad String.length
 						.quad String.substr
-.data
-string1: .asciz ""
-percent.d: .asciz "%d"
-percent.s: .asciz "%s"
-.text
-.globl main
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Bool..new
+Bool..new:              ## constructor for Bool
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $4, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $0, %r14
+                       movq %r14, 0(%r12)
+                       movq $3, %r14
+                       movq %r14, 8(%r12)
+                       movq $Bool..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+    ## no attributes to initialize
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl IO..new
+IO..new:              ## constructor for IO
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $3, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $10, %r14
+                       movq %r14, 0(%r12)
+                       movq $3, %r14
+                       movq %r14, 8(%r12)
+                       movq $IO..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+    ## no attributes to initialize
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Int..new
+Int..new:              ## constructor for Int
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $4, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $1, %r14
+                       movq %r14, 0(%r12)
+                       movq $3, %r14
+                       movq %r14, 8(%r12)
+                       movq $Int..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+    ## no attributes to initialize
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Main..new
+Main..new:              ## constructor for Main
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $4, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $11, %r14
+                       movq %r14, 0(%r12)
+                       movq $4, %r14
+                       movq %r14, 8(%r12)
+                       movq $Main..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+                      movq $0, 24(%r12)
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object..new
+Object..new:              ## constructor for Object
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $4, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $12, %r14
+                       movq %r14, 0(%r12)
+                       movq $3, %r14
+                       movq %r14, 8(%r12)
+                       movq $Object..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+    ## no attributes to initialize
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl String..new
+String..new:              ## constructor for String
+                       pushq %rbp
+                       movq %rsp, %rbp
+                       ## stack room for temporaries: 2
+                       movq $16, %r14
+                       subq %r14, %rsp
+                       ## return address handling
+                       movq $4, %r12
+                       ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq $8, %rsi
+           movq %r12, %rdi
+           call calloc
+           movq %rax, %r12
+                       ## store class tag, object size and vtable pointer
+                       movq $3, %r14
+                       movq %r14, 0(%r12)
+                       movq $3, %r14
+                       movq %r14, 8(%r12)
+                       movq $String..vtable, %r14
+                       movq %r14, 16(%r12)
+                       ## initialize attributes
+    ## no attributes to initialize
+                       ## return address handling
+                       movq %rbp, %rsp
+                       popq %rbp
+                       ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
 Main.main:           ## method definition
                         pushq %rbp
@@ -133,3 +307,9 @@ IO.out_int.end:         ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
+.data
+string1: .asciz ""
+percent.d: .asciz "%d"
+percent.s: .asciz "%s"
+.text
+.globl main

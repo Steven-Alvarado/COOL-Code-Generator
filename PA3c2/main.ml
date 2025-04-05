@@ -557,8 +557,7 @@ let generate_io_methods () =
     "                        ret";
   ]
 
-
-(* Modify generate_vtables to use the ordered list *)
+(*  generate the vtables *)
 let generate_vtables (class_map : class_map) (impl_map : impl_map)
     (parent_map : parent_map) (class_order : string list)
     (method_order : (string * string) list) =
@@ -570,8 +569,8 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
     let counter = ref 0 in
     List.fold_left
       (fun acc cls ->
-         incr counter;
-         (cls, !counter) :: acc)
+        incr counter;
+        (cls, !counter) :: acc)
       [] all_classes
     |> List.rev |> List.to_seq |> Hashtbl.of_seq
   in
@@ -590,7 +589,8 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
       |> List.map snd
     in
     (* Combine parent's methods and then append any new methods defined in this class *)
-    parent_methods @ (List.filter (fun m -> not (List.mem m parent_methods)) own_methods)
+    parent_methods
+    @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
   in
 
   (* Generate VTable for a single class *)
@@ -615,10 +615,10 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
                   let rec find_definer cls =
                     match Hashtbl.find_opt impl_map (cls, method_name) with
                     | Some (_, _, defining_class, _) -> defining_class
-                    | None ->
-                        (match Hashtbl.find_opt parent_map cls with
-                         | Some parent -> find_definer parent
-                         | None -> "Object")  (* fallback *)
+                    | None -> (
+                        match Hashtbl.find_opt parent_map cls with
+                        | Some parent -> find_definer parent
+                        | None -> "Object")
                   in
                   let defining_class = find_definer class_name in
                   defining_class ^ "." ^ method_name
@@ -631,7 +631,8 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
     [
       "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ".globl " ^ class_name ^ "..vtable";
-      class_name ^ "..vtable:           ## virtual function table for " ^ class_name;
+      class_name ^ "..vtable:\t\t\t\t## virtual function table for "
+      ^ class_name;
       "\t\t\t\t\t\t.quad string" ^ string_of_int string_num;
     ]
     @ method_entries
@@ -640,18 +641,101 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
   (* Generate VTables for all classes in the specified order *)
   List.concat_map generate_class_vtable all_classes
 
-(* let generate_vtable class_name methods = *)
-(*   [ *)
-(*     ".globl " ^ class_name ^ "..vtable"; *)
-(*     class_name ^ "..vtable:           ## virtual function table for " *)
-(*     ^ class_name; *)
-(*     "                        .quad string1"; *)
-(*     (* temporary placeholder - replace with actual index *) *)
-(*   ] *)
-(*   @ List.map *)
-(*       (fun method_name -> "                        .quad " ^ method_name) *)
-(*       methods *)
-(**)
+(* generate class tags and set defaults for internal classes*)
+let get_class_tag class_name =
+  match class_name with
+  | "Bool" -> 0
+  | "Int" -> 1
+  | "IO" -> 10
+  | "Main" -> 11
+  | "Object" -> 12
+  | "String" -> 3
+  | _ -> 99 (* TODO Ensure that this does not interfere with logic *)
+
+let get_object_size class_name class_map =
+  let base_size = 3 in
+  (* 3 words 24 bytes for tag, size, and vtable pointer *)
+  let num_attrs =
+    try
+      let attrs, _ = Hashtbl.find class_map class_name in
+      List.length attrs
+    with Not_found -> 0
+  in
+  base_size + num_attrs
+
+(* Generate the assembly for a single constructor *)
+let generate_constructor class_map class_name (attributes : string list) =
+  let constructor_label = class_name ^ "..new" in
+  let class_tag = get_class_tag class_name in
+  let object_size = get_object_size class_name class_map in
+  let vtable_label = class_name ^ "..vtable" in
+  let constructor_lines =
+    [
+      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ".globl " ^ constructor_label;
+      constructor_label ^ ":              ## constructor for " ^ class_name;
+      "                       pushq %rbp";
+      "                       movq %rsp, %rbp";
+      "                       ## stack room for temporaries: 2";
+      "                       movq $16, %r14";
+      "                       subq %r14, %rsp";
+      "                       ## return address handling";
+      (* return address might depend on class not to sure *)
+      "                       movq $"
+      ^ (if class_name = "IO" then
+           "3"
+         else
+           "4")
+      ^ ", %r12";
+      "                       ## guarantee 16-byte alignment before call";
+      "           andq $0xFFFFFFFFFFFFFFF0, %rsp";
+      "           movq $8, %rsi";
+      "           movq %r12, %rdi";
+      "           call calloc";
+      "           movq %rax, %r12";
+      "                       ## store class tag, object size and vtable \
+       pointer";
+      "                       movq $" ^ string_of_int class_tag ^ ", %r14";
+      "                       movq %r14, 0(%r12)";
+      "                       movq $" ^ string_of_int object_size ^ ", %r14";
+      "                       movq %r14, 8(%r12)";
+      "                       movq $" ^ vtable_label ^ ", %r14";
+      "                       movq %r14, 16(%r12)";
+      "                       ## initialize attributes";
+      (* For each attribute in the class, you must generate code to initialize it.
+       This could be a call to the attribute’s default constructor or setting a default value.
+       For example, if an attribute has no initializer, you might leave it zeroed. *)
+    ]
+    @ (if attributes = [] then
+         "    ## no attributes to initialize" :: []
+       else
+         List.mapi
+           (fun idx attr_name ->
+             (* For example, store 0 in each attribute slot.
+            Adjust the offset calculation as needed: first attribute is at offset 24. *)
+             "                      movq $0, "
+             ^ string_of_int (24 + (idx * 8))
+             ^ "(%r12)")
+           attributes)
+    @ [
+        "                       ## return address handling";
+        "                       movq %rbp, %rsp";
+        "                       popq %rbp";
+        "                       ret";
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ]
+  in
+  constructor_lines
+
+let generate_constructors (class_order : string list) (class_map : class_map) =
+  List.concat_map
+    (fun class_name ->
+      let attributes, _ =
+        try Hashtbl.find class_map class_name with Not_found -> ([], [])
+      in
+      generate_constructor class_map class_name attributes)
+    class_order
+
 (* Register allocation for TAC variables*)
 let reg_map var =
   match var with
@@ -1076,118 +1160,132 @@ let main () =
     in
     { loc = eloc; exp_kind = ekind; static_type = etype }
   in
- (* class name -> (attribute list, method list with parameter types) *)
+  (* class name -> (attribute list, method list with parameter types) *)
 
-let read_class_map () =
-  let tbl = Hashtbl.create 10 in
-  let class_order = ref [] in  (* Track class declaration order *)
-  let section_name = read () in
-  if section_name <> "class_map" then
-    failwith ("Expected 'class_map' but got '" ^ section_name ^ "'");
-  (* Read number of classes *)
-  let num_classes_str = read () in
-  let num_classes =
-    try int_of_string num_classes_str
-    with Failure _ ->
-      failwith ("Error: Expected integer for number of classes but got '" ^ num_classes_str ^ "'")
-  in
-  for _ = 1 to num_classes do
-    let class_name = read () in
-    (* Add to our ordered list *)
-    class_order := !class_order @ [class_name];
-    (* Read number of attributes *)
-    let num_attrs_str = read () in
-    let num_attrs =
-      try int_of_string num_attrs_str
+  let read_class_map () =
+    let tbl = Hashtbl.create 10 in
+    let class_order = ref [] in
+    (* Track class declaration order *)
+    let section_name = read () in
+    if section_name <> "class_map" then
+      failwith ("Expected 'class_map' but got '" ^ section_name ^ "'");
+    (* Read number of classes *)
+    let num_classes_str = read () in
+    let num_classes =
+      try int_of_string num_classes_str
       with Failure _ ->
-        failwith ("Error: Expected integer for number of attributes but got '" ^ num_attrs_str ^ "'")
+        failwith
+          ("Error: Expected integer for number of classes but got '"
+         ^ num_classes_str ^ "'")
     in
-    (* Read attributes only if num_attrs > 0 *)
-    let attributes =
-      if num_attrs > 0 then
-        List.init num_attrs (fun _ ->
-            match read () with
-            | "no_initializer" ->
-                let attr_name = read () in
-                let attr_type = read () in
-                `NoInitializer (attr_name, attr_type)
-            | "initializer" ->
-                let attr_name = read () in
-                let attr_type = read () in
-                let init_expr = read_exp () in
-                (* Read the initializer expression *)
-                `Initializer (attr_name, attr_type, init_expr)
-            | x ->
-                failwith ("Unexpected attribute type in class " ^ class_name ^ ": " ^ x))
-      else
-        []
-    in
-    (* Extract just the attribute names from the variants *)
-    let attribute_names =
-      List.map (function
-          | `NoInitializer (name, _) -> name
-          | `Initializer (name, _, _) -> name
-      ) attributes
-    in
-    (* Store class attributes as a tuple: (attribute names, empty method list) *)
-    Hashtbl.add tbl class_name (attribute_names, [])
-  done;
-  (tbl, !class_order)  (* Return both the hashtable and the ordered list *)
-    in
-(* Global reference to record the order of methods as (class, method) pairs *)
-let method_order = ref []  (* Initially empty *)
-    in
-(* Returns a pair: (impl_map, method_order) where method_order is a list of (class_name, method_name) in read order *)
-let read_implementation_map () =
-  let tbl = Hashtbl.create 10 in
-  let method_order = ref [] in
-  let section_name = read () in
-  if section_name <> "implementation_map" then
-    failwith ("Expected 'implementation_map' but got " ^ section_name);
-
-  let num_classes_str = read () in
-  let num_classes =
-    try int_of_string num_classes_str
-    with Failure _ ->
-      failwith ("Error: Expected integer but got '" ^ num_classes_str ^ "'")
-  in
-
-  if num_classes > 0 then
-    for i = 1 to num_classes do
+    for _ = 1 to num_classes do
       let class_name = read () in
-      if String.length class_name > 0 &&
-         class_name.[0] >= '0' && class_name.[0] <= '9' then
-        failwith (Printf.sprintf "Invalid class name: '%s' (expected non-numeric name)" class_name);
-
-      let num_methods_str = read () in
-      let num_methods =
-        try int_of_string num_methods_str
+      (* Add to our ordered list *)
+      class_order := !class_order @ [ class_name ];
+      (* Read number of attributes *)
+      let num_attrs_str = read () in
+      let num_attrs =
+        try int_of_string num_attrs_str
         with Failure _ ->
-          failwith ("Error: expected int in num methods but got " ^ num_methods_str)
+          failwith
+            ("Error: Expected integer for number of attributes but got '"
+           ^ num_attrs_str ^ "'")
       in
-
-      if num_methods > 0 then
-        for j = 1 to num_methods do
-          let method_name = read () in
-          let num_formals_str = read () in
-          let num_formals = int_of_string num_formals_str in
-
-          (* Read formal parameter names *)
-          let formals = List.init num_formals (fun _ -> read ()) in
-          (* Supply default formal types (empty strings) *)
-          let formal_types = List.init num_formals (fun _ -> "") in
-
-          let defining_class = read () in
-          let method_body = read_exp () in
-
-          Hashtbl.add tbl (class_name, method_name)
-            (formals, formal_types, defining_class, method_body);
-          (* Record the method in the order it was read *)
-          method_order := !method_order @ [(class_name, method_name)]
-        done
+      (* Read attributes only if num_attrs > 0 *)
+      let attributes =
+        if num_attrs > 0 then
+          List.init num_attrs (fun _ ->
+              match read () with
+              | "no_initializer" ->
+                  let attr_name = read () in
+                  let attr_type = read () in
+                  `NoInitializer (attr_name, attr_type)
+              | "initializer" ->
+                  let attr_name = read () in
+                  let attr_type = read () in
+                  let init_expr = read_exp () in
+                  (* Read the initializer expression *)
+                  `Initializer (attr_name, attr_type, init_expr)
+              | x ->
+                  failwith
+                    ("Unexpected attribute type in class " ^ class_name ^ ": "
+                   ^ x))
+        else
+          []
+      in
+      (* Extract just the attribute names from the variants *)
+      let attribute_names =
+        List.map
+          (function
+            | `NoInitializer (name, _) -> name
+            | `Initializer (name, _, _) -> name)
+          attributes
+      in
+      (* Store class attributes as a tuple: (attribute names, empty method list) *)
+      Hashtbl.add tbl class_name (attribute_names, [])
     done;
-  (tbl, !method_order)
- in
+    (tbl, !class_order)
+    (* Return both the hashtable and the ordered list *)
+  in
+  (* Global reference to record the order of methods as (class, method) pairs *)
+
+  (* Returns a pair: (impl_map, method_order) where method_order is a list of (class_name, method_name) in read order *)
+  let read_implementation_map () =
+    let tbl = Hashtbl.create 10 in
+    let method_order = ref [] in
+    let section_name = read () in
+    if section_name <> "implementation_map" then
+      failwith ("Expected 'implementation_map' but got " ^ section_name);
+
+    let num_classes_str = read () in
+    let num_classes =
+      try int_of_string num_classes_str
+      with Failure _ ->
+        failwith ("Error: Expected integer but got '" ^ num_classes_str ^ "'")
+    in
+
+    if num_classes > 0 then
+      for i = 1 to num_classes do
+        let class_name = read () in
+        if
+          String.length class_name > 0
+          && class_name.[0] >= '0'
+          && class_name.[0] <= '9'
+        then
+          failwith
+            (Printf.sprintf
+               "Invalid class name: '%s' (expected non-numeric name)" class_name);
+
+        let num_methods_str = read () in
+        let num_methods =
+          try int_of_string num_methods_str
+          with Failure _ ->
+            failwith
+              ("Error: expected int in num methods but got " ^ num_methods_str)
+        in
+
+        if num_methods > 0 then
+          for j = 1 to num_methods do
+            let method_name = read () in
+            let num_formals_str = read () in
+            let num_formals = int_of_string num_formals_str in
+
+            (* Read formal parameter names *)
+            let formals = List.init num_formals (fun _ -> read ()) in
+            (* Supply default formal types (empty strings) *)
+            let formal_types = List.init num_formals (fun _ -> "") in
+
+            let defining_class = read () in
+            let method_body = read_exp () in
+
+            Hashtbl.add tbl (class_name, method_name)
+              (formals, formal_types, defining_class, method_body);
+            (* Record the method in the order it was read *)
+            method_order := !method_order @ [ (class_name, method_name) ]
+          done
+      done;
+    (tbl, !method_order)
+  in
   (* Return the populated hashtable *)
   let read_parent_map () =
     let tbl = Hashtbl.create 10 in
@@ -1217,8 +1315,8 @@ let read_implementation_map () =
   in
 
   (* Read class map, stopping at the next section *)
-  let (class_map, class_order) = read_class_map () in
-  let (impl_map, method_order) = read_implementation_map () in
+  let class_map, class_order = read_class_map () in
+  let impl_map, method_order = read_implementation_map () in
   let parent_map = read_parent_map () in
   let ast = read_ast () in
 
@@ -1345,7 +1443,9 @@ let read_implementation_map () =
     (* Read the class information from your input files *)
 
     (* Generate standard vtables first *)
-    let vtables = generate_vtables class_map impl_map parent_map class_order method_order in
+    let vtables =
+      generate_vtables class_map impl_map parent_map class_order method_order
+    in
 
     (* Extract class information from TAC program (for method implementations) *)
     let classes = extract_classes tac_program in
@@ -1395,9 +1495,10 @@ let read_implementation_map () =
 
     (* Generate IO methods (if needed) *)
     let io_methods = generate_io_methods () in
+    let constructors = generate_constructors class_order class_map in
 
     (* Combine everything with proper ordering *)
-    vtables @ data_section @ methods_assembly @ io_methods
+    vtables @ constructors @ methods_assembly @ io_methods @ data_section
   in
 
   let assembly = generate_assembly tac_program class_map impl_map parent_map in
