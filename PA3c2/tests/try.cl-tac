@@ -1,7 +1,7 @@
 comment start
 label Main_main_0
-t$0 <- int 4
-x <- t$0
-t$1 <- x
-t$0 <- t$1
+t$1 <- int 4
+x <- t$1
+t$2 <- x
+t$0 <- t$2
 return t$0

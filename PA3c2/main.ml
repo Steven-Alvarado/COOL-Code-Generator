@@ -9,9 +9,6 @@ open Printf
 
 type static_type = Class of string | SELF_TYPE of string
 
-(* class name -> (attribute list, method list with parameter types) *)
-type class_map = (string, string list * (string * string) list) Hashtbl.t
-
 (* class name -> parent class *)
 type parent_map = (string, string) Hashtbl.t
 
@@ -76,6 +73,12 @@ and tac_expr =
 (* (class_name, method_name) -> formals, defining_class, method_body *)
 type impl_map =
   (string * string, string list * string list * string * exp) Hashtbl.t
+
+(* class name -> (attribute name, type, expr option for initilize  *)
+type class_map =
+  ( string,
+    (string * string * exp option) list * (string * string) list )
+  Hashtbl.t
 
 type tac_instr =
   | TAC_Assign_Int of string * int (* temp1 <- int 5*)
@@ -557,6 +560,17 @@ let generate_io_methods () =
     "                        ret";
   ]
 
+(* global counter for string literals throughout program*)
+let string_literal_counter = ref 0
+let init_string_literal_counter n = string_literal_counter := n
+
+(* Register a string literal and return a unique label *)
+let register_string_literal literal =
+  let label = "string" ^ string_of_int !string_literal_counter in
+  incr string_literal_counter;
+  (* Optionally, record the literal in your data section table here *)
+  label
+
 (*  generate the vtables *)
 let generate_vtables (class_map : class_map) (impl_map : impl_map)
     (parent_map : parent_map) (class_order : string list)
@@ -631,8 +645,7 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
     [
       "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ".globl " ^ class_name ^ "..vtable";
-      class_name ^ "..vtable:\t\t\t\t## virtual function table for "
-      ^ class_name;
+      class_name ^ "..vtable:\t\t\t## virtual function table for " ^ class_name;
       "\t\t\t\t\t\t.quad string" ^ string_of_int string_num;
     ]
     @ method_entries
@@ -663,78 +676,185 @@ let get_object_size class_name class_map =
   in
   base_size + num_attrs
 
-(* Generate the assembly for a single constructor *)
-let generate_constructor class_map class_name (attributes : string list) =
-  let constructor_label = class_name ^ "..new" in
-  let class_tag = get_class_tag class_name in
-  let object_size = get_object_size class_name class_map in
-  let vtable_label = class_name ^ "..vtable" in
-  let constructor_lines =
-    [
-      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-      ".globl " ^ constructor_label;
-      constructor_label ^ ":              ## constructor for " ^ class_name;
-      "                       pushq %rbp";
-      "                       movq %rsp, %rbp";
-      "                       ## stack room for temporaries: 2";
-      "                       movq $16, %r14";
-      "                       subq %r14, %rsp";
-      "                       ## return address handling";
-      (* return address might depend on class not to sure *)
-      "                       movq $"
-      ^ (if class_name = "IO" then
-           "3"
-         else
-           "4")
-      ^ ", %r12";
-      "                       ## guarantee 16-byte alignment before call";
-      "           andq $0xFFFFFFFFFFFFFFF0, %rsp";
-      "           movq $8, %rsi";
-      "           movq %r12, %rdi";
-      "           call calloc";
-      "           movq %rax, %r12";
-      "                       ## store class tag, object size and vtable \
-       pointer";
-      "                       movq $" ^ string_of_int class_tag ^ ", %r14";
-      "                       movq %r14, 0(%r12)";
-      "                       movq $" ^ string_of_int object_size ^ ", %r14";
-      "                       movq %r14, 8(%r12)";
-      "                       movq $" ^ vtable_label ^ ", %r14";
-      "                       movq %r14, 16(%r12)";
-      "                       ## initialize attributes";
-      (* For each attribute in the class, you must generate code to initialize it.
-       This could be a call to the attribute’s default constructor or setting a default value.
-       For example, if an attribute has no initializer, you might leave it zeroed. *)
-    ]
-    @ (if attributes = [] then
-         "    ## no attributes to initialize" :: []
-       else
-         List.mapi
-           (fun idx attr_name ->
-             (* For example, store 0 in each attribute slot.
-            Adjust the offset calculation as needed: first attribute is at offset 24. *)
-             "                      movq $0, "
-             ^ string_of_int (24 + (idx * 8))
-             ^ "(%r12)")
-           attributes)
-    @ [
-        "                       ## return address handling";
-        "                       movq %rbp, %rsp";
-        "                       popq %rbp";
-        "                       ret";
+(* Generate constructors for internal classes taken from reference compiler*)
+let generate_internal_constructor class_name =
+  match class_name with
+  | "Bool" ->
+      [
+        ".globl Bool..new";
+        "Bool..new:              ## constructor for Bool";
+        "                        pushq %rbp";
+        "                        movq %rsp, %rbp";
+        "                        ## stack room for temporaries: 2";
+        "                        movq $16, %r14";
+        "                        subq %r14, %rsp";
+        "                        ## return address handling";
+        "                        movq $4, %r12";
+        "                        ## guarantee 16-byte alignment before call";
+        "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "\t\t\tmovq $8, %rsi";
+        "\t\t\tmovq %r12, %rdi";
+        "\t\t\tcall calloc";
+        "\t\t\tmovq %rax, %r12";
+        "                        ## store class tag, object size and vtable \
+         pointer";
+        "                        movq $0, %r14";
+        "                        movq %r14, 0(%r12)";
+        "                        movq $4, %r14";
+        "                        movq %r14, 8(%r12)";
+        "                        movq $Bool..vtable, %r14";
+        "                        movq %r14, 16(%r12)";
+        "                        ## initialize attributes";
+        "                        ## self[3] holds field (raw content) (Int)";
+        "                        movq $0, %r13";
+        "                        movq %r13, 24(%r12)";
+        "                        ## self[3] (raw content) initializer -- none ";
+        "                        movq %r12, %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret";
         "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
-  in
-  constructor_lines
-
-let generate_constructors (class_order : string list) (class_map : class_map) =
-  List.concat_map
-    (fun class_name ->
-      let attributes, _ =
-        try Hashtbl.find class_map class_name with Not_found -> ([], [])
-      in
-      generate_constructor class_map class_name attributes)
-    class_order
+  | "Int" ->
+      [
+        ".globl Int..new";
+        "Int..new:               ## constructor for Int";
+        "                        pushq %rbp";
+        "                        movq %rsp, %rbp";
+        "                        ## stack room for temporaries: 2";
+        "                        movq $16, %r14";
+        "                        subq %r14, %rsp";
+        "                        ## return address handling";
+        "                        movq $4, %r12";
+        "                        ## guarantee 16-byte alignment before call";
+        "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "\t\t\tmovq $8, %rsi";
+        "\t\t\tmovq %r12, %rdi";
+        "\t\t\tcall calloc";
+        "\t\t\tmovq %rax, %r12";
+        "                        ## store class tag, object size and vtable \
+         pointer";
+        "                        movq $1, %r14";
+        "                        movq %r14, 0(%r12)";
+        "                        movq $4, %r14";
+        "                        movq %r14, 8(%r12)";
+        "                        movq $Int..vtable, %r14";
+        "                        movq %r14, 16(%r12)";
+        "                        ## initialize attributes";
+        "                        ## self[3] holds field (raw content) (Int)";
+        "                        movq $0, %r13";
+        "                        movq %r13, 24(%r12)";
+        "                        ## self[3] (raw content) initializer -- none ";
+        "                        movq %r12, %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret";
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ]
+  | "IO" ->
+      [
+        ".globl IO..new";
+        "IO..new:                ## constructor for IO";
+        "                        pushq %rbp";
+        "                        movq %rsp, %rbp";
+        "                        ## stack room for temporaries: 2";
+        "                        movq $16, %r14";
+        "                        subq %r14, %rsp";
+        "                        ## return address handling";
+        "                        movq $3, %r12";
+        "                        ## guarantee 16-byte alignment before call";
+        "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "\t\t\tmovq $8, %rsi";
+        "\t\t\tmovq %r12, %rdi";
+        "\t\t\tcall calloc";
+        "\t\t\tmovq %rax, %r12";
+        "                        ## store class tag, object size and vtable \
+         pointer";
+        "                        movq $10, %r14";
+        "                        movq %r14, 0(%r12)";
+        "                        movq $3, %r14";
+        "                        movq %r14, 8(%r12)";
+        "                        movq $IO..vtable, %r14";
+        "                        movq %r14, 16(%r12)";
+        "                        movq %r12, %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret";
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ]
+  | "Object" ->
+      [
+        ".globl Object..new";
+        "Object..new:            ## constructor for Object";
+        "                        pushq %rbp";
+        "                        movq %rsp, %rbp";
+        "                        ## stack room for temporaries: 2";
+        "                        movq $16, %r14";
+        "                        subq %r14, %rsp";
+        "                        ## return address handling";
+        "                        movq $3, %r12";
+        "                        ## guarantee 16-byte alignment before call";
+        "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "\t\t\tmovq $8, %rsi";
+        "\t\t\tmovq %r12, %rdi";
+        "\t\t\tcall calloc";
+        "\t\t\tmovq %rax, %r12";
+        "                        ## store class tag, object size and vtable \
+         pointer";
+        "                        movq $12, %r14";
+        "                        movq %r14, 0(%r12)";
+        "                        movq $3, %r14";
+        "                        movq %r14, 8(%r12)";
+        "                        movq $Object..vtable, %r14";
+        "                        movq %r14, 16(%r12)";
+        "                        movq %r12, %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret";
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ]
+  | "String" ->
+      [
+        ".globl String..new";
+        "String..new:            ## constructor for String";
+        "                        pushq %rbp";
+        "                        movq %rsp, %rbp";
+        "                        ## stack room for temporaries: 2";
+        "                        movq $16, %r14";
+        "                        subq %r14, %rsp";
+        "                        ## return address handling";
+        "                        movq $4, %r12";
+        "                        ## guarantee 16-byte alignment before call";
+        "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "\t\t\tmovq $8, %rsi";
+        "\t\t\tmovq %r12, %rdi";
+        "\t\t\tcall calloc";
+        "\t\t\tmovq %rax, %r12";
+        "                        ## store class tag, object size and vtable \
+         pointer";
+        "                        movq $3, %r14";
+        "                        movq %r14, 0(%r12)";
+        "                        movq $4, %r14";
+        "                        movq %r14, 8(%r12)";
+        "                        movq $String..vtable, %r14";
+        "                        movq %r14, 16(%r12)";
+        "                        ## initialize attributes";
+        "                        ## self[3] holds field (raw content) (String)";
+        "                        movq $the.empty.string, %r13";
+        "                        movq %r13, 24(%r12)";
+        "                        ## self[3] (raw content) initializer -- none ";
+        "                        movq %r12, %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret";
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ]
+  | _ -> []
 
 (* Register allocation for TAC variables*)
 let reg_map var =
@@ -743,13 +863,9 @@ let reg_map var =
   | "self" -> "%r12" (* Self object *)
   | var when String.starts_with ~prefix:"t$" var ->
       (* Map other temporaries to registers or stack *)
-      (* For simplicity, we'll use stack slots here *)
       let idx = int_of_string (String.sub var 2 (String.length var - 2)) in
       sprintf "-%d(%%rbp)" ((idx * 8) + 8)
-  | _ ->
-      (* For named variables, store them in the object *)
-      (* This would require additional analysis *)
-      sprintf "[TODO: named var %s]" var
+  | _ -> sprintf "[TODO: named var %s]" var
 
 let translate_tac_to_assembly tac =
   match tac with
@@ -760,6 +876,8 @@ let translate_tac_to_assembly tac =
         "                        movq $" ^ string_of_int value ^ ", "
         ^ reg_map dest;
       ]
+  | TAC_Assign_String (dest, value) ->
+      [ "                        movq $" ^ value ^ ", " ^ reg_map dest ]
   | TAC_Assign_Plus (dest, op1, op2) ->
       [
         "                        movq "
@@ -796,7 +914,177 @@ let translate_tac_to_assembly tac =
         "                        popq %rbp";
         "                        ret";
       ]
-(* Add other TAC instructions as needed *)
+  | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
+
+let translate_tac_to_constructor_asm tac =
+  match tac with
+  | TAC_Comment text -> [ "                        ## " ^ text ]
+  | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
+  | TAC_Assign_Int (dest, value) ->
+      [
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $Int..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq $" ^ string_of_int value ^ ", %r14";
+        "                        movq %r14, 24(%r13)";
+        "                        movq %r13, 40(%r12)";
+      ]
+  | TAC_Assign_String (dest, value) ->
+      let str_label = register_string_literal value in
+      [
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $String..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        ## " ^ str_label ^ " holds '" ^ value ^ "'";
+        "                        movq $" ^ str_label ^ ", %r14";
+        "                        movq %r14, 24(%r13)";
+        "                        movq %r13, 40(%r12)";
+      ]
+  | TAC_Assign_Plus (dest, op1, op2) ->
+      [
+        "                        movq "
+        ^ reg_map (tac_expr_to_string op1)
+        ^ ", %r14";
+        "                        addq "
+        ^ reg_map (tac_expr_to_string op2)
+        ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest;
+      ]
+  | TAC_Assign_Variable (dest, src) ->
+      [ "                        movq " ^ reg_map src ^ ", " ^ reg_map dest ]
+  | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
+
+(* Generate constructor for user-defined classes *)
+let generate_custom_constructor class_map class_name
+    (attributes : (string * string * exp option) list) =
+  let constructor_label = class_name ^ "..new" in
+  let class_tag = get_class_tag class_name in
+  (* object size: 3 words (for tag, size, vtable) plus one word per attribute *)
+  let object_size = 3 + List.length attributes in
+  let vtable_label = class_name ^ "..vtable" in
+
+  let base_lines =
+    [
+      ".globl " ^ constructor_label;
+      constructor_label ^ ":              ## constructor for " ^ class_name;
+      "                        pushq %rbp";
+      "                        movq %rsp, %rbp";
+      "                        ## stack room for temporaries: 2";
+      "                        movq $16, %r14";
+      "                        subq %r14, %rsp";
+      "                        ## return address handling";
+      "                        movq $" ^ string_of_int object_size ^ ", %r12";
+      "\t\t\t## guarantee 16-byte alignment before call";
+      "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+      "\t\t\tmovq $8, %rsi";
+      "\t\t\tmovq %r12, %rdi";
+      "\t\t\tcall calloc";
+      "\t\t\tmovq %rax, %r12";
+      "\t\t\t## store class tag, object size and vtable pointer";
+      "                        movq $" ^ string_of_int class_tag ^ ", %r14";
+      "                        movq %r14, 0(%r12)";
+      "                        movq $" ^ string_of_int object_size ^ ", %r14";
+      "                        movq %r14, 8(%r12)";
+      "                        movq $" ^ vtable_label ^ ", %r14";
+      "                        movq %r14, 16(%r12)";
+      "                        ## initialize attributes";
+    ]
+  in
+
+  (* Generate initialization code for each attribute.
+     The first attribute is stored at offset 24, the second at 32, etc.
+     For each attribute, if an initializer is provided, generate code to evaluate it;
+     otherwise, call the default constructor for the attribute’s type. *)
+  let attr_lines =
+    List.mapi
+      (fun idx (attr_name, attr_type, init_opt) ->
+        let offset = 24 + (idx * 8) in
+        match init_opt with
+        | None ->
+            [
+              "                        ## self["
+              ^ string_of_int (idx + 3)
+              ^ "] holds field " ^ attr_name ^ " (" ^ attr_type ^ ")";
+              "                        ## new " ^ attr_type;
+              "                        pushq %rbp";
+              "                        pushq %r12";
+              "                        movq $" ^ attr_type ^ "..new, %r14";
+              "                        call *%r14";
+              "                        popq %r12";
+              "                        popq %rbp";
+              "                        movq %r13, " ^ string_of_int offset
+              ^ "(%r12)";
+            ]
+        | Some expr ->
+            let tac_instrs, tac_result = convert class_name "<init>" expr in
+            let init_val =
+              match expr.exp_kind with
+              | AST_String s -> s
+              | AST_Integer i -> i
+              | AST_True -> "true"
+              | AST_False -> "false"
+              | _ -> tac_expr_to_string tac_result
+            in
+            let init_code =
+              List.concat_map translate_tac_to_constructor_asm tac_instrs
+            in
+            [
+              "                        ## self["
+              ^ string_of_int (idx + 3)
+              ^ "] holds field " ^ attr_name ^ " (" ^ attr_type ^ ")";
+              "                        ## new " ^ attr_type;
+              "                        pushq %rbp";
+              "                        pushq %r12";
+              "                        movq $" ^ attr_type ^ "..new, %r14";
+              "                        call *%r14";
+              "                        popq %r12";
+              "                        popq %rbp";
+              "                        movq %r13, " ^ string_of_int offset
+              ^ "(%r12)";
+              "                        ## self["
+              ^ string_of_int (idx + 3)
+              ^ "] " ^ attr_name ^ " initializer <- " ^ init_val;
+              "                        ## new " ^ attr_type;
+            ]
+            @ init_code
+            @ [ "                        movq %r12, %r13" ])
+      attributes
+    |> List.flatten
+  in
+
+  let footer =
+    [
+      "                        ## return address handling";
+      "                        movq %rbp, %rsp";
+      "                        popq %rbp";
+      "                        ret";
+      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ]
+  in
+
+  base_lines @ attr_lines @ footer
+
+(* Generate constructors for all classes.
+   For internal classes, call a separate internal constructor generator.
+   For user-defined classes, extract the full attribute triple list from the class map. *)
+let generate_constructors (class_order : string list) (class_map : class_map) =
+  List.concat_map
+    (fun class_name ->
+      match class_name with
+      | "Bool" | "Int" | "IO" | "Object" | "String" ->
+          generate_internal_constructor class_name
+      | _ ->
+          let attributes, _ =
+            try Hashtbl.find class_map class_name with Not_found -> ([], [])
+          in
+          generate_custom_constructor class_map class_name attributes)
+    class_order
 
 (* standard prologue and epilogue for each method*)
 let generate_method_prologue class_name method_name =
@@ -1161,7 +1449,6 @@ let main () =
     { loc = eloc; exp_kind = ekind; static_type = etype }
   in
   (* class name -> (attribute list, method list with parameter types) *)
-
   let read_class_map () =
     let tbl = Hashtbl.create 10 in
     let class_order = ref [] in
@@ -1214,22 +1501,24 @@ let main () =
           []
       in
       (* Extract just the attribute names from the variants *)
-      let attribute_names =
+      let attributes =
         List.map
           (function
-            | `NoInitializer (name, _) -> name
-            | `Initializer (name, _, _) -> name)
+            | `NoInitializer (name, attr_type) -> (name, attr_type, None)
+            | `Initializer (name, attr_type, init_exp) ->
+                (name, attr_type, Some init_exp))
           attributes
       in
       (* Store class attributes as a tuple: (attribute names, empty method list) *)
-      Hashtbl.add tbl class_name (attribute_names, [])
+      Hashtbl.add tbl class_name (attributes, [])
     done;
     (tbl, !class_order)
     (* Return both the hashtable and the ordered list *)
   in
   (* Global reference to record the order of methods as (class, method) pairs *)
 
-  (* Returns a pair: (impl_map, method_order) where method_order is a list of (class_name, method_name) in read order *)
+  (* Returns: (impl_map, method_order)  to use in assembly gneration to keep order of 
+     methods in the classes as read from the cl.type file*)
   let read_implementation_map () =
     let tbl = Hashtbl.create 10 in
     let method_order = ref [] in
@@ -1493,6 +1782,7 @@ let main () =
       |> List.concat
     in
 
+    init_string_literal_counter (List.length class_order + 1);
     (* Generate IO methods (if needed) *)
     let io_methods = generate_io_methods () in
     let constructors = generate_constructors class_order class_map in
