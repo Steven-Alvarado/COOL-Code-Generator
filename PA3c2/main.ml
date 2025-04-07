@@ -179,8 +179,20 @@ let ast_to_string x =
   | AST_Case _ -> "case"
   | AST_Identifier _ -> "identifier"
   | AST_Internal _ -> "internal"
-(* return x *)
-(*TODO*)
+
+(* Track string literals and their labels *)
+let string_literal_table = ref []
+let string_literal_counter = ref 0
+
+let init_string_literal_counter n =
+  string_literal_counter := n;
+  string_literal_table := []
+
+let register_string_literal literal =
+  let label = "string" ^ string_of_int !string_literal_counter in
+  incr string_literal_counter;
+  string_literal_table := (label, literal) :: !string_literal_table;
+  label
 
 let rec tac_expr_to_string expr =
   match expr with
@@ -195,6 +207,17 @@ let rec tac_expr_to_string expr =
   | TAC_FunctionCall (f, args) ->
       let args_str = String.concat ", " (List.map tac_expr_to_string args) in
       Printf.sprintf "%s(%s)" f args_str
+
+(* basic block struct for cfg*)
+type basic_block = {
+  id : string;
+  instructions : tac_instr list;
+  mutable successors : string list;
+  mutable predecessors : string list;
+}
+
+(* map from label to basic block *)
+type cfg = (string, basic_block) Hashtbl.t
 
 (* count variables*)
 let temp_var_counter = ref 1
@@ -500,6 +523,212 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
       let new_var = fresh_variable () in
       ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var)
   | x -> failwith ("Unimplemented AST Node: " ^ ast_to_string x)
+
+(* Function to identify leaders (first instructions of basic blocks) *)
+let identify_leaders (instructions : tac_instr list) : int list =
+  let rec find_leaders acc index instrs =
+    match instrs with
+    | [] -> List.rev acc
+    | first_instr :: rest ->
+        (* The first instruction is always a leader *)
+        let acc' =
+          if index = 0 then
+            index :: acc
+          else
+            match first_instr with
+            | TAC_Label _ ->
+                index :: acc (* Instructions following labels are leaders *)
+            | _ -> (
+                match List.nth_opt instructions (index - 1) with
+                | Some (TAC_Jump _)
+                | Some (TAC_ConditionalJump _)
+                | Some (TAC_Return _) ->
+                    index :: acc (* Instructions following jumps are leaders *)
+                | _ -> acc)
+        in
+        find_leaders acc' (index + 1) rest
+  in
+  find_leaders [] 0 instructions
+
+(* Create basic blocks from leaders *)
+let create_basic_blocks (instructions : tac_instr list) (leaders : int list) :
+    basic_block list =
+  (* We first need to sort the leaders to ensure correct block creation *)
+  let sorted_leaders = List.sort compare leaders in
+
+  (* Helper function to extract instructions for a block *)
+  let get_block_instructions start_idx end_idx =
+    let rec extract acc i =
+      if i >= end_idx || i >= List.length instructions then
+        List.rev acc
+      else
+        extract (List.nth instructions i :: acc) (i + 1)
+    in
+    extract [] start_idx
+  in
+
+  (* Create blocks from each leader to the next leader (or end) *)
+  let rec create_blocks acc = function
+    | [] -> List.rev acc
+    | [ leader_idx ] ->
+        (* Last leader - block continues to the end of instructions *)
+        let block_instrs =
+          get_block_instructions leader_idx (List.length instructions)
+        in
+        let block_id = "BB" ^ string_of_int (List.length acc) in
+        let block =
+          {
+            id = block_id;
+            instructions = block_instrs;
+            successors = [];
+            predecessors = [];
+          }
+        in
+        List.rev (block :: acc)
+    | leader_idx :: next_leader :: rest ->
+        (* Create block from this leader to the next one *)
+        let block_instrs = get_block_instructions leader_idx next_leader in
+        let block_id = "BB" ^ string_of_int (List.length acc) in
+        let block =
+          {
+            id = block_id;
+            instructions = block_instrs;
+            successors = [];
+            predecessors = [];
+          }
+        in
+        create_blocks (block :: acc) (next_leader :: rest)
+  in
+
+  create_blocks [] sorted_leaders
+
+(* Map from TAC labels to basic block IDs *)
+let create_label_to_block_map (blocks : basic_block list) :
+    (string, string) Hashtbl.t =
+  let label_map = Hashtbl.create 50 in
+
+  List.iter
+    (fun block ->
+      List.iter
+        (function
+          | TAC_Label label -> Hashtbl.add label_map label block.id | _ -> ())
+        block.instructions)
+    blocks;
+
+  label_map
+
+(* Connect basic blocks to create control flow *)
+let build_cfg (blocks : basic_block list) : cfg =
+  let cfg_map = Hashtbl.create (List.length blocks) in
+  let label_to_block = create_label_to_block_map blocks in
+
+  (* Add all blocks to the hashtable first *)
+  List.iter (fun block -> Hashtbl.add cfg_map block.id block) blocks;
+
+  (* Helper function to find the next block in sequence *)
+  let find_next_block current_block =
+    let rec find_next = function
+      | [] -> None
+      | [ _ ] -> None (* Last block has no next *)
+      | b1 :: b2 :: rest ->
+          if b1.id = current_block.id then
+            Some b2
+          else
+            find_next (b2 :: rest)
+    in
+    find_next blocks
+  in
+
+  (* Update successors and predecessors *)
+  List.iter
+    (fun block ->
+      (* Check the last instruction for jumps *)
+      let targets =
+        match List.rev block.instructions with
+        | TAC_Jump label :: _ -> (
+            match Hashtbl.find_opt label_to_block label with
+            | Some target_block -> [ target_block ]
+            | None -> [])
+        | TAC_ConditionalJump (_, label) :: rest -> (
+            let jump_target =
+              match Hashtbl.find_opt label_to_block label with
+              | Some target_block -> [ target_block ]
+              | None -> []
+            in
+            (* For conditional jumps, add fallthrough unless there's an unconditional jump after *)
+            match rest with
+            | TAC_Jump fallthrough_label :: _ -> (
+                match Hashtbl.find_opt label_to_block fallthrough_label with
+                | Some target_block -> target_block :: jump_target
+                | None -> jump_target)
+            | _ -> (
+                (* If no explicit jump after conditional, fallthrough to next block *)
+                match find_next_block block with
+                | Some next_block -> next_block.id :: jump_target
+                | None -> jump_target))
+        | TAC_Return _ :: _ ->
+            [] (* Return has no successors within the function *)
+        | _ -> (
+            (* If there's no jump at the end, fallthrough to the next block *)
+            match find_next_block block with
+            | Some next_block -> [ next_block.id ]
+            | None -> [])
+      in
+
+      (* Update current block's successors *)
+      let block = Hashtbl.find cfg_map block.id in
+      block.successors <- targets;
+
+      (* Update each target's predecessors *)
+      List.iter
+        (fun target ->
+          match Hashtbl.find_opt cfg_map target with
+          | Some target_block ->
+              target_block.predecessors <- block.id :: target_block.predecessors
+          | None -> () (* Target might be outside the current function *))
+        targets)
+    blocks;
+
+  cfg_map
+
+(* Function to visualize CFG (for debugging) *)
+let print_cfg cfg =
+  Printf.printf "Control Flow Graph:\n";
+  Hashtbl.iter
+    (fun _ block ->
+      Printf.printf "Block %s:\n" block.id;
+      Printf.printf "  Predecessors: %s\n"
+        (String.concat ", " block.predecessors);
+      Printf.printf "  Instructions:\n";
+      List.iter
+        (fun instr -> Printf.printf "    %s\n" (tac_instr_to_str instr))
+        block.instructions;
+      Printf.printf "  Successors: %s\n\n" (String.concat ", " block.successors))
+    cfg
+
+(* Helper function for existing code - you might need to adapt this based on your code *)
+let rec get_all_methods parent_map method_order class_name =
+  (* Get parent's methods first, if any *)
+  let parent_methods =
+    match Hashtbl.find_opt parent_map class_name with
+    | Some parent -> get_all_methods parent_map method_order parent
+    | None -> []
+  in
+  (* Get methods defined directly in this class from method_order, excluding "new" *)
+  let own_methods =
+    List.filter (fun (c, m) -> c = class_name && m <> "new") method_order
+    |> List.map snd
+  in
+  (* Combine parent's methods and then append any new methods defined in this class *)
+  parent_methods
+  @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
+
+(* Function to convert a method to CFG *)
+let method_to_cfg class_name method_name body_exp : cfg =
+  let tac_instructions, _ = convert class_name method_name body_exp in
+  let leaders = identify_leaders tac_instructions in
+  let basic_blocks = create_basic_blocks tac_instructions leaders in
+  build_cfg basic_blocks
 
 let generate_object_abort_method () =
   [
@@ -1198,8 +1427,8 @@ let reg_map var =
   | var when String.starts_with ~prefix:"t$" var ->
       (* Map other temporaries to registers or stack *)
       let idx = int_of_string (String.sub var 2 (String.length var - 2)) in
-      sprintf "-%d(%%rbp)" ((idx * 8) + 8)
-  | _ -> sprintf "[TODO: named var %s]" var
+      string_of_int (idx * 8) ^ "(%rbp)"
+  | var -> var (* Named variables stay as-is *)
 
 let translate_tac_to_assembly tac =
   match tac with
@@ -1207,33 +1436,58 @@ let translate_tac_to_assembly tac =
   | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
   | TAC_Assign_Int (dest, value) ->
       [
-        "                        movq $" ^ string_of_int value ^ ", "
-        ^ reg_map dest;
+        "                        ## new Int";
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $Int..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq $" ^ string_of_int value ^ ", %r14";
+        "                        movq %r14, 24(%r13)";
       ]
   | TAC_Assign_String (dest, value) ->
-      [ "                        movq $" ^ value ^ ", " ^ reg_map dest ]
+      let str_label = register_string_literal value in
+      [
+        "                        ## new String";
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $String..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        ## " ^ str_label ^ " holds '" ^ value ^ "'";
+        "                        movq $" ^ str_label ^ ", %r14";
+        "                        movq %r14, 24(%r13)";
+      ]
   | TAC_Assign_Plus (dest, op1, op2) ->
       [
         "                        movq "
         ^ reg_map (tac_expr_to_string op1)
         ^ ", %r14";
-        "                        addq "
+        "                        movq "
         ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r14";
+        ^ ", %r13";
+        "                        addq %r13, %r14";
         "                        movq %r14, " ^ reg_map dest;
       ]
   | TAC_Assign_Minus (dest, op1, op2) ->
       [
         "                        movq "
         ^ reg_map (tac_expr_to_string op1)
-        ^ ", %r14";
-        "                        addq "
+        ^ ", %rax";
+        "                        movq "
         ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r14";
-        "                        movq %r14, " ^ reg_map dest;
+        ^ ", %r13";
+        "                        subq %r13, %rax";
+        "                        movq %rax, %r13";
+        "                        movq %r13, " ^ reg_map dest;
       ]
   | TAC_Assign_Variable (dest, src) ->
-      [ "                        movq " ^ reg_map src ^ ", " ^ reg_map dest ]
+      [
+        "                        movq " ^ reg_map src ^ ", %r13";
+        "                        movq %r13, " ^ reg_map dest;
+      ]
   | TAC_Jump label -> [ "                        jmp " ^ label ]
   | TAC_ConditionalJump (cond, label) ->
       [
@@ -1520,29 +1774,10 @@ let extract_method_info (tac_instrs : tac_instr list) : (string * string) option
   in
   find_method_label tac_instrs
 
-(* Generate all method definitions in the same order as vtables *)
 let generate_all_method_definitions class_map impl_map parent_map class_order
     method_order =
-  (* Track which methods have already been defined to avoid duplicates *)
+  (* Most of your existing code would remain the same *)
   let defined_methods = Hashtbl.create 100 in
-  let rec get_all_methods class_name =
-    (* Get parent's methods first, if any *)
-    let parent_methods =
-      match Hashtbl.find_opt parent_map class_name with
-      | Some parent -> get_all_methods parent
-      | None -> []
-    in
-    (* Get methods defined directly in this class from method_order, excluding "new" *)
-    let own_methods =
-      List.filter (fun (c, m) -> c = class_name && m <> "new") method_order
-      |> List.map snd
-    in
-    (* Combine parent's methods and then append any new methods defined in this class *)
-    parent_methods
-    @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
-  in
-  (* Generate a single method definition *)
-  (* Generate a single method definition *)
   let generate_method_definition class_name method_name =
     let method_label = class_name ^ "." ^ method_name in
     if Hashtbl.mem defined_methods method_label then
@@ -1550,6 +1785,7 @@ let generate_all_method_definitions class_map impl_map parent_map class_order
     else (
       Hashtbl.add defined_methods method_label true;
 
+      (* Handle native methods as before *)
       match (class_name, method_name) with
       | "Object", "abort" -> generate_object_abort_method ()
       | "Object", "copy" -> generate_object_copy_method ()
@@ -1562,12 +1798,13 @@ let generate_all_method_definitions class_map impl_map parent_map class_order
       | "String", "length" -> generate_string_length_method ()
       | "String", "substr" -> generate_string_substr_method ()
       | _ -> (
-          (* Get method implementation from impl_map *)
           match Hashtbl.find_opt impl_map (class_name, method_name) with
           | Some (params, return_type, defining_class, body_exp) ->
               if class_name = defining_class then
-                (* Only generate for methods defined in this class *)
-                let body_tac, _ = convert class_name method_name body_exp in
+                (* Convert to CFG instead of directly to TAC *)
+                let cfg = method_to_cfg class_name method_name body_exp in
+                let () = print_cfg cfg in
+                (* Generate assembly header *)
                 let header =
                   [
                     "                        ## \
@@ -1577,20 +1814,31 @@ let generate_all_method_definitions class_map impl_map parent_map class_order
                     "                        pushq %rbp";
                     "                        movq %rsp, %rbp";
                     "                        movq 16(%rbp), %r12";
-                    (* Load 'self' from stack *)
                     "                        ## stack room for temporaries: 2";
                     "                        movq $16, %r14";
                     "                        subq %r14, %rsp";
-                    "                        ## return address handling";
                     "                        ## method body begins";
                   ]
                 in
 
-                (* Translate the method body from TAC to assembly *)
-                let body_asm =
-                  List.concat_map translate_tac_to_assembly body_tac
+                (* Generate assembly for each basic block in the CFG *)
+                let blocks_asm =
+                  Hashtbl.fold
+                    (fun _ block acc ->
+                      let block_header =
+                        [
+                          "                        ## Basic block: " ^ block.id;
+                        ]
+                      in
+                      let block_body =
+                        List.concat_map translate_tac_to_assembly
+                          block.instructions
+                      in
+                      acc @ block_header @ block_body)
+                    cfg []
                 in
 
+                (* Generate epilogue *)
                 let epilogue =
                   [
                     ".globl " ^ method_label ^ ".end";
@@ -1604,38 +1852,23 @@ let generate_all_method_definitions class_map impl_map parent_map class_order
                   ]
                 in
 
-                header @ body_asm @ epilogue
-              else (* Method is inherited, skip *)
+                header @ blocks_asm @ epilogue
+              else
                 []
-          | None -> [])
-      (* Skip undefined methods *))
+          | None -> []))
   in
 
   (* Generate methods for each class in class_order *)
   List.concat_map
     (fun class_name ->
       (* Get methods in proper order for this class *)
-      let methods = get_all_methods class_name in
+      let methods = get_all_methods parent_map method_order class_name in
 
       (* Generate each method in order *)
       List.concat_map
         (fun method_name -> generate_method_definition class_name method_name)
         methods)
     class_order
-
-(* Track string literals and their labels *)
-let string_literal_table = ref []
-let string_literal_counter = ref 0
-
-let init_string_literal_counter n =
-  string_literal_counter := n;
-  string_literal_table := []
-
-let register_string_literal literal =
-  let label = "string" ^ string_of_int !string_literal_counter in
-  incr string_literal_counter;
-  string_literal_table := (label, literal) :: !string_literal_table;
-  label
 
 (* Generate the data section with string constants *)
 let generate_data_section (class_order : string list) : string list =
@@ -1703,10 +1936,9 @@ let generate_data_section (class_order : string list) : string list =
     "";
   ]
   @ List.concat_map generate_string_entry all_strings
-  @ [ "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" ]
 
-let generate_helper_functions_and_entry () =[
-
+let generate_helper_functions_and_entry () =
+  [
     "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
     ".globl eq_handler";
     "eq_handler:             ## helper function for =";
@@ -1717,30 +1949,30 @@ let generate_helper_functions_and_entry () =[
     "                        movq 32(%rbp), %r13";
     "                        movq 24(%rbp), %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_true";
+    "\t\t\tje eq_true";
     "                        movq $0, %r15";
     "                        cmpq %r15, %r13";
-    "			je eq_false";
+    "\t\t\tje eq_false";
     "                        cmpq %r15, %r14";
-    "			je eq_false";
+    "\t\t\tje eq_false";
     "                        movq 0(%r13), %r13";
     "                        movq 0(%r14), %r14";
     "                        ## place the sum of the type tags in r1";
     "                        addq %r14, %r13";
     "                        movq $0, %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_bool";
+    "\t\t\tje eq_bool";
     "                        movq $2, %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_int";
+    "\t\t\tje eq_int";
     "                        movq $6, %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_string";
+    "\t\t\tje eq_string";
     "                        ## otherwise, use pointer comparison";
     "                        movq 32(%rbp), %r13";
     "                        movq 24(%rbp), %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_true";
+    "\t\t\tje eq_true";
     ".globl eq_false";
     "eq_false:               ## not equal";
     "                        ## new Bool";
@@ -1772,7 +2004,7 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        cmpq %r14, %r13";
-    "			je eq_true";
+    "\t\t\tje eq_true";
     "                        jmp eq_false";
     ".globl eq_string";
     "eq_string:              ## two Strings";
@@ -1781,12 +2013,12 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        ## guarantee 16-byte alignment before call";
-    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
-    "			movq %r13, %rdi";
-    "			movq %r14, %rsi";
-    "			call strcmp ";
-    "			cmp $0, %eax";
-    "			je eq_true";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tmovq %r14, %rsi";
+    "\t\t\tcall strcmp ";
+    "\t\t\tcmp $0, %eax";
+    "\t\t\tje eq_true";
     "                        jmp eq_false";
     ".globl eq_end";
     "eq_end:                 ## return address handling";
@@ -1803,30 +2035,30 @@ let generate_helper_functions_and_entry () =[
     "                        movq 32(%rbp), %r13";
     "                        movq 24(%rbp), %r14";
     "                        cmpq %r14, %r13";
-    "			je le_true";
+    "\t\t\tje le_true";
     "                        movq $0, %r15";
     "                        cmpq %r15, %r13";
-    "			je le_false";
+    "\t\t\tje le_false";
     "                        cmpq %r15, %r14";
-    "			je le_false";
+    "\t\t\tje le_false";
     "                        movq 0(%r13), %r13";
     "                        movq 0(%r14), %r14";
     "                        ## place the sum of the type tags in r1";
     "                        addq %r14, %r13";
     "                        movq $0, %r14";
     "                        cmpq %r14, %r13";
-    "			je le_bool";
+    "\t\t\tje le_bool";
     "                        movq $2, %r14";
     "                        cmpq %r14, %r13";
-    "			je le_int";
+    "\t\t\tje le_int";
     "                        movq $6, %r14";
     "                        cmpq %r14, %r13";
-    "			je le_string";
+    "\t\t\tje le_string";
     "                        ## for non-primitives, equality is our only hope";
     "                        movq 32(%rbp), %r13";
     "                        movq 24(%rbp), %r14";
     "                        cmpq %r14, %r13";
-    "			je le_true";
+    "\t\t\tje le_true";
     ".globl le_false";
     "le_false:               ## not less-than-or-equal";
     "                        ## new Bool";
@@ -1858,7 +2090,7 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        cmpl %r14d, %r13d";
-    "			jle le_true";
+    "\t\t\tjle le_true";
     "                        jmp le_false";
     ".globl le_string";
     "le_string:              ## two Strings";
@@ -1867,12 +2099,12 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        ## guarantee 16-byte alignment before call";
-    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
-    "			movq %r13, %rdi";
-    "			movq %r14, %rsi";
-    "			call strcmp ";
-    "			cmp $0, %eax";
-    "			jle le_true";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tmovq %r14, %rsi";
+    "\t\t\tcall strcmp ";
+    "\t\t\tcmp $0, %eax";
+    "\t\t\tjle le_true";
     "                        jmp le_false";
     ".globl le_end";
     "le_end:                 ## return address handling";
@@ -1890,22 +2122,22 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%rbp), %r14";
     "                        movq $0, %r15";
     "                        cmpq %r15, %r13";
-    "			je lt_false";
+    "\t\t\tje lt_false";
     "                        cmpq %r15, %r14";
-    "			je lt_false";
+    "\t\t\tje lt_false";
     "                        movq 0(%r13), %r13";
     "                        movq 0(%r14), %r14";
     "                        ## place the sum of the type tags in r1";
     "                        addq %r14, %r13";
     "                        movq $0, %r14";
     "                        cmpq %r14, %r13";
-    "			je lt_bool";
+    "\t\t\tje lt_bool";
     "                        movq $2, %r14";
     "                        cmpq %r14, %r13";
-    "			je lt_int";
+    "\t\t\tje lt_int";
     "                        movq $6, %r14";
     "                        cmpq %r14, %r13";
-    "			je lt_string";
+    "\t\t\tje lt_string";
     "                        ## for non-primitives, < is always false";
     ".globl lt_false";
     "lt_false:               ## not less than";
@@ -1938,7 +2170,7 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        cmpl %r14d, %r13d";
-    "			jl lt_true";
+    "\t\t\tjl lt_true";
     "                        jmp lt_false";
     ".globl lt_string";
     "lt_string:              ## two Strings";
@@ -1947,12 +2179,12 @@ let generate_helper_functions_and_entry () =[
     "                        movq 24(%r13), %r13";
     "                        movq 24(%r14), %r14";
     "                        ## guarantee 16-byte alignment before call";
-    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
-    "			movq %r13, %rdi";
-    "			movq %r14, %rsi";
-    "			call strcmp ";
-    "			cmp $0, %eax";
-    "			jl lt_true";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tmovq %r14, %rsi";
+    "\t\t\tcall strcmp ";
+    "\t\t\tcmp $0, %eax";
+    "\t\t\tjl lt_true";
     "                        jmp lt_false";
     ".globl lt_end";
     "lt_end:                 ## return address handling";
@@ -1963,7 +2195,7 @@ let generate_helper_functions_and_entry () =[
     ".globl start";
     "start:                  ## program begins here";
     "                        .globl main";
-    "			.type main, @function";
+    "\t\t\t.type main, @function";
     "main:";
     "                        movq $Main..new, %r14";
     "                        pushq %rbp";
@@ -1973,307 +2205,308 @@ let generate_helper_functions_and_entry () =[
     "                        movq $Main.main, %r14";
     "                        call *%r14";
     "                        ## guarantee 16-byte alignment before call";
-    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
-    "			movl $0, %edi";
-    "			call exit";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovl $0, %edi";
+    "\t\t\tcall exit";
     "                        ";
-    "	.globl	cooloutstr";
-    "	.type	cooloutstr, @function";
+    "\t.globl\tcooloutstr";
+    "\t.type\tcooloutstr, @function";
     "cooloutstr:";
     ".LFB6:";
-    "	.cfi_startproc";
-    "	endbr64";
-    "	pushq	%rbp";
-    "	.cfi_def_cfa_offset 16";
-    "	.cfi_offset 6, -16";
-    "	movq	%rsp, %rbp";
-    "	.cfi_def_cfa_register 6";
-    "	subq	$32, %rsp";
-    "	movq	%rdi, -24(%rbp)";
-    "	movl	$0, -4(%rbp)";
-    "	jmp	.L2";
+    "\t.cfi_startproc";
+    "\tendbr64";
+    "\tpushq\t%rbp";
+    "\t.cfi_def_cfa_offset 16";
+    "\t.cfi_offset 6, -16";
+    "\tmovq\t%rsp, %rbp";
+    "\t.cfi_def_cfa_register 6";
+    "\tsubq\t$32, %rsp";
+    "\tmovq\t%rdi, -24(%rbp)";
+    "\tmovl\t$0, -4(%rbp)";
+    "\tjmp\t.L2";
     ".L5:";
-    "	movl	-4(%rbp), %eax";
-    "	movslq	%eax, %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	cmpb	$92, %al";
-    "	jne	.L3";
-    "	movl	-4(%rbp), %eax";
-    "	cltq";
-    "	leaq	1(%rax), %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	cmpb	$110, %al";
-    "	jne	.L3";
-    "	movq	stdout(%rip), %rax";
-    "	movq	%rax, %rsi";
-    "	movl	$10, %edi";
-    "	call	fputc@PLT";
-    "	addl	$2, -4(%rbp)";
-    "	jmp	.L2";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tmovslq\t%eax, %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\tcmpb\t$92, %al";
+    "\tjne\t.L3";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tcltq";
+    "\tleaq\t1(%rax), %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\tcmpb\t$110, %al";
+    "\tjne\t.L3";
+    "\tmovq\tstdout(%rip), %rax";
+    "\tmovq\t%rax, %rsi";
+    "\tmovl\t$10, %edi";
+    "\tcall\tfputc@PLT";
+    "\taddl\t$2, -4(%rbp)";
+    "\tjmp\t.L2";
     ".L3:";
-    "	movl	-4(%rbp), %eax";
-    "	movslq	%eax, %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	cmpb	$92, %al";
-    "	jne	.L4";
-    "	movl	-4(%rbp), %eax";
-    "	cltq";
-    "	leaq	1(%rax), %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	cmpb	$116, %al";
-    "	jne	.L4";
-    "	movq	stdout(%rip), %rax";
-    "	movq	%rax, %rsi";
-    "	movl	$9, %edi";
-    "	call	fputc@PLT";
-    "	addl	$2, -4(%rbp)";
-    "	jmp	.L2";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tmovslq\t%eax, %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\tcmpb\t$92, %al";
+    "\tjne\t.L4";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tcltq";
+    "\tleaq\t1(%rax), %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\tcmpb\t$116, %al";
+    "\tjne\t.L4";
+    "\tmovq\tstdout(%rip), %rax";
+    "\tmovq\t%rax, %rsi";
+    "\tmovl\t$9, %edi";
+    "\tcall\tfputc@PLT";
+    "\taddl\t$2, -4(%rbp)";
+    "\tjmp\t.L2";
     ".L4:";
-    "	movq	stdout(%rip), %rdx";
-    "	movl	-4(%rbp), %eax";
-    "	movslq	%eax, %rcx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rcx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	movsbl	%al, %eax";
-    "	movq	%rdx, %rsi";
-    "	movl	%eax, %edi";
-    "	call	fputc@PLT";
-    "	addl	$1, -4(%rbp)";
+    "\tmovq\tstdout(%rip), %rdx";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tmovslq\t%eax, %rcx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rcx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\tmovsbl\t%al, %eax";
+    "\tmovq\t%rdx, %rsi";
+    "\tmovl\t%eax, %edi";
+    "\tcall\tfputc@PLT";
+    "\taddl\t$1, -4(%rbp)";
     ".L2:";
-    "	movl	-4(%rbp), %eax";
-    "	movslq	%eax, %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	testb	%al, %al";
-    "	jne	.L5";
-    "	movq	stdout(%rip), %rax";
-    "	movq	%rax, %rdi";
-    "	call	fflush@PLT";
-    "	nop";
-    "	leave";
-    "	.cfi_def_cfa 7, 8";
-    "	ret";
-    "	.cfi_endproc";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tmovslq\t%eax, %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\ttestb\t%al, %al";
+    "\tjne\t.L5";
+    "\tmovq\tstdout(%rip), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tfflush@PLT";
+    "\tnop";
+    "\tleave";
+    "\t.cfi_def_cfa 7, 8";
+    "\tret";
+    "\t.cfi_endproc";
     ".LFE6:";
-    "	.size	cooloutstr, .-cooloutstr";
-    "	.globl	coolstrlen";
-    "	.type	coolstrlen, @function";
+    "\t.size\tcooloutstr, .-cooloutstr";
+    "\t.globl\tcoolstrlen";
+    "\t.type\tcoolstrlen, @function";
     "coolstrlen:";
     ".LFB7:";
-    "	.cfi_startproc";
-    "	endbr64";
-    "	pushq	%rbp";
-    "	.cfi_def_cfa_offset 16";
-    "	.cfi_offset 6, -16";
-    "	movq	%rsp, %rbp";
-    "	.cfi_def_cfa_register 6";
-    "	movq	%rdi, -24(%rbp)";
-    "	movl	$0, -4(%rbp)";
-    "	jmp	.L7";
+    "\t.cfi_startproc";
+    "\tendbr64";
+    "\tpushq\t%rbp";
+    "\t.cfi_def_cfa_offset 16";
+    "\t.cfi_offset 6, -16";
+    "\tmovq\t%rsp, %rbp";
+    "\t.cfi_def_cfa_register 6";
+    "\tmovq\t%rdi, -24(%rbp)";
+    "\tmovl\t$0, -4(%rbp)";
+    "\tjmp\t.L7";
     ".L8:";
-    "	movl	-4(%rbp), %eax";
-    "	addl	$1, %eax";
-    "	movl	%eax, -4(%rbp)";
+    "\tmovl\t-4(%rbp), %eax";
+    "\taddl\t$1, %eax";
+    "\tmovl\t%eax, -4(%rbp)";
     ".L7:";
-    "	movl	-4(%rbp), %eax";
-    "	movl	%eax, %edx";
-    "	movq	-24(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movzbl	(%rax), %eax";
-    "	testb	%al, %al";
-    "	jne	.L8";
-    "	movl	-4(%rbp), %eax";
-    "	popq	%rbp";
-    "	.cfi_def_cfa 7, 8";
-    "	ret";
-    "	.cfi_endproc";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tmovl\t%eax, %edx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovzbl\t(%rax), %eax";
+    "\ttestb\t%al, %al";
+    "\tjne\t.L8";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tpopq\t%rbp";
+    "\t.cfi_def_cfa 7, 8";
+    "\tret";
+    "\t.cfi_endproc";
     ".LFE7:";
-    "	.size	coolstrlen, .-coolstrlen";
-    "	.section	.rodata";
+    "\t.size\tcoolstrlen, .-coolstrlen";
+    "\t.section\t.rodata";
     ".LC0:";
-    "	.string	\"%s%s\"";
-    "	.text";
-    "	.globl	coolstrcat";
-    "	.type	coolstrcat, @function";
+    "\t.string\t\"%s%s\"";
+    "\t.text";
+    "\t.globl\tcoolstrcat";
+    "\t.type\tcoolstrcat, @function";
     "coolstrcat:";
     ".LFB8:";
-    "	.cfi_startproc";
-    "	endbr64";
-    "	pushq	%rbp";
-    "	.cfi_def_cfa_offset 16";
-    "	.cfi_offset 6, -16";
-    "	movq	%rsp, %rbp";
-    "	.cfi_def_cfa_register 6";
-    "	pushq	%rbx";
-    "	subq	$40, %rsp";
-    "	.cfi_offset 3, -24";
-    "	movq	%rdi, -40(%rbp)";
-    "	movq	%rsi, -48(%rbp)";
-    "	cmpq	$0, -40(%rbp)";
-    "	jne	.L11";
-    "	movq	-48(%rbp), %rax";
-    "	jmp	.L12";
+    "\t.cfi_startproc";
+    "\tendbr64";
+    "\tpushq\t%rbp";
+    "\t.cfi_def_cfa_offset 16";
+    "\t.cfi_offset 6, -16";
+    "\tmovq\t%rsp, %rbp";
+    "\t.cfi_def_cfa_register 6";
+    "\tpushq\t%rbx";
+    "\tsubq\t$40, %rsp";
+    "\t.cfi_offset 3, -24";
+    "\tmovq\t%rdi, -40(%rbp)";
+    "\tmovq\t%rsi, -48(%rbp)";
+    "\tcmpq\t$0, -40(%rbp)";
+    "\tjne\t.L11";
+    "\tmovq\t-48(%rbp), %rax";
+    "\tjmp\t.L12";
     ".L11:";
-    "	cmpq	$0, -48(%rbp)";
-    "	jne	.L13";
-    "	movq	-40(%rbp), %rax";
-    "	jmp	.L12";
+    "\tcmpq\t$0, -48(%rbp)";
+    "\tjne\t.L13";
+    "\tmovq\t-40(%rbp), %rax";
+    "\tjmp\t.L12";
     ".L13:";
-    "	movq	-40(%rbp), %rax";
-    "	movq	%rax, %rdi";
-    "	call	coolstrlen";
-    "	movl	%eax, %ebx";
-    "	movq	-48(%rbp), %rax";
-    "	movq	%rax, %rdi";
-    "	call	coolstrlen";
-    "	addl	%ebx, %eax";
-    "	addl	$1, %eax";
-    "	movl	%eax, -28(%rbp)";
-    "	movl	-28(%rbp), %eax";
-    "	cltq";
-    "	movl	$1, %esi";
-    "	movq	%rax, %rdi";
-    "	call	calloc@PLT";
-    "	movq	%rax, -24(%rbp)";
-    "	movl	-28(%rbp), %eax";
-    "	movslq	%eax, %rsi";
-    "	movq	-48(%rbp), %rcx";
-    "	movq	-40(%rbp), %rdx";
-    "	movq	-24(%rbp), %rax";
-    "	movq	%rcx, %r8";
-    "	movq	%rdx, %rcx";
-    "	leaq	.LC0(%rip), %rdx";
-    "	movq	%rax, %rdi";
-    "	movl	$0, %eax";
-    "	call	snprintf@PLT";
-    "	movq	-24(%rbp), %rax";
+    "\tmovq\t-40(%rbp), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tcoolstrlen";
+    "\tmovl\t%eax, %ebx";
+    "\tmovq\t-48(%rbp), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tcoolstrlen";
+    "\taddl\t%ebx, %eax";
+    "\taddl\t$1, %eax";
+    "\tmovl\t%eax, -28(%rbp)";
+    "\tmovl\t-28(%rbp), %eax";
+    "\tcltq";
+    "\tmovl\t$1, %esi";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tcalloc@PLT";
+    "\tmovq\t%rax, -24(%rbp)";
+    "\tmovl\t-28(%rbp), %eax";
+    "\tmovslq\t%eax, %rsi";
+    "\tmovq\t-48(%rbp), %rcx";
+    "\tmovq\t-40(%rbp), %rdx";
+    "\tmovq\t-24(%rbp), %rax";
+    "\tmovq\t%rcx, %r8";
+    "\tmovq\t%rdx, %rcx";
+    "\tleaq\t.LC0(%rip), %rdx";
+    "\tmovq\t%rax, %rdi";
+    "\tmovl\t$0, %eax";
+    "\tcall\tsnprintf@PLT";
+    "\tmovq\t-24(%rbp), %rax";
     ".L12:";
-    "	movq	-8(%rbp), %rbx";
-    "	leave";
-    "	.cfi_def_cfa 7, 8";
-    "	ret";
-    "	.cfi_endproc";
+    "\tmovq\t-8(%rbp), %rbx";
+    "\tleave";
+    "\t.cfi_def_cfa 7, 8";
+    "\tret";
+    "\t.cfi_endproc";
     ".LFE8:";
-    "	.size	coolstrcat, .-coolstrcat";
-    "	.section	.rodata";
+    "\t.size\tcoolstrcat, .-coolstrcat";
+    "\t.section\t.rodata";
     ".LC1:";
-    "	.string	\"\"";
-    "	.text";
-    "	.globl	coolgetstr";
-    "	.type	coolgetstr, @function";
+    "\t.string\t\"\"";
+    "\t.text";
+    "\t.globl\tcoolgetstr";
+    "\t.type\tcoolgetstr, @function";
     "coolgetstr:";
     ".LFB9:";
-    "	.cfi_startproc";
-    "	endbr64";
-    "	pushq	%rbp";
-    "	.cfi_def_cfa_offset 16";
-    "	.cfi_offset 6, -16";
-    "	movq	%rsp, %rbp";
-    "	.cfi_def_cfa_register 6";
-    "	subq	$16, %rsp";
-    "	movl	$1, %esi";
-    "	movl	$40960, %edi";
-    "	call	calloc@PLT";
-    "	movq	%rax, -8(%rbp)";
-    "	movl	$0, -16(%rbp)";
+    "\t.cfi_startproc";
+    "\tendbr64";
+    "\tpushq\t%rbp";
+    "\t.cfi_def_cfa_offset 16";
+    "\t.cfi_offset 6, -16";
+    "\tmovq\t%rsp, %rbp";
+    "\t.cfi_def_cfa_register 6";
+    "\tsubq\t$16, %rsp";
+    "\tmovl\t$1, %esi";
+    "\tmovl\t$40960, %edi";
+    "\tcall\tcalloc@PLT";
+    "\tmovq\t%rax, -8(%rbp)";
+    "\tmovl\t$0, -16(%rbp)";
     ".L21:";
-    "	movq	stdin(%rip), %rax";
-    "	movq	%rax, %rdi";
-    "	call	fgetc@PLT";
-    "	movl	%eax, -12(%rbp)";
-    "	cmpl	$-1, -12(%rbp)";
-    "	je	.L15";
-    "	cmpl	$10, -12(%rbp)";
-    "	jne	.L16";
+    "\tmovq\tstdin(%rip), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tfgetc@PLT";
+    "\tmovl\t%eax, -12(%rbp)";
+    "\tcmpl\t$-1, -12(%rbp)";
+    "\tje\t.L15";
+    "\tcmpl\t$10, -12(%rbp)";
+    "\tjne\t.L16";
     ".L15:";
-    "	cmpl	$0, -16(%rbp)";
-    "	je	.L17";
-    "	leaq	.LC1(%rip), %rax";
-    "	jmp	.L18";
+    "\tcmpl\t$0, -16(%rbp)";
+    "\tje\t.L17";
+    "\tleaq\t.LC1(%rip), %rax";
+    "\tjmp\t.L18";
     ".L17:";
-    "	movq	-8(%rbp), %rax";
-    "	jmp	.L18";
+    "\tmovq\t-8(%rbp), %rax";
+    "\tjmp\t.L18";
     ".L16:";
-    "	cmpl	$0, -12(%rbp)";
-    "	jne	.L19";
-    "	movl	$1, -16(%rbp)";
-    "	jmp	.L21";
+    "\tcmpl\t$0, -12(%rbp)";
+    "\tjne\t.L19";
+    "\tmovl\t$1, -16(%rbp)";
+    "\tjmp\t.L21";
     ".L19:";
-    "	movq	-8(%rbp), %rax";
-    "	movq	%rax, %rdi";
-    "	call	coolstrlen";
-    "	movl	%eax, %edx";
-    "	movq	-8(%rbp), %rax";
-    "	addq	%rdx, %rax";
-    "	movl	-12(%rbp), %edx";
-    "	movb	%dl, (%rax)";
-    "	jmp	.L21";
+    "\tmovq\t-8(%rbp), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tcoolstrlen";
+    "\tmovl\t%eax, %edx";
+    "\tmovq\t-8(%rbp), %rax";
+    "\taddq\t%rdx, %rax";
+    "\tmovl\t-12(%rbp), %edx";
+    "\tmovb\t%dl, (%rax)";
+    "\tjmp\t.L21";
     ".L18:";
-    "	leave";
-    "	.cfi_def_cfa 7, 8";
-    "	ret";
-    "	.cfi_endproc";
+    "\tleave";
+    "\t.cfi_def_cfa 7, 8";
+    "\tret";
+    "\t.cfi_endproc";
     ".LFE9:";
-    "	.size	coolgetstr, .-coolgetstr";
-    "	.globl	coolsubstr";
-    "	.type	coolsubstr, @function";
+    "\t.size\tcoolgetstr, .-coolgetstr";
+    "\t.globl\tcoolsubstr";
+    "\t.type\tcoolsubstr, @function";
     "coolsubstr:";
     ".LFB10:";
-    "	.cfi_startproc";
-    "	endbr64";
-    "	pushq	%rbp";
-    "	.cfi_def_cfa_offset 16";
-    "	.cfi_offset 6, -16";
-    "	movq	%rsp, %rbp";
-    "	.cfi_def_cfa_register 6";
-    "	subq	$48, %rsp";
-    "	movq	%rdi, -24(%rbp)";
-    "	movq	%rsi, -32(%rbp)";
-    "	movq	%rdx, -40(%rbp)";
-    "	movq	-24(%rbp), %rax";
-    "	movq	%rax, %rdi";
-    "	call	coolstrlen";
-    "	movl	%eax, -4(%rbp)";
-    "	cmpq	$0, -32(%rbp)";
-    "	js	.L23";
-    "	cmpq	$0, -40(%rbp)";
-    "	js	.L23";
-    "	movq	-32(%rbp), %rdx";
-    "	movq	-40(%rbp), %rax";
-    "	addq	%rax, %rdx";
-    "	movl	-4(%rbp), %eax";
-    "	cltq";
-    "	cmpq	%rax, %rdx";
-    "	jle	.L24";
+    "\t.cfi_startproc";
+    "\tendbr64";
+    "\tpushq\t%rbp";
+    "\t.cfi_def_cfa_offset 16";
+    "\t.cfi_offset 6, -16";
+    "\tmovq\t%rsp, %rbp";
+    "\t.cfi_def_cfa_register 6";
+    "\tsubq\t$48, %rsp";
+    "\tmovq\t%rdi, -24(%rbp)";
+    "\tmovq\t%rsi, -32(%rbp)";
+    "\tmovq\t%rdx, -40(%rbp)";
+    "\tmovq\t-24(%rbp), %rax";
+    "\tmovq\t%rax, %rdi";
+    "\tcall\tcoolstrlen";
+    "\tmovl\t%eax, -4(%rbp)";
+    "\tcmpq\t$0, -32(%rbp)";
+    "\tjs\t.L23";
+    "\tcmpq\t$0, -40(%rbp)";
+    "\tjs\t.L23";
+    "\tmovq\t-32(%rbp), %rdx";
+    "\tmovq\t-40(%rbp), %rax";
+    "\taddq\t%rax, %rdx";
+    "\tmovl\t-4(%rbp), %eax";
+    "\tcltq";
+    "\tcmpq\t%rax, %rdx";
+    "\tjle\t.L24";
     ".L23:";
-    "	movl	$0, %eax";
-    "	jmp	.L25";
+    "\tmovl\t$0, %eax";
+    "\tjmp\t.L25";
     ".L24:";
-    "	movq	-40(%rbp), %rax";
-    "	movq	-32(%rbp), %rcx";
-    "	movq	-24(%rbp), %rdx";
-    "	addq	%rcx, %rdx";
-    "	movq	%rax, %rsi";
-    "	movq	%rdx, %rdi";
-    "	call	strndup@PLT";
+    "\tmovq\t-40(%rbp), %rax";
+    "\tmovq\t-32(%rbp), %rcx";
+    "\tmovq\t-24(%rbp), %rdx";
+    "\taddq\t%rcx, %rdx";
+    "\tmovq\t%rax, %rsi";
+    "\tmovq\t%rdx, %rdi";
+    "\tcall\tstrndup@PLT";
     ".L25:";
-    "	leave";
-    "	.cfi_def_cfa 7, 8";
-    "	ret";
-    "	.cfi_endproc";
+    "\tleave";
+    "\t.cfi_def_cfa 7, 8";
+    "\tret";
+    "\t.cfi_endproc";
     ".LFE10:";
-    "	.size	coolsubstr, .-coolsubstr";
-]
+    "\t.size\tcoolsubstr, .-coolsubstr";
+  ]
+
 (* Extract basic blocks from TAC instructions *)
 let generate_basic_blocks (tac_instructions : tac_instr list) :
     (string * tac_instr list) list =
@@ -2869,50 +3102,8 @@ let main () =
       generate_vtables class_map impl_map parent_map class_order method_order
     in
 
-    (* Extract class information from TAC program (for method implementations) *)
-    let classes = extract_classes tac_program in
-
-    (* Generate method implementations *)
-    let methods_assembly =
-      List.map
-        (fun tac_instr ->
-          match extract_method_info [ tac_instr ] with
-          | Some (class_name, method_name) ->
-              (* Generate basic blocks for this method *)
-              let method_tac =
-                List.filter
-                  (fun instr ->
-                    match instr with
-                    | TAC_Label label ->
-                        String.starts_with label (class_name ^ "_" ^ method_name)
-                    | _ -> false)
-                  tac_program
-              in
-
-              let basic_blocks = generate_basic_blocks method_tac in
-
-              (* Generate method prologue *)
-              let prologue = generate_method_prologue class_name method_name in
-
-              (* Generate code for each basic block *)
-              let blocks_assembly =
-                List.concat_map
-                  (fun (block_id, block_instrs) ->
-                    [ block_id ^ ":" ]
-                    @ List.concat_map translate_tac_to_assembly block_instrs)
-                  basic_blocks
-              in
-
-              (* Generate method epilogue *)
-              let epilogue = generate_method_epilogue class_name method_name in
-
-              prologue @ blocks_assembly @ epilogue
-          | None -> [])
-        tac_program
-      |> List.concat
-    in
-
     init_string_literal_counter (List.length class_order + 2);
+    (* for string literal count*)
     (* Generate method definitions *)
     let methods =
       generate_all_method_definitions class_map impl_map parent_map class_order
@@ -2931,10 +3122,11 @@ let main () =
     in
     let string_literals = generate_data_section class_order in
 
-    let helper_functions_and_entry  = generate_helper_functions_and_entry () in
+    let helper_functions_and_entry = generate_helper_functions_and_entry () in
 
     (* Combine everything with proper ordering *)
-    vtables @ constructors @ methods @ string_literals @ helper_functions_and_entry
+    vtables @ constructors @ methods @ string_literals
+    @ helper_functions_and_entry
   in
 
   let assembly =

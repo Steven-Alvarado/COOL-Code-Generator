@@ -404,16 +404,38 @@ Main.main:           ## method definition
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
                         ## method body begins
-                        movq [TODO: named var x], -48(%rbp)
-                        movq $5, -56(%rbp)
-                        movq -48(%rbp), %r14
-                        addq -56(%rbp), %r14
-                        movq %r14, -64(%rbp)
-                        movq -64(%rbp), [TODO: named var x]
-                        movq [TODO: named var x], %r13
-                        movq $hi\n, -72(%rbp)
+                        ## Basic block: BB0
+                        movq x, %r13
+                        movq %r13, 40(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
+                        movq 40(%rbp), %rax
+                        movq 48(%rbp), %r13
+                        subq %r13, %rax
+                        movq %rax, %r13
+                        movq %r13, 56(%rbp)
+                        movq 56(%rbp), %r13
+                        movq %r13, x
+                        movq x, %r13
+                        movq %r13, %r13
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds 'hi\n'
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
                         pushq %rbp
                         pushq %r12
                         movq $out_string, %r14
@@ -739,16 +761,7 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "hi\n"
-.byte 104	# 'h'
-.byte 105	# 'i'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string9
-string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
+string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -801,7 +814,6 @@ string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 0	
 
 
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
 eq_handler:             ## helper function for =
