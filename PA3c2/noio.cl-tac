@@ -1,0 +1,16 @@
+comment start
+label Foo_foo_0
+t$1 <- x
+t$0 <- call out_int t$1
+t$2 <- y
+t$0 <- call out_string t$2
+return t$0
+comment start
+label Main_main_0
+t$3 <- string
+hi\n
+t$0 <- call out_string t$3
+t$4 <- string
+bye\n
+t$0 <- call out_string t$4
+return t$0

@@ -170,6 +170,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
+                        movq %r12, %r13
                         ## initialize attributes
                         ## self[3] holds field i (Int)
                         ## new Int
@@ -192,6 +193,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 24(%r13)
                         movq %r13, 40(%r12)
                         movq %r12, %r13
+                        ## initialize attributes
                         ## self[4] holds field x (Int)
                         ## new Int
                         pushq %rbp

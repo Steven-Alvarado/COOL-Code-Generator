@@ -501,12 +501,11 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
       ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var)
   | x -> failwith ("Unimplemented AST Node: " ^ ast_to_string x)
 
-(* IO methods copied straight from the reference compiler*)
-let generate_io_methods () =
+let generate_object_abort_method () =
   [
-    (* IO.out_string implementation *)
-    ".globl IO.out_string";
-    "IO.out_string:          ## method definition";
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl Object.abort";
+    "Object.abort:           ## method definition";
     "                        pushq %rbp";
     "                        movq %rsp, %rbp";
     "                        movq 16(%rbp), %r12";
@@ -514,22 +513,191 @@ let generate_io_methods () =
     "                        movq $16, %r14";
     "                        subq %r14, %rsp";
     "                        ## return address handling";
-    "                        ## fp[3] holds argument x (String)";
     "                        ## method body begins";
-    "                        movq 24(%rbp), %r14";
-    "                        movq 24(%r14), %r13";
+    "                        movq $string7, %r13";
     "                        ## guarantee 16-byte alignment before call";
     "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
     "\t\t\tmovq %r13, %rdi";
     "\t\t\tcall cooloutstr";
-    "                        movq %r12, %r13";
-    ".globl IO.out_string.end";
-    "IO.out_string.end:      ## method body ends";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovl $0, %edi";
+    "\t\t\tcall exit";
+    ".globl Object.abort.end";
+    "Object.abort.end:       ## method body ends";
     "                        ## return address handling";
     "                        movq %rbp, %rsp";
     "                        popq %rbp";
     "                        ret";
+  ]
+
+let generate_object_copy_method () =
+  [
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl Object.copy";
+    "Object.copy:            ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## method body begins";
+    "                        movq 8(%r12), %r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq $8, %rsi";
+    "\t\t\tmovq %r14, %rdi";
+    "\t\t\tcall calloc";
+    "\t\t\tmovq %rax, %r13";
+    "                        pushq %r13";
+    ".globl l1";
+    "l1:                     cmpq $0, %r14";
+    "\t\t\tje l2";
+    "                        movq 0(%r12), %r15";
+    "                        movq %r15, 0(%r13)";
+    "                        movq $8, %r15";
+    "                        addq %r15, %r12";
+    "                        addq %r15, %r13";
+    "                        movq $1, %r15";
+    "                        subq %r15, %r14";
+    "                        jmp l1";
+    ".globl l2";
+    "l2:                     ## done with Object.copy loop";
+    "                        popq %r13";
+    ".globl Object.copy.end";
+    "Object.copy.end:        ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_object_type_name_method () =
+  [
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl Object.type_name";
+    "Object.type_name:       ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## method body begins";
+    "                        ## new String";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $String..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        ## obtain vtable for self object";
+    "                        movq 16(%r12), %r14";
+    "                        ## look up type name at offset 0 in vtable";
+    "                        movq 0(%r14), %r14";
+    "                        movq %r14, 24(%r13)";
+    ".globl Object.type_name.end";
+    "Object.type_name.end:   ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_io_in_int_method () =
+  [
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl IO.in_int";
+    "IO.in_int:              ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## method body begins";
+    "                        ## new Int";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Int..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq %r13, %r14";
+    "                        \t\t\tmovl\t$1, %esi";
+    "\t\t\tmovl $4096, %edi";
+    "\t\t\tcall calloc";
+    "\t\t\tpushq %rax";
+    "\t\t\tmovq %rax, %rdi";
+    "\t\t\tmovq $4096, %rsi ";
+    "\t\t\tmovq stdin(%rip), %rdx";
+    "\t\t\tcall fgets ";
+    "\t\t\tpopq %rdi ";
+    "\t\t\tmovl $0, %eax";
+    "\t\t\tpushq %rax";
+    "\t\t\tmovq %rsp, %rdx";
+    "\t\t\tmovq $percent.ld, %rsi";
+    "\t\t\tcall sscanf";
+    "\t\t\tpopq %rax";
+    "\t\t\tmovq $0, %rsi ";
+    "\t\t\tcmpq $2147483647, %rax ";
+    "\t\t\tcmovg %rsi, %rax";
+    "\t\t\tcmpq $-2147483648, %rax ";
+    "\t\t\tcmovl %rsi, %rax";
+    "\t\t\tmovq %rax, %r13";
+    "                        movq %r13, 24(%r14)";
+    "                        movq %r14, %r13";
+    ".globl IO.in_int.end";
+    "IO.in_int.end:          ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_io_in_string_method () =
+  [
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl IO.in_string";
+    "IO.in_string:           ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## method body begins";
+    "                        ## new String";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $String..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq %r13, %r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tcall coolgetstr ";
+    "\t\t\tmovq %rax, %r13";
+    "                        movq %r13, 24(%r14)";
+    "                        movq %r14, %r13";
+    ".globl IO.in_string.end";
+    "IO.in_string.end:       ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_io_out_int_method () =
+  [
     (* IO.out_int implementation - similar structure *)
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
     ".globl IO.out_int";
     "IO.out_int:             ## method definition";
     "                        pushq %rbp";
@@ -554,6 +722,172 @@ let generate_io_methods () =
     "                        movq %r12, %r13";
     ".globl IO.out_int.end";
     "IO.out_int.end:         ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_io_out_string_method () =
+  [
+    (* IO.out_string implementation *)
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl IO.out_string";
+    "IO.out_string:          ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## fp[3] holds argument x (String)";
+    "                        ## method body begins";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r14), %r13";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tcall cooloutstr";
+    "                        movq %r12, %r13";
+    ".globl IO.out_string.end";
+    "IO.out_string.end:      ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_string_concat_method () =
+  [
+    "                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl String.concat";
+    "String.concat:          ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## fp[3] holds argument s (String)";
+    "                        ## method body begins";
+    "                        ## new String";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $String..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq %r13, %r15";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r14), %r14";
+    "                        movq 24(%r12), %r13";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tmovq %r14, %rsi";
+    "\t\t\tcall coolstrcat";
+    "\t\t\tmovq %rax, %r13";
+    "                        movq %r13, 24(%r15)";
+    "                        movq %r15, %r13";
+    ".globl String.concat.end";
+    "String.concat.end:      ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_string_length_method () =
+  [
+    "                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl String.length";
+    "String.length:          ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## method body begins";
+    "                        ## new Int";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Int..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq %r13, %r14";
+    "                        movq 24(%r12), %r13";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tmovl $0, %eax";
+    "\t\t\tcall coolstrlen";
+    "\t\t\tmovq %rax, %r13";
+    "                        movq %r13, 24(%r14)";
+    "                        movq %r14, %r13";
+    ".globl String.length.end";
+    "String.length.end:      ## method body ends";
+    "                        ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+  ]
+
+let generate_string_substr_method () =
+  [
+    "                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl String.substr";
+    "String.substr:          ## method definition";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 16(%rbp), %r12";
+    "                        ## stack room for temporaries: 2";
+    "                        movq $16, %r14";
+    "                        subq %r14, %rsp";
+    "                        ## return address handling";
+    "                        ## fp[4] holds argument i (Int)";
+    "                        ## fp[3] holds argument l (Int)";
+    "                        ## method body begins";
+    "                        ## new String";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $String..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq %r13, %r15";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r14), %r14";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r12), %r12";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r12, %rdi";
+    "\t\t\tmovq %r13, %rsi";
+    "\t\t\tmovq %r14, %rdx";
+    "\t\t\tcall coolsubstr";
+    "\t\t\tmovq %rax, %r13";
+    "                        cmpq $0, %r13";
+    "\t\t\tjne l3";
+    "                        movq $string9, %r13";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovq %r13, %rdi";
+    "\t\t\tcall cooloutstr";
+    "                        ## guarantee 16-byte alignment before call";
+    "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "\t\t\tmovl $0,  %edi";
+    "\t\t\tcall exit";
+    ".globl l3";
+    "l3:                     movq %r13, 24(%r15)";
+    "                        movq %r15, %r13";
+    ".globl String.substr.end";
+    "String.substr.end:      ## method body ends";
     "                        ## return address handling";
     "                        movq %rbp, %rsp";
     "                        popq %rbp";
@@ -888,6 +1222,16 @@ let translate_tac_to_assembly tac =
         ^ ", %r14";
         "                        movq %r14, " ^ reg_map dest;
       ]
+  | TAC_Assign_Minus (dest, op1, op2) ->
+      [
+        "                        movq "
+        ^ reg_map (tac_expr_to_string op1)
+        ^ ", %r14";
+        "                        addq "
+        ^ reg_map (tac_expr_to_string op2)
+        ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest;
+      ]
   | TAC_Assign_Variable (dest, src) ->
       [ "                        movq " ^ reg_map src ^ ", " ^ reg_map dest ]
   | TAC_Jump label -> [ "                        jmp " ^ label ]
@@ -930,7 +1274,6 @@ let translate_tac_to_constructor_asm tac =
         "                        popq %rbp";
         "                        movq $" ^ string_of_int value ^ ", %r14";
         "                        movq %r14, 24(%r13)";
-        "                        movq %r13, 40(%r12)";
       ]
   | TAC_Assign_String (dest, value) ->
       let str_label = register_string_literal value in
@@ -944,7 +1287,6 @@ let translate_tac_to_constructor_asm tac =
         "                        ## " ^ str_label ^ " holds '" ^ value ^ "'";
         "                        movq $" ^ str_label ^ ", %r14";
         "                        movq %r14, 24(%r13)";
-        "                        movq %r13, 40(%r12)";
       ]
   | TAC_Assign_Plus (dest, op1, op2) ->
       [
@@ -993,7 +1335,7 @@ let generate_custom_constructor class_map class_name
       "                        movq %r14, 8(%r12)";
       "                        movq $" ^ vtable_label ^ ", %r14";
       "                        movq %r14, 16(%r12)";
-      "                        ## initialize attributes";
+      "                        movq %r12, %r13";
     ]
   in
 
@@ -1005,55 +1347,63 @@ let generate_custom_constructor class_map class_name
     List.mapi
       (fun idx (attr_name, attr_type, init_opt) ->
         let offset = 24 + (idx * 8) in
+
+        (* Base initialization - create attribute object and store it *)
+        let base_init =
+          [
+            "                        ## self["
+            ^ string_of_int (idx + 3)
+            ^ "] holds field " ^ attr_name ^ " (" ^ attr_type ^ ")";
+            "                        ## new " ^ attr_type;
+            "                        pushq %rbp";
+            "                        pushq %r12";
+            "                        movq $" ^ attr_type ^ "..new, %r14";
+            "                        call *%r14";
+            "                        popq %r12";
+            "                        popq %rbp";
+            "                        movq %r13, " ^ string_of_int offset
+            ^ "(%r12)";
+          ]
+        in
+
+        (* Now handle initializers if present *)
         match init_opt with
-        | None ->
-            [
-              "                        ## self["
-              ^ string_of_int (idx + 3)
-              ^ "] holds field " ^ attr_name ^ " (" ^ attr_type ^ ")";
-              "                        ## new " ^ attr_type;
-              "                        pushq %rbp";
-              "                        pushq %r12";
-              "                        movq $" ^ attr_type ^ "..new, %r14";
-              "                        call *%r14";
-              "                        popq %r12";
-              "                        popq %rbp";
-              "                        movq %r13, " ^ string_of_int offset
-              ^ "(%r12)";
-            ]
+        | None -> base_init
         | Some expr ->
             let tac_instrs, tac_result = convert class_name "<init>" expr in
-            let init_val =
-              match expr.exp_kind with
-              | AST_String s -> s
-              | AST_Integer i -> i
-              | AST_True -> "true"
-              | AST_False -> "false"
-              | _ -> tac_expr_to_string tac_result
+
+            (* For initializers, add comment and create a new object *)
+            let init_header =
+              [
+                ("                        ## self["
+                ^ string_of_int (idx + 3)
+                ^ "] " ^ attr_name ^ " initializer <- "
+                ^
+                match expr.exp_kind with
+                | AST_String s -> s
+                | AST_Integer i -> i
+                | AST_True -> "true"
+                | AST_False -> "false"
+                | _ -> tac_expr_to_string tac_result);
+                "                         ## new " ^ attr_type;
+              ]
             in
+
+            (* Generate code for the initializer value *)
             let init_code =
               List.concat_map translate_tac_to_constructor_asm tac_instrs
             in
-            [
-              "                        ## self["
-              ^ string_of_int (idx + 3)
-              ^ "] holds field " ^ attr_name ^ " (" ^ attr_type ^ ")";
-              "                        ## new " ^ attr_type;
-              "                        pushq %rbp";
-              "                        pushq %r12";
-              "                        movq $" ^ attr_type ^ "..new, %r14";
-              "                        call *%r14";
-              "                        popq %r12";
-              "                        popq %rbp";
-              "                        movq %r13, " ^ string_of_int offset
-              ^ "(%r12)";
-              "                        ## self["
-              ^ string_of_int (idx + 3)
-              ^ "] " ^ attr_name ^ " initializer <- " ^ init_val;
-              "                        ## new " ^ attr_type;
-            ]
-            @ init_code
-            @ [ "                        movq %r12, %r13" ])
+
+            (* Store initialized object in the parent *)
+            let store_init =
+              [
+                "                        movq %r13, " ^ string_of_int offset
+                ^ "(%r12)";
+                "                        movq %r12, %r13";
+              ]
+            in
+
+            base_init @ init_header @ init_code @ store_init)
       attributes
     |> List.flatten
   in
@@ -1085,6 +1435,45 @@ let generate_constructors (class_order : string list) (class_map : class_map) =
           in
           generate_custom_constructor class_map class_name attributes)
     class_order
+
+(* Generate method definition assembly code *)
+let generate_method_definition class_name method_name params return_type body =
+  let method_label = class_name ^ "." ^ method_name in
+
+  (* Header and prologue *)
+  let header =
+    [
+      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+      ".globl " ^ method_label;
+      method_label ^ ":           ## method definition";
+      "                        pushq %rbp";
+      "                        movq %rsp, %rbp";
+      "                        movq 16(%rbp), %r12";
+      "                        ## stack room for temporaries: 2";
+      "                        movq $16, %r14";
+      "                        subq %r14, %rsp";
+      "                        ## return address handling";
+      "                        ## method body begins";
+    ]
+  in
+
+  let body_instrs, final_expr = convert class_name method_name body in
+  (* Translate the generated TAC instructions into assembly *)
+  let body_asm = List.concat_map translate_tac_to_assembly body_instrs in
+  (* Method epilogue *)
+  let epilogue =
+    [
+      ".globl " ^ method_label ^ ".end";
+      method_label ^ ".end:       ## method body ends";
+      "                        ## return address handling";
+      "                        movq %rbp, %rsp";
+      "                        popq %rbp";
+      "                        ret";
+      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ]
+  in
+
+  header @ body_asm @ epilogue
 
 (* standard prologue and epilogue for each method*)
 let generate_method_prologue class_name method_name =
@@ -1131,6 +1520,760 @@ let extract_method_info (tac_instrs : tac_instr list) : (string * string) option
   in
   find_method_label tac_instrs
 
+(* Generate all method definitions in the same order as vtables *)
+let generate_all_method_definitions class_map impl_map parent_map class_order
+    method_order =
+  (* Track which methods have already been defined to avoid duplicates *)
+  let defined_methods = Hashtbl.create 100 in
+  let rec get_all_methods class_name =
+    (* Get parent's methods first, if any *)
+    let parent_methods =
+      match Hashtbl.find_opt parent_map class_name with
+      | Some parent -> get_all_methods parent
+      | None -> []
+    in
+    (* Get methods defined directly in this class from method_order, excluding "new" *)
+    let own_methods =
+      List.filter (fun (c, m) -> c = class_name && m <> "new") method_order
+      |> List.map snd
+    in
+    (* Combine parent's methods and then append any new methods defined in this class *)
+    parent_methods
+    @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
+  in
+  (* Generate a single method definition *)
+  (* Generate a single method definition *)
+  let generate_method_definition class_name method_name =
+    let method_label = class_name ^ "." ^ method_name in
+    if Hashtbl.mem defined_methods method_label then
+      []
+    else (
+      Hashtbl.add defined_methods method_label true;
+
+      match (class_name, method_name) with
+      | "Object", "abort" -> generate_object_abort_method ()
+      | "Object", "copy" -> generate_object_copy_method ()
+      | "Object", "type_name" -> generate_object_type_name_method ()
+      | "IO", "in_int" -> generate_io_in_int_method ()
+      | "IO", "in_string" -> generate_io_in_string_method ()
+      | "IO", "out_int" -> generate_io_out_int_method ()
+      | "IO", "out_string" -> generate_io_out_string_method ()
+      | "String", "concat" -> generate_string_concat_method ()
+      | "String", "length" -> generate_string_length_method ()
+      | "String", "substr" -> generate_string_substr_method ()
+      | _ -> (
+          (* Get method implementation from impl_map *)
+          match Hashtbl.find_opt impl_map (class_name, method_name) with
+          | Some (params, return_type, defining_class, body_exp) ->
+              if class_name = defining_class then
+                (* Only generate for methods defined in this class *)
+                let body_tac, _ = convert class_name method_name body_exp in
+                let header =
+                  [
+                    "                        ## \
+                     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+                    ".globl " ^ method_label;
+                    method_label ^ ":           ## method definition";
+                    "                        pushq %rbp";
+                    "                        movq %rsp, %rbp";
+                    "                        movq 16(%rbp), %r12";
+                    (* Load 'self' from stack *)
+                    "                        ## stack room for temporaries: 2";
+                    "                        movq $16, %r14";
+                    "                        subq %r14, %rsp";
+                    "                        ## return address handling";
+                    "                        ## method body begins";
+                  ]
+                in
+
+                (* Translate the method body from TAC to assembly *)
+                let body_asm =
+                  List.concat_map translate_tac_to_assembly body_tac
+                in
+
+                let epilogue =
+                  [
+                    ".globl " ^ method_label ^ ".end";
+                    method_label ^ ".end:       ## method body ends";
+                    "                        ## return address handling";
+                    "                        movq %rbp, %rsp";
+                    "                        popq %rbp";
+                    "                        ret";
+                    "                        ## \
+                     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+                  ]
+                in
+
+                header @ body_asm @ epilogue
+              else (* Method is inherited, skip *)
+                []
+          | None -> [])
+      (* Skip undefined methods *))
+  in
+
+  (* Generate methods for each class in class_order *)
+  List.concat_map
+    (fun class_name ->
+      (* Get methods in proper order for this class *)
+      let methods = get_all_methods class_name in
+
+      (* Generate each method in order *)
+      List.concat_map
+        (fun method_name -> generate_method_definition class_name method_name)
+        methods)
+    class_order
+
+(* Track string literals and their labels *)
+let string_literal_table = ref []
+let string_literal_counter = ref 0
+
+let init_string_literal_counter n =
+  string_literal_counter := n;
+  string_literal_table := []
+
+let register_string_literal literal =
+  let label = "string" ^ string_of_int !string_literal_counter in
+  incr string_literal_counter;
+  string_literal_table := (label, literal) :: !string_literal_table;
+  label
+
+(* Generate the data section with string constants *)
+let generate_data_section (class_order : string list) : string list =
+  (* Generate class name strings *)
+  let class_name_strings =
+    List.mapi
+      (fun i cls -> (Printf.sprintf "string%d" (i + 1), cls))
+      class_order
+  in
+  (* "abort\n" from reference compiler *)
+  let abort_string =
+    let abort_num = List.length class_order + 1 in
+    [ (Printf.sprintf "string%d" abort_num, "abort\\n") ]
+  in
+
+  (* Generate standard strings that appear in all programs *)
+  let standard_strings =
+    [ ("the.empty.string", ""); ("percent.d", "%ld"); ("percent.ld", " %ld") ]
+  in
+
+  let dynamic_strings = List.rev !string_literal_table in
+  let exception_string_num =
+    match dynamic_strings with
+    | [] ->
+        List.length class_order
+        + 2 (* if no dynamic strings, comes after abort *)
+    | _ ->
+        let last_num =
+          dynamic_strings |> List.hd |> fst |> fun s ->
+          int_of_string (String.sub s 6 (String.length s - 6))
+        in
+        last_num + 1
+  in
+  let exception_string =
+    [
+      ( Printf.sprintf "string%d" exception_string_num,
+        "ERROR: 0: Exception: String.substr out of range\\n" );
+    ]
+  in
+
+  (* Function to generate assembly for a single string *)
+  let generate_string_entry (label, literal) =
+    let bytes =
+      literal |> String.to_seq
+      |> Seq.map (fun c ->
+             Printf.sprintf ".byte %d\t# '%s'" (Char.code c) (Char.escaped c))
+      |> List.of_seq
+    in
+    [
+      Printf.sprintf ".globl %s" label;
+      Printf.sprintf "%s:\t\t\t  # \"%s\"" label literal;
+    ]
+    @ bytes @ [ ".byte 0\t"; "\n" ]
+  in
+
+  (* Combine all strings in proper order *)
+  let all_strings =
+    standard_strings @ class_name_strings @ abort_string @ dynamic_strings
+    @ exception_string
+  in
+
+  [
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    "                        ## global string constants";
+    "";
+  ]
+  @ List.concat_map generate_string_entry all_strings
+  @ [ "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;" ]
+
+let generate_helper_functions_and_entry () =[
+
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl eq_handler";
+    "eq_handler:             ## helper function for =";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 32(%rbp), %r12";
+    "                        ## return address handling";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_true";
+    "                        movq $0, %r15";
+    "                        cmpq %r15, %r13";
+    "			je eq_false";
+    "                        cmpq %r15, %r14";
+    "			je eq_false";
+    "                        movq 0(%r13), %r13";
+    "                        movq 0(%r14), %r14";
+    "                        ## place the sum of the type tags in r1";
+    "                        addq %r14, %r13";
+    "                        movq $0, %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_bool";
+    "                        movq $2, %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_int";
+    "                        movq $6, %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_string";
+    "                        ## otherwise, use pointer comparison";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_true";
+    ".globl eq_false";
+    "eq_false:               ## not equal";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        jmp eq_end";
+    ".globl eq_true";
+    "eq_true:                ## equal";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq $1, %r14";
+    "                        movq %r14, 24(%r13)";
+    "                        jmp eq_end";
+    ".globl eq_bool";
+    "eq_bool:                ## two Bools";
+    ".globl eq_int";
+    "eq_int:                 ## two Ints";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        cmpq %r14, %r13";
+    "			je eq_true";
+    "                        jmp eq_false";
+    ".globl eq_string";
+    "eq_string:              ## two Strings";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "			movq %r13, %rdi";
+    "			movq %r14, %rsi";
+    "			call strcmp ";
+    "			cmp $0, %eax";
+    "			je eq_true";
+    "                        jmp eq_false";
+    ".globl eq_end";
+    "eq_end:                 ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl le_handler";
+    "le_handler:             ## helper function for <=";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 32(%rbp), %r12";
+    "                        ## return address handling";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        cmpq %r14, %r13";
+    "			je le_true";
+    "                        movq $0, %r15";
+    "                        cmpq %r15, %r13";
+    "			je le_false";
+    "                        cmpq %r15, %r14";
+    "			je le_false";
+    "                        movq 0(%r13), %r13";
+    "                        movq 0(%r14), %r14";
+    "                        ## place the sum of the type tags in r1";
+    "                        addq %r14, %r13";
+    "                        movq $0, %r14";
+    "                        cmpq %r14, %r13";
+    "			je le_bool";
+    "                        movq $2, %r14";
+    "                        cmpq %r14, %r13";
+    "			je le_int";
+    "                        movq $6, %r14";
+    "                        cmpq %r14, %r13";
+    "			je le_string";
+    "                        ## for non-primitives, equality is our only hope";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        cmpq %r14, %r13";
+    "			je le_true";
+    ".globl le_false";
+    "le_false:               ## not less-than-or-equal";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        jmp le_end";
+    ".globl le_true";
+    "le_true:                ## less-than-or-equal";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq $1, %r14";
+    "                        movq %r14, 24(%r13)";
+    "                        jmp le_end";
+    ".globl le_bool";
+    "le_bool:                ## two Bools";
+    ".globl le_int";
+    "le_int:                 ## two Ints";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        cmpl %r14d, %r13d";
+    "			jle le_true";
+    "                        jmp le_false";
+    ".globl le_string";
+    "le_string:              ## two Strings";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "			movq %r13, %rdi";
+    "			movq %r14, %rsi";
+    "			call strcmp ";
+    "			cmp $0, %eax";
+    "			jle le_true";
+    "                        jmp le_false";
+    ".globl le_end";
+    "le_end:                 ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl lt_handler";
+    "lt_handler:             ## helper function for <";
+    "                        pushq %rbp";
+    "                        movq %rsp, %rbp";
+    "                        movq 32(%rbp), %r12";
+    "                        ## return address handling";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq $0, %r15";
+    "                        cmpq %r15, %r13";
+    "			je lt_false";
+    "                        cmpq %r15, %r14";
+    "			je lt_false";
+    "                        movq 0(%r13), %r13";
+    "                        movq 0(%r14), %r14";
+    "                        ## place the sum of the type tags in r1";
+    "                        addq %r14, %r13";
+    "                        movq $0, %r14";
+    "                        cmpq %r14, %r13";
+    "			je lt_bool";
+    "                        movq $2, %r14";
+    "                        cmpq %r14, %r13";
+    "			je lt_int";
+    "                        movq $6, %r14";
+    "                        cmpq %r14, %r13";
+    "			je lt_string";
+    "                        ## for non-primitives, < is always false";
+    ".globl lt_false";
+    "lt_false:               ## not less than";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        jmp lt_end";
+    ".globl lt_true";
+    "lt_true:                ## less than";
+    "                        ## new Bool";
+    "                        pushq %rbp";
+    "                        pushq %r12";
+    "                        movq $Bool..new, %r14";
+    "                        call *%r14";
+    "                        popq %r12";
+    "                        popq %rbp";
+    "                        movq $1, %r14";
+    "                        movq %r14, 24(%r13)";
+    "                        jmp lt_end";
+    ".globl lt_bool";
+    "lt_bool:                ## two Bools";
+    ".globl lt_int";
+    "lt_int:                 ## two Ints";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        cmpl %r14d, %r13d";
+    "			jl lt_true";
+    "                        jmp lt_false";
+    ".globl lt_string";
+    "lt_string:              ## two Strings";
+    "                        movq 32(%rbp), %r13";
+    "                        movq 24(%rbp), %r14";
+    "                        movq 24(%r13), %r13";
+    "                        movq 24(%r14), %r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "			movq %r13, %rdi";
+    "			movq %r14, %rsi";
+    "			call strcmp ";
+    "			cmp $0, %eax";
+    "			jl lt_true";
+    "                        jmp lt_false";
+    ".globl lt_end";
+    "lt_end:                 ## return address handling";
+    "                        movq %rbp, %rsp";
+    "                        popq %rbp";
+    "                        ret";
+    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+    ".globl start";
+    "start:                  ## program begins here";
+    "                        .globl main";
+    "			.type main, @function";
+    "main:";
+    "                        movq $Main..new, %r14";
+    "                        pushq %rbp";
+    "                        call *%r14";
+    "                        pushq %rbp";
+    "                        pushq %r13";
+    "                        movq $Main.main, %r14";
+    "                        call *%r14";
+    "                        ## guarantee 16-byte alignment before call";
+    "			andq $0xFFFFFFFFFFFFFFF0, %rsp";
+    "			movl $0, %edi";
+    "			call exit";
+    "                        ";
+    "	.globl	cooloutstr";
+    "	.type	cooloutstr, @function";
+    "cooloutstr:";
+    ".LFB6:";
+    "	.cfi_startproc";
+    "	endbr64";
+    "	pushq	%rbp";
+    "	.cfi_def_cfa_offset 16";
+    "	.cfi_offset 6, -16";
+    "	movq	%rsp, %rbp";
+    "	.cfi_def_cfa_register 6";
+    "	subq	$32, %rsp";
+    "	movq	%rdi, -24(%rbp)";
+    "	movl	$0, -4(%rbp)";
+    "	jmp	.L2";
+    ".L5:";
+    "	movl	-4(%rbp), %eax";
+    "	movslq	%eax, %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	cmpb	$92, %al";
+    "	jne	.L3";
+    "	movl	-4(%rbp), %eax";
+    "	cltq";
+    "	leaq	1(%rax), %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	cmpb	$110, %al";
+    "	jne	.L3";
+    "	movq	stdout(%rip), %rax";
+    "	movq	%rax, %rsi";
+    "	movl	$10, %edi";
+    "	call	fputc@PLT";
+    "	addl	$2, -4(%rbp)";
+    "	jmp	.L2";
+    ".L3:";
+    "	movl	-4(%rbp), %eax";
+    "	movslq	%eax, %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	cmpb	$92, %al";
+    "	jne	.L4";
+    "	movl	-4(%rbp), %eax";
+    "	cltq";
+    "	leaq	1(%rax), %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	cmpb	$116, %al";
+    "	jne	.L4";
+    "	movq	stdout(%rip), %rax";
+    "	movq	%rax, %rsi";
+    "	movl	$9, %edi";
+    "	call	fputc@PLT";
+    "	addl	$2, -4(%rbp)";
+    "	jmp	.L2";
+    ".L4:";
+    "	movq	stdout(%rip), %rdx";
+    "	movl	-4(%rbp), %eax";
+    "	movslq	%eax, %rcx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rcx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	movsbl	%al, %eax";
+    "	movq	%rdx, %rsi";
+    "	movl	%eax, %edi";
+    "	call	fputc@PLT";
+    "	addl	$1, -4(%rbp)";
+    ".L2:";
+    "	movl	-4(%rbp), %eax";
+    "	movslq	%eax, %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	testb	%al, %al";
+    "	jne	.L5";
+    "	movq	stdout(%rip), %rax";
+    "	movq	%rax, %rdi";
+    "	call	fflush@PLT";
+    "	nop";
+    "	leave";
+    "	.cfi_def_cfa 7, 8";
+    "	ret";
+    "	.cfi_endproc";
+    ".LFE6:";
+    "	.size	cooloutstr, .-cooloutstr";
+    "	.globl	coolstrlen";
+    "	.type	coolstrlen, @function";
+    "coolstrlen:";
+    ".LFB7:";
+    "	.cfi_startproc";
+    "	endbr64";
+    "	pushq	%rbp";
+    "	.cfi_def_cfa_offset 16";
+    "	.cfi_offset 6, -16";
+    "	movq	%rsp, %rbp";
+    "	.cfi_def_cfa_register 6";
+    "	movq	%rdi, -24(%rbp)";
+    "	movl	$0, -4(%rbp)";
+    "	jmp	.L7";
+    ".L8:";
+    "	movl	-4(%rbp), %eax";
+    "	addl	$1, %eax";
+    "	movl	%eax, -4(%rbp)";
+    ".L7:";
+    "	movl	-4(%rbp), %eax";
+    "	movl	%eax, %edx";
+    "	movq	-24(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movzbl	(%rax), %eax";
+    "	testb	%al, %al";
+    "	jne	.L8";
+    "	movl	-4(%rbp), %eax";
+    "	popq	%rbp";
+    "	.cfi_def_cfa 7, 8";
+    "	ret";
+    "	.cfi_endproc";
+    ".LFE7:";
+    "	.size	coolstrlen, .-coolstrlen";
+    "	.section	.rodata";
+    ".LC0:";
+    "	.string	\"%s%s\"";
+    "	.text";
+    "	.globl	coolstrcat";
+    "	.type	coolstrcat, @function";
+    "coolstrcat:";
+    ".LFB8:";
+    "	.cfi_startproc";
+    "	endbr64";
+    "	pushq	%rbp";
+    "	.cfi_def_cfa_offset 16";
+    "	.cfi_offset 6, -16";
+    "	movq	%rsp, %rbp";
+    "	.cfi_def_cfa_register 6";
+    "	pushq	%rbx";
+    "	subq	$40, %rsp";
+    "	.cfi_offset 3, -24";
+    "	movq	%rdi, -40(%rbp)";
+    "	movq	%rsi, -48(%rbp)";
+    "	cmpq	$0, -40(%rbp)";
+    "	jne	.L11";
+    "	movq	-48(%rbp), %rax";
+    "	jmp	.L12";
+    ".L11:";
+    "	cmpq	$0, -48(%rbp)";
+    "	jne	.L13";
+    "	movq	-40(%rbp), %rax";
+    "	jmp	.L12";
+    ".L13:";
+    "	movq	-40(%rbp), %rax";
+    "	movq	%rax, %rdi";
+    "	call	coolstrlen";
+    "	movl	%eax, %ebx";
+    "	movq	-48(%rbp), %rax";
+    "	movq	%rax, %rdi";
+    "	call	coolstrlen";
+    "	addl	%ebx, %eax";
+    "	addl	$1, %eax";
+    "	movl	%eax, -28(%rbp)";
+    "	movl	-28(%rbp), %eax";
+    "	cltq";
+    "	movl	$1, %esi";
+    "	movq	%rax, %rdi";
+    "	call	calloc@PLT";
+    "	movq	%rax, -24(%rbp)";
+    "	movl	-28(%rbp), %eax";
+    "	movslq	%eax, %rsi";
+    "	movq	-48(%rbp), %rcx";
+    "	movq	-40(%rbp), %rdx";
+    "	movq	-24(%rbp), %rax";
+    "	movq	%rcx, %r8";
+    "	movq	%rdx, %rcx";
+    "	leaq	.LC0(%rip), %rdx";
+    "	movq	%rax, %rdi";
+    "	movl	$0, %eax";
+    "	call	snprintf@PLT";
+    "	movq	-24(%rbp), %rax";
+    ".L12:";
+    "	movq	-8(%rbp), %rbx";
+    "	leave";
+    "	.cfi_def_cfa 7, 8";
+    "	ret";
+    "	.cfi_endproc";
+    ".LFE8:";
+    "	.size	coolstrcat, .-coolstrcat";
+    "	.section	.rodata";
+    ".LC1:";
+    "	.string	\"\"";
+    "	.text";
+    "	.globl	coolgetstr";
+    "	.type	coolgetstr, @function";
+    "coolgetstr:";
+    ".LFB9:";
+    "	.cfi_startproc";
+    "	endbr64";
+    "	pushq	%rbp";
+    "	.cfi_def_cfa_offset 16";
+    "	.cfi_offset 6, -16";
+    "	movq	%rsp, %rbp";
+    "	.cfi_def_cfa_register 6";
+    "	subq	$16, %rsp";
+    "	movl	$1, %esi";
+    "	movl	$40960, %edi";
+    "	call	calloc@PLT";
+    "	movq	%rax, -8(%rbp)";
+    "	movl	$0, -16(%rbp)";
+    ".L21:";
+    "	movq	stdin(%rip), %rax";
+    "	movq	%rax, %rdi";
+    "	call	fgetc@PLT";
+    "	movl	%eax, -12(%rbp)";
+    "	cmpl	$-1, -12(%rbp)";
+    "	je	.L15";
+    "	cmpl	$10, -12(%rbp)";
+    "	jne	.L16";
+    ".L15:";
+    "	cmpl	$0, -16(%rbp)";
+    "	je	.L17";
+    "	leaq	.LC1(%rip), %rax";
+    "	jmp	.L18";
+    ".L17:";
+    "	movq	-8(%rbp), %rax";
+    "	jmp	.L18";
+    ".L16:";
+    "	cmpl	$0, -12(%rbp)";
+    "	jne	.L19";
+    "	movl	$1, -16(%rbp)";
+    "	jmp	.L21";
+    ".L19:";
+    "	movq	-8(%rbp), %rax";
+    "	movq	%rax, %rdi";
+    "	call	coolstrlen";
+    "	movl	%eax, %edx";
+    "	movq	-8(%rbp), %rax";
+    "	addq	%rdx, %rax";
+    "	movl	-12(%rbp), %edx";
+    "	movb	%dl, (%rax)";
+    "	jmp	.L21";
+    ".L18:";
+    "	leave";
+    "	.cfi_def_cfa 7, 8";
+    "	ret";
+    "	.cfi_endproc";
+    ".LFE9:";
+    "	.size	coolgetstr, .-coolgetstr";
+    "	.globl	coolsubstr";
+    "	.type	coolsubstr, @function";
+    "coolsubstr:";
+    ".LFB10:";
+    "	.cfi_startproc";
+    "	endbr64";
+    "	pushq	%rbp";
+    "	.cfi_def_cfa_offset 16";
+    "	.cfi_offset 6, -16";
+    "	movq	%rsp, %rbp";
+    "	.cfi_def_cfa_register 6";
+    "	subq	$48, %rsp";
+    "	movq	%rdi, -24(%rbp)";
+    "	movq	%rsi, -32(%rbp)";
+    "	movq	%rdx, -40(%rbp)";
+    "	movq	-24(%rbp), %rax";
+    "	movq	%rax, %rdi";
+    "	call	coolstrlen";
+    "	movl	%eax, -4(%rbp)";
+    "	cmpq	$0, -32(%rbp)";
+    "	js	.L23";
+    "	cmpq	$0, -40(%rbp)";
+    "	js	.L23";
+    "	movq	-32(%rbp), %rdx";
+    "	movq	-40(%rbp), %rax";
+    "	addq	%rax, %rdx";
+    "	movl	-4(%rbp), %eax";
+    "	cltq";
+    "	cmpq	%rax, %rdx";
+    "	jle	.L24";
+    ".L23:";
+    "	movl	$0, %eax";
+    "	jmp	.L25";
+    ".L24:";
+    "	movq	-40(%rbp), %rax";
+    "	movq	-32(%rbp), %rcx";
+    "	movq	-24(%rbp), %rdx";
+    "	addq	%rcx, %rdx";
+    "	movq	%rax, %rsi";
+    "	movq	%rdx, %rdi";
+    "	call	strndup@PLT";
+    ".L25:";
+    "	leave";
+    "	.cfi_def_cfa 7, 8";
+    "	ret";
+    "	.cfi_endproc";
+    ".LFE10:";
+    "	.size	coolsubstr, .-coolsubstr";
+]
 (* Extract basic blocks from TAC instructions *)
 let generate_basic_blocks (tac_instructions : tac_instr list) :
     (string * tac_instr list) list =
@@ -1185,17 +2328,6 @@ let generate_basic_blocks (tac_instructions : tac_instr list) :
   in
 
   create_blocks sorted_leaders []
-
-(* Generate data section with string constants and other data *)
-let generate_data_section () : string list =
-  [
-    ".data";
-    "string1: .asciz \"\"";
-    "percent.d: .asciz \"%d\"";
-    "percent.s: .asciz \"%s\"";
-    ".text";
-    ".globl main";
-  ]
 
 (* Extract classes and methods from the TAC program *)
 let extract_classes (tac_program : tac_instr list) : (string * string list) list
@@ -1728,7 +2860,8 @@ let main () =
   close_out fout;
   (* Main assembly generation function *)
   let generate_assembly (tac_program : tac_instr list) (class_map : class_map)
-      (impl_map : impl_map) (parent_map : parent_map) : string list =
+      (impl_map : impl_map) (parent_map : parent_map)
+      (class_order : string list) : string list =
     (* Read the class information from your input files *)
 
     (* Generate standard vtables first *)
@@ -1738,9 +2871,6 @@ let main () =
 
     (* Extract class information from TAC program (for method implementations) *)
     let classes = extract_classes tac_program in
-
-    (* Generate data section (string constants, etc.) *)
-    let data_section = generate_data_section () in
 
     (* Generate method implementations *)
     let methods_assembly =
@@ -1782,19 +2912,37 @@ let main () =
       |> List.concat
     in
 
-    init_string_literal_counter (List.length class_order + 1);
-    (* Generate IO methods (if needed) *)
-    let io_methods = generate_io_methods () in
+    init_string_literal_counter (List.length class_order + 2);
+    (* Generate method definitions *)
+    let methods =
+      generate_all_method_definitions class_map impl_map parent_map class_order
+        method_order
+    in
     let constructors = generate_constructors class_order class_map in
 
+    (* Process TAC program to collect all string literals *)
+    let _ =
+      List.map
+        (function
+          | TAC_Assign_String (_, value) ->
+              ignore (register_string_literal value)
+          | _ -> ())
+        tac_program
+    in
+    let string_literals = generate_data_section class_order in
+
+    let helper_functions_and_entry  = generate_helper_functions_and_entry () in
+
     (* Combine everything with proper ordering *)
-    vtables @ constructors @ methods_assembly @ io_methods @ data_section
+    vtables @ constructors @ methods @ string_literals @ helper_functions_and_entry
   in
 
-  let assembly = generate_assembly tac_program class_map impl_map parent_map in
+  let assembly =
+    generate_assembly tac_program class_map impl_map parent_map class_order
+  in
   let asmname = Filename.chop_extension fname ^ ".s" in
   write_assembly_file asmname assembly;
-  (* Print completion message *)
+
   Printf.printf "Generated TAC file: %s\n" tacname;
   Printf.printf "Generated assembly file: %s\n" asmname
 ;;

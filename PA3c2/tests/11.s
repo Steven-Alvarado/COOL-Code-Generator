@@ -127,7 +127,7 @@ Child..new:              ## constructor for Child
                         movq %r14, 8(%r12)
                         movq $Child..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
@@ -216,7 +216,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
@@ -272,7 +272,7 @@ Parent..new:              ## constructor for Parent
                         movq %r14, 8(%r12)
                         movq $Parent..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp

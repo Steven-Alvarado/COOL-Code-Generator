@@ -17,6 +17,8 @@
 
 shopt -s nullglob
 
+passed=0 
+
 for test in *.cl-type; do
     # Get the base name (e.g., for "foo.cl-type", base is "foo")
     base="${test%.cl-type}"
@@ -37,12 +39,12 @@ for test in *.cl-type; do
     pushd "$tmpdir" > /dev/null
 
     # Run the reference compiler on base.cl; it will generate file.s
-    ../cool --x86 "${base}.cl" || { echo "Reference compiler failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
-    mv file.s ref.s
+    ./cool --x86 "${base}.cl --out ${base}Ref"|| { echo "Reference compiler failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    mv "${base}Ref.s" ref.s
 
     # Run your code generator on base.cl-type; it will generate file.s
-    ../main.exe "${base}.cl-type" || { echo "Your code generator failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
-    mv file.s test.s
+    ./main.exe "${base}.cl-type" || { echo "Your code generator failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    mv "${base}.s" file.s
 
     # Assemble the generated assembly into executables
     gcc -o ref_exe ref.s || { echo "GCC failed for reference assembly of ${base}"; popd; rm -rf "$tmpdir"; continue; }
@@ -55,13 +57,16 @@ for test in *.cl-type; do
     # Compare outputs
     if diff -q ref.out test.out > /dev/null; then
         echo "${base}: PASS"
+        passed=passed+1
     else
         echo "${base}: FAIL"
         echo "Differences:"
         diff ref.out test.out
     fi
-
+    
     popd > /dev/null
     rm -rf "$tmpdir"
 done
+
+echo "${passed}/23 testcases passed"
 

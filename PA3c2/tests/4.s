@@ -94,7 +94,7 @@ A..new:              ## constructor for A
                         movq %r14, 8(%r12)
                         movq $A..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
@@ -122,7 +122,7 @@ B..new:              ## constructor for B
                         movq %r14, 8(%r12)
                         movq $B..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
@@ -244,7 +244,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
