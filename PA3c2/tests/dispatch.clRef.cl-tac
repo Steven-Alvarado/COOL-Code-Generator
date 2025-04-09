@@ -1,0 +1,38 @@
+comment start
+label Foo_foo_0
+jmp Foo_foo_1
+comment while-pred
+label Foo_foo_1
+t$3 <- i
+t$4 <- int 10
+t$2 <- < t$3 t$4
+t$19 <- not t$2
+bt t$19 Foo_foo_2
+bt t$2 Foo_foo_3
+comment while-join
+label Foo_foo_2
+t$1 <- default Object
+t$18 <- string
+Done\n
+jmp Foo_foo_6
+comment while-body
+label Foo_foo_3
+t$7 <- x
+t$9 <- x
+t$10 <- int 1
+t$8 <- + t$9 t$10
+t$6 <- = t$7 t$8
+t$12 <- y
+t$13 <- y
+t$11 <- = t$12 t$13
+t$15 <- i
+t$16 <- int 1
+i <- + t$15 t$16
+t$14 <- i
+t$17 <- i
+t$5 <- call out_int t$17
+jmp Foo_foo_1
+comment fcall-pre to out_string
+label Foo_foo_6
+t$0 <- call out_string t$18
+return t$0
