@@ -58,6 +58,7 @@ String..vtable:			## virtual function table for String
 						.quad String.concat
 						.quad String.length
 						.quad String.substr
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..new
 Bool..new:              ## constructor for Bool
                         pushq %rbp
@@ -261,7 +262,6 @@ String..new:            ## constructor for String
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO.in_int
 IO.in_int:              ## method definition

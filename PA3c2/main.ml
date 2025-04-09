@@ -1244,6 +1244,7 @@ let generate_internal_constructor class_name =
   match class_name with
   | "Bool" ->
       [
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
         ".globl Bool..new";
         "Bool..new:              ## constructor for Bool";
         "                        pushq %rbp";
@@ -1277,10 +1278,10 @@ let generate_internal_constructor class_name =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
   | "Int" ->
       [
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
         ".globl Int..new";
         "Int..new:               ## constructor for Int";
         "                        pushq %rbp";
@@ -1314,10 +1315,10 @@ let generate_internal_constructor class_name =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
   | "IO" ->
       [
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
         ".globl IO..new";
         "IO..new:                ## constructor for IO";
         "                        pushq %rbp";
@@ -1346,10 +1347,10 @@ let generate_internal_constructor class_name =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
   | "Object" ->
       [
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
         ".globl Object..new";
         "Object..new:            ## constructor for Object";
         "                        pushq %rbp";
@@ -1378,10 +1379,10 @@ let generate_internal_constructor class_name =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
   | "String" ->
       [
+        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
         ".globl String..new";
         "String..new:            ## constructor for String";
         "                        pushq %rbp";
@@ -1415,7 +1416,6 @@ let generate_internal_constructor class_name =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-        "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ]
   | _ -> []
 
@@ -1567,6 +1567,8 @@ let generate_custom_constructor class_map class_name
 
   let base_lines =
     [
+
+      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ".globl " ^ constructor_label;
       constructor_label ^ ":              ## constructor for " ^ class_name;
       "                        pushq %rbp";
@@ -1668,7 +1670,6 @@ let generate_custom_constructor class_map class_name
       "                        movq %rbp, %rsp";
       "                        popq %rbp";
       "                        ret";
-      "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
     ]
   in
 
