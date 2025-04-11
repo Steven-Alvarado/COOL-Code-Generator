@@ -63,6 +63,7 @@ String..vtable:			## virtual function table for String
 						.quad String.concat
 						.quad String.length
 						.quad String.substr
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl A..new
 A..new:              ## constructor for A
                         pushq %rbp
@@ -274,7 +275,6 @@ String..new:            ## constructor for String
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl A.f
 A.f:           ## method definition
                         pushq %rbp
@@ -283,9 +283,17 @@ A.f:           ## method definition
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
                         ## method body begins
-                        movq $5, -32(%rbp)
+                        ## Basic block: BB0
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
 .globl A.f.end
 A.f.end:       ## method body ends
                         ## return address handling
@@ -435,9 +443,10 @@ Main.main:           ## method definition
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
                         ## method body begins
-                        movq [TODO: named var a], -40(%rbp)
+                        ## Basic block: BB0
+                        movq a, %r13
+                        movq %r13, 32(%rbp)
                         pushq %rbp
                         pushq %r12
                         movq $f, %r14
@@ -670,9 +679,8 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
-
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
 the.empty.string:			  # ""
 .byte 0	
@@ -768,61 +776,6 @@ string8:			  # "abort\n"
 .byte 0	
 
 
-.globl string9
-string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
-.byte 69	# 'E'
-.byte 82	# 'R'
-.byte 82	# 'R'
-.byte 79	# 'O'
-.byte 82	# 'R'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 48	# '0'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 69	# 'E'
-.byte 120	# 'x'
-.byte 99	# 'c'
-.byte 101	# 'e'
-.byte 112	# 'p'
-.byte 116	# 't'
-.byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 83	# 'S'
-.byte 116	# 't'
-.byte 114	# 'r'
-.byte 105	# 'i'
-.byte 110	# 'n'
-.byte 103	# 'g'
-.byte 46	# '.'
-.byte 115	# 's'
-.byte 117	# 'u'
-.byte 98	# 'b'
-.byte 115	# 's'
-.byte 116	# 't'
-.byte 114	# 'r'
-.byte 32	# ' '
-.byte 111	# 'o'
-.byte 117	# 'u'
-.byte 116	# 't'
-.byte 32	# ' '
-.byte 111	# 'o'
-.byte 102	# 'f'
-.byte 32	# ' '
-.byte 114	# 'r'
-.byte 97	# 'a'
-.byte 110	# 'n'
-.byte 103	# 'g'
-.byte 101	# 'e'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
 eq_handler:             ## helper function for =

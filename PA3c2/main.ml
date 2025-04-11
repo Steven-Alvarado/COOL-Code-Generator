@@ -519,7 +519,38 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
       let binding_instrs = process_bindings bindings [] in
       let body_instrs, body_expr = convert current_class current_method body in
       (binding_instrs @ body_instrs, body_expr)
-  | AST_Internal s ->
+ | AST_Case (expr, case_elements) ->
+      (* Convert the case expression *)
+      let expr_instrs, expr_temp = convert current_class current_method expr in
+      
+      (* Generate a fresh variable for the case result *)
+      let result_var = fresh_variable () in
+      
+      (* Process each case branch *)
+      let (case_instrs, _) = List.fold_left (fun (instrs, idx) (id, type_name, body) ->
+        (* Generate labels for this case branch *)
+        let case_label = fresh_label in
+        let next_label = fresh_label in
+        
+        (* Convert the branch body *)
+        let body_instrs, body_temp = convert current_class current_method body in
+        
+        (* Generate instructions for this case branch *)
+        let branch_instrs = [
+
+
+        ] @ body_instrs @ [
+          TAC_Assign_Variable (result_var, tac_expr_to_string body_temp);
+
+
+        ] in
+        
+        (* Accumulate instructions and increment index *)
+        (instrs @ branch_instrs, idx + 1)
+      ) ([], 0) case_elements in
+      
+      (* Combine all instructions *)
+      (expr_instrs @ case_instrs, TAC_Variable result_var)  | AST_Internal s ->
       let new_var = fresh_variable () in
       ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var)
   | x -> failwith ("Unimplemented AST Node: " ^ ast_to_string x)
@@ -1432,11 +1463,12 @@ let reg_map var =
 
 let translate_tac_to_assembly tac =
   match tac with
-  | TAC_Comment text -> [ "                        ## " ^ text ]
-  | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
+  | TAC_Comment text ->
+      [ "                        ## " ^ text ]
+  | TAC_Label label ->
+      [ ".globl " ^ label; label ^ ":" ]
   | TAC_Assign_Int (dest, value) ->
-      [
-        "                        ## new Int";
+      [ "                        ## new Int";
         "                        pushq %rbp";
         "                        pushq %r12";
         "                        movq $Int..new, %r14";
@@ -1444,82 +1476,197 @@ let translate_tac_to_assembly tac =
         "                        popq %r12";
         "                        popq %rbp";
         "                        movq $" ^ string_of_int value ^ ", %r14";
-        "                        movq %r14, 24(%r13)";
-      ]
+        "                        movq %r14, 24(%r13)" ]
+  | TAC_Assign_Variable (dest, src) ->
+      [ "                        movq " ^ reg_map src ^ ", %r13";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Plus (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        addq %r13, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Minus (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        subq %r13, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Times (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %rax";
+        "                        imulq " ^ reg_map (tac_expr_to_string op2) ^ ", %rax";
+        "                        movq %rax, " ^ reg_map dest ]
+  | TAC_Assign_Divide (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %rax";
+        "                        cqto";
+        "                        idivq " ^ reg_map (tac_expr_to_string op2);
+        "                        movq %rax, " ^ reg_map dest ]
+  | TAC_Assign_Bool (dest, b) ->
+      [ "                        movq $" ^ (if b then "1" else "0") ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
   | TAC_Assign_String (dest, value) ->
-      let str_label = register_string_literal value in
-      [
-        "                        ## new String";
+      [ "                        ## new String";
         "                        pushq %rbp";
         "                        pushq %r12";
         "                        movq $String..new, %r14";
         "                        call *%r14";
         "                        popq %r12";
         "                        popq %rbp";
-        "                        ## " ^ str_label ^ " holds '" ^ value ^ "'";
-        "                        movq $" ^ str_label ^ ", %r14";
-        "                        movq %r14, 24(%r13)";
-      ]
-  | TAC_Assign_Plus (dest, op1, op2) ->
-      [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %r14";
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r13";
-        "                        addq %r13, %r14";
-        "                        movq %r14, " ^ reg_map dest;
-      ]
-  | TAC_Assign_Minus (dest, op1, op2) ->
-      [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %rax";
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r13";
-        "                        subq %r13, %rax";
-        "                        movq %rax, %r13";
-        "                        movq %r13, " ^ reg_map dest;
-      ]
-  | TAC_Assign_Variable (dest, src) ->
-      [
-        "                        movq " ^ reg_map src ^ ", %r13";
-        "                        movq %r13, " ^ reg_map dest;
-      ]
-  | TAC_Jump label -> [ "                        jmp " ^ label ]
-  | TAC_ConditionalJump (cond, label) ->
-      [
-        "                        cmpq $0, " ^ reg_map cond;
-        "                        je " ^ label;
-      ]
-  | TAC_Call (dest, method_name, args) ->
-      [
+        "                        ## load address of literal " ^ value;
+        "                        movq $" ^ value ^ ", %r14";
+        "                        movq %r14, 24(%r13)" ]
+  | TAC_Assign_Lt (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        setl %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Le (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        setle %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Not (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Negate (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        negq %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_IsVoid (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_New (dest, op) ->
+      [ "                        ## new object via type in op";
         "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Call (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Eq (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Binary (dest, op, arg1, arg2) ->
+      [ "                        movq " ^ reg_map arg1 ^ ", %r14";
+        "                        movq " ^ reg_map arg2 ^ ", %r13";
+        "                        ## binary op: " ^ op;
+        (match op with
+         | "add" -> "                        addq %r13, %r14"
+         | "sub" -> "                        subq %r13, %r14"
+         | "mul" -> "                        imulq %r13, %r14"
+         | "div" -> "                        cqto\n                        idivq " ^ reg_map arg2
+         | _     -> "                        ## unknown binary op")
+        ;
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Jump label ->
+      [ "                        jmp " ^ label ]
+  | TAC_ConditionalJump (cond, label) ->
+      [ "                        cmpq $0, " ^ reg_map cond;
+        "                        je " ^ label ]
+  | TAC_Return var ->
+      [ "                        movq " ^ reg_map var ^ ", %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret" ]
+  | TAC_Assign (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Call (dest, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
         "                        pushq %r12";
         "                        movq $" ^ method_name ^ ", %r14";
         "                        call *%r14";
         "                        popq %r12";
         "                        popq %rbp";
-        "                        movq %r13, " ^ reg_map dest;
-      ]
-  | TAC_Return var ->
-      [
-        "                        movq " ^ reg_map var ^ ", %r13";
-        "                        ## return address handling";
-        "                        movq %rbp, %rsp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_StaticCall (dest, obj, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ method_name ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
         "                        popq %rbp";
-        "                        ret";
-      ]
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_New (dest, type_name) ->
+      [ "                        ## new " ^ type_name;
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ type_name ^ "..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_IsVoid (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Compare (dest, op1, op2, cmp_type) ->
+      [ "                        movq " ^ reg_map op1 ^ ", %r14";
+        "                        movq " ^ reg_map op2 ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        (match cmp_type with
+         | "lt" -> "                        setl %al"
+         | "le" -> "                        setle %al"
+         | "eq" -> "                        sete %al"
+         | _    -> "                        ## unknown compare type")
+        ;
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Not (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Negate (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        negq %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_StaticCall (dest, obj, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ method_name ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Default (dest, default_val) ->
+      [ "                        movq $" ^ default_val ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]    
   | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
+
+
 
 let translate_tac_to_constructor_asm tac =
   match tac with
-  | TAC_Comment text -> [ "                        ## " ^ text ]
-  | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
+  | TAC_Comment text ->
+      [ "                        ## " ^ text ]
+  | TAC_Label label ->
+      [ ".globl " ^ label; label ^ ":" ]
   | TAC_Assign_Int (dest, value) ->
-      [
+      [ "                        ## new Int";
         "                        pushq %rbp";
         "                        pushq %r12";
         "                        movq $Int..new, %r14";
@@ -1527,33 +1674,185 @@ let translate_tac_to_constructor_asm tac =
         "                        popq %r12";
         "                        popq %rbp";
         "                        movq $" ^ string_of_int value ^ ", %r14";
-        "                        movq %r14, 24(%r13)";
-      ]
+        "                        movq %r14, 24(%r13)" ]
+  | TAC_Assign_Variable (dest, src) ->
+      [ "                        movq " ^ reg_map src ^ ", %r13";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Plus (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        addq %r13, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Minus (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        subq %r13, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Times (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %rax";
+        "                        imulq " ^ reg_map (tac_expr_to_string op2) ^ ", %rax";
+        "                        movq %rax, " ^ reg_map dest ]
+  | TAC_Assign_Divide (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %rax";
+        "                        cqto";
+        "                        idivq " ^ reg_map (tac_expr_to_string op2);
+        "                        movq %rax, " ^ reg_map dest ]
+  | TAC_Assign_Bool (dest, b) ->
+      [ "                        movq $" ^ (if b then "1" else "0") ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
   | TAC_Assign_String (dest, value) ->
-      let str_label = register_string_literal value in
-      [
+      [ "                        ## new String";
         "                        pushq %rbp";
         "                        pushq %r12";
         "                        movq $String..new, %r14";
         "                        call *%r14";
         "                        popq %r12";
         "                        popq %rbp";
-        "                        ## " ^ str_label ^ " holds '" ^ value ^ "'";
-        "                        movq $" ^ str_label ^ ", %r14";
-        "                        movq %r14, 24(%r13)";
-      ]
-  | TAC_Assign_Plus (dest, op1, op2) ->
-      [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %r14";
-        "                        addq "
-        ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r14";
-        "                        movq %r14, " ^ reg_map dest;
-      ]
-  | TAC_Assign_Variable (dest, src) ->
-      [ "                        movq " ^ reg_map src ^ ", " ^ reg_map dest ]
+        "                        ## load address of literal " ^ value;
+        "                        movq $" ^ value ^ ", %r14";
+        "                        movq %r14, 24(%r13)" ]
+  | TAC_Assign_Lt (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        setl %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Le (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        setle %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Not (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Negate (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        negq %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_IsVoid (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_New (dest, op) ->
+      [ "                        ## new object via type in op";
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Call (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_Eq (dest, op1, op2) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op1) ^ ", %r14";
+        "                        movq " ^ reg_map (tac_expr_to_string op2) ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Binary (dest, op, arg1, arg2) ->
+      [ "                        movq " ^ reg_map arg1 ^ ", %r14";
+        "                        movq " ^ reg_map arg2 ^ ", %r13";
+        "                        ## binary op: " ^ op;
+        (match op with
+         | "add" -> "                        addq %r13, %r14"
+         | "sub" -> "                        subq %r13, %r14"
+         | "mul" -> "                        imulq %r13, %r14"
+         | "div" -> "                        cqto\n                        idivq " ^ reg_map arg2
+         | _     -> "                        ## unknown binary op")
+        ;
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Jump label ->
+      [ "                        jmp " ^ label ]
+  | TAC_ConditionalJump (cond, label) ->
+      [ "                        cmpq $0, " ^ reg_map cond;
+        "                        je " ^ label ]
+  | TAC_Return var ->
+      [ "                        movq " ^ reg_map var ^ ", %r13";
+        "                        ## return address handling";
+        "                        movq %rbp, %rsp";
+        "                        popq %rbp";
+        "                        ret" ]
+  | TAC_Assign (dest, op) ->
+      [ "                        movq " ^ reg_map (tac_expr_to_string op) ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Call (dest, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ method_name ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_StaticCall (dest, obj, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ method_name ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_New (dest, type_name) ->
+      [ "                        ## new " ^ type_name;
+        "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ type_name ^ "..new, %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_IsVoid (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Compare (dest, op1, op2, cmp_type) ->
+      [ "                        movq " ^ reg_map op1 ^ ", %r14";
+        "                        movq " ^ reg_map op2 ^ ", %r13";
+        "                        cmpq %r13, %r14";
+        (match cmp_type with
+         | "lt" -> "                        setl %al"
+         | "le" -> "                        setle %al"
+         | "eq" -> "                        sete %al"
+         | _    -> "                        ## unknown compare type")
+        ;
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Not (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        cmpq $0, %r14";
+        "                        sete %al";
+        "                        movzbq %al, %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Negate (dest, op) ->
+      [ "                        movq " ^ reg_map op ^ ", %r14";
+        "                        negq %r14";
+        "                        movq %r14, " ^ reg_map dest ]
+  | TAC_Assign_StaticCall (dest, obj, method_name, args) ->
+      let args_str = String.concat ", " args in
+      [ "                        pushq %rbp";
+        "                        pushq %r12";
+        "                        movq $" ^ method_name ^ ", %r14";
+        "                        call *%r14";
+        "                        popq %r12";
+        "                        popq %rbp";
+        "                        movq %r13, " ^ reg_map dest ]
+  | TAC_Assign_Default (dest, default_val) ->
+      [ "                        movq $" ^ default_val ^ ", %r14";
+        "                        movq %r14, " ^ reg_map dest ]    
   | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
 
 (* Generate constructor for user-defined classes *)
@@ -1567,7 +1866,6 @@ let generate_custom_constructor class_map class_name
 
   let base_lines =
     [
-
       "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ".globl " ^ constructor_label;
       constructor_label ^ ":              ## constructor for " ^ class_name;
@@ -1775,168 +2073,244 @@ let extract_method_info (tac_instrs : tac_instr list) : (string * string) option
   in
   find_method_label tac_instrs
 
-let generate_all_method_definitions class_map impl_map parent_map class_order
-    method_order =
-  (* Most of your existing code would remain the same *)
+let generate_all_method_definitions class_map impl_map parent_map method_order =
+  (* defined_methods tracks which methods have been generated already *)
   let defined_methods = Hashtbl.create 100 in
-  let generate_method_definition class_name method_name =
-    let method_label = class_name ^ "." ^ method_name in
-    if Hashtbl.mem defined_methods method_label then
-      []
-    else (
-      Hashtbl.add defined_methods method_label true;
+  List.fold_left
+    (fun acc (class_name, method_name) ->
+      let method_label = class_name ^ "." ^ method_name in
+      if Hashtbl.mem defined_methods method_label then
+        acc
+        (* skip duplicate *)
+      else (
+        Hashtbl.add defined_methods method_label true;
+        let method_def =
+          match (class_name, method_name) with
+          | "Object", "abort" -> generate_object_abort_method ()
+          | "Object", "copy" -> generate_object_copy_method ()
+          | "Object", "type_name" -> generate_object_type_name_method ()
+          | "IO", "in_int" -> generate_io_in_int_method ()
+          | "IO", "in_string" -> generate_io_in_string_method ()
+          | "IO", "out_int" -> generate_io_out_int_method ()
+          | "IO", "out_string" -> generate_io_out_string_method ()
+          | "String", "concat" -> generate_string_concat_method ()
+          | "String", "length" -> generate_string_length_method ()
+          | "String", "substr" -> generate_string_substr_method ()
+          | _ -> (
+              (* For non-native methods, use your implementation map *)
+              match Hashtbl.find_opt impl_map (class_name, method_name) with
+              | Some (params, return_type, defining_class, body_exp) ->
+                  if class_name = defining_class then
+                    (* Instead of converting directly to TAC, convert to a CFG *)
+                    let cfg = method_to_cfg class_name method_name body_exp in
+                    let () = print_cfg cfg in
+                    (* Header (prologue) for the method *)
+                    let header =
+                      [
+                        "                        ## \
+                         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+                        ".globl " ^ method_label;
+                        method_label ^ ":           ## method definition";
+                        "                        pushq %rbp";
+                        "                        movq %rsp, %rbp";
+                        "                        movq 16(%rbp), %r12";
+                        "                        ## stack room for \
+                         temporaries: 2";
+                        "                        movq $16, %r14";
+                        "                        subq %r14, %rsp";
+                        "                        ## method body begins";
+                      ]
+                    in
+                    (* Generate assembly for each basic block in the CFG *)
+                    let blocks_asm =
+                      Hashtbl.fold
+                        (fun _ block acc ->
+                          let block_header =
+                            [
+                              "                        ## Basic block: "
+                              ^ block.id;
+                            ]
+                          in
+                          let block_body =
+                            List.concat_map translate_tac_to_assembly
+                              block.instructions
+                          in
+                          acc @ block_header @ block_body)
+                        cfg []
+                    in
+                    (* Epilogue for the method *)
+                    let epilogue =
+                      [
+                        ".globl " ^ method_label ^ ".end";
+                        method_label ^ ".end:       ## method body ends";
+                        "                        ## return address handling";
+                        "                        movq %rbp, %rsp";
+                        "                        popq %rbp";
+                        "                        ret";
+                        "                        ## \
+                         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+                      ]
+                    in
+                    header @ blocks_asm @ epilogue
+                  else
+                    []
+                    (* skip inherited methods *)
+              | None -> [])
+        in
+        acc @ method_def))
+    [] method_order
 
-      (* Handle native methods as before *)
-      match (class_name, method_name) with
-      | "Object", "abort" -> generate_object_abort_method ()
-      | "Object", "copy" -> generate_object_copy_method ()
-      | "Object", "type_name" -> generate_object_type_name_method ()
-      | "IO", "in_int" -> generate_io_in_int_method ()
-      | "IO", "in_string" -> generate_io_in_string_method ()
-      | "IO", "out_int" -> generate_io_out_int_method ()
-      | "IO", "out_string" -> generate_io_out_string_method ()
-      | "String", "concat" -> generate_string_concat_method ()
-      | "String", "length" -> generate_string_length_method ()
-      | "String", "substr" -> generate_string_substr_method ()
-      | _ -> (
-          match Hashtbl.find_opt impl_map (class_name, method_name) with
-          | Some (params, return_type, defining_class, body_exp) ->
-              if class_name = defining_class then
-                (* Convert to CFG instead of directly to TAC *)
-                let cfg = method_to_cfg class_name method_name body_exp in
-                let () = print_cfg cfg in
-                (* Generate assembly header *)
-                let header =
-                  [
-                    "                        ## \
-                     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-                    ".globl " ^ method_label;
-                    method_label ^ ":           ## method definition";
-                    "                        pushq %rbp";
-                    "                        movq %rsp, %rbp";
-                    "                        movq 16(%rbp), %r12";
-                    "                        ## stack room for temporaries: 2";
-                    "                        movq $16, %r14";
-                    "                        subq %r14, %rsp";
-                    "                        ## method body begins";
-                  ]
-                in
+(* Track string literals and their labels *)
+let string_literal_table = ref []
+let string_literal_counter = ref 0
 
-                (* Generate assembly for each basic block in the CFG *)
-                let blocks_asm =
-                  Hashtbl.fold
-                    (fun _ block acc ->
-                      let block_header =
-                        [
-                          "                        ## Basic block: " ^ block.id;
-                        ]
-                      in
-                      let block_body =
-                        List.concat_map translate_tac_to_assembly
-                          block.instructions
-                      in
-                      acc @ block_header @ block_body)
-                    cfg []
-                in
+let init_string_literal_counter n =
+  string_literal_counter := n;
+  string_literal_table := []
 
-                (* Generate epilogue *)
-                let epilogue =
-                  [
-                    ".globl " ^ method_label ^ ".end";
-                    method_label ^ ".end:       ## method body ends";
-                    "                        ## return address handling";
-                    "                        movq %rbp, %rsp";
-                    "                        popq %rbp";
-                    "                        ret";
-                    "                        ## \
-                     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-                  ]
-                in
+let register_string_literal literal =
+  let label = "string" ^ string_of_int !string_literal_counter in
+  incr string_literal_counter;
+  (* Prepend the new literal so that later a List.rev returns them in registration order *)
+  string_literal_table := (label, literal) :: !string_literal_table;
+  label
 
-                header @ blocks_asm @ epilogue
-              else
-                []
-          | None -> []))
+(* Function to generate assembly for a single string *)
+let generate_string_entry (label, literal) =
+  let bytes =
+    literal |> String.to_seq
+    |> Seq.map (fun c ->
+           Printf.sprintf ".byte %d\t# '%s'" (Char.code c) (Char.escaped c))
+    |> List.of_seq
   in
+  [
+    Printf.sprintf ".globl %s" label;
+    Printf.sprintf "%s:\t\t\t  # \"%s\"" label literal;
+  ]
+  @ bytes @ [ ".byte 0\t"; "\n" ]
 
-  (* Generate methods for each class in class_order *)
-  List.concat_map
-    (fun class_name ->
-      (* Get methods in proper order for this class *)
-      let methods = get_all_methods parent_map method_order class_name in
+(* Collects strings from an expression.*)
+let rec collect_strings_from_exp (e : exp) =
+  match e.exp_kind with
+  | AST_String s ->
+      [ s ]
+  | AST_Assign (_, e') -> collect_strings_from_exp e'
+  | AST_DynamicDispatch (obj, _mname, args) ->
+      collect_strings_from_exp obj
+      @ List.concat (List.map collect_strings_from_exp args)
+  | AST_StaticDispatch (obj, _tname, _mname, args) ->
+      collect_strings_from_exp obj
+      @ List.concat (List.map collect_strings_from_exp args)
+  | AST_SelfDispatch (_mname, args) ->
+      List.concat (List.map collect_strings_from_exp args)
+  | AST_If (predicate, then_branch, else_branch) ->
+      collect_strings_from_exp predicate
+      @ collect_strings_from_exp then_branch
+      @ collect_strings_from_exp else_branch
+  | AST_While (predicate, body) ->
+      collect_strings_from_exp predicate @ collect_strings_from_exp body
+  | AST_Block exprs -> List.concat (List.map collect_strings_from_exp exprs)
+  | AST_New _ -> [] (* no subexpressions to check *)
+  | AST_IsVoid e1 -> collect_strings_from_exp e1
+  | AST_Plus (e1, e2)
+  | AST_Minus (e1, e2)
+  | AST_Times (e1, e2)
+  | AST_Divide (e1, e2)
+  | AST_Lt (e1, e2)
+  | AST_Le (e1, e2)
+  | AST_Eq (e1, e2) ->
+      collect_strings_from_exp e1 @ collect_strings_from_exp e2
+  | AST_Not e1 | AST_Negate e1 -> collect_strings_from_exp e1
+  | AST_Integer _ -> [] (* not a string *)
+  | AST_Identifier _ -> [] (* not a string *)
+  | AST_True | AST_False -> [] (* booleans do not contain string literals *)
+  | AST_Let (bindings, body) ->
+      let strings_from_bindings =
+        List.concat
+          (List.map
+             (fun (_var, _type, maybe_init) ->
+               match maybe_init with
+               | Some e -> collect_strings_from_exp e
+               | None -> [])
+             bindings)
+      in
+      strings_from_bindings @ collect_strings_from_exp body
+  | AST_Case (expr, case_elements) ->
+      let strings_in_expr = collect_strings_from_exp expr in
+      let strings_in_cases =
+        List.concat
+          (List.map
+             (fun (_id, _type, e) -> collect_strings_from_exp e)
+             case_elements)
+      in
+      strings_in_expr @ strings_in_cases
+  | AST_Internal _ -> []
 
-      (* Generate each method in order *)
-      List.concat_map
-        (fun method_name -> generate_method_definition class_name method_name)
-        methods)
-    class_order
+(* Collect strings from a list of attributes.*)
+let collect_strings_from_attrs attrs =
+  List.fold_left
+    (fun acc (_, _, init) ->
+      match init with Some e -> acc @ collect_strings_from_exp e | None -> acc)
+    [] attrs
 
-(* Generate the data section with string constants *)
-let generate_data_section (class_order : string list) : string list =
-  (* Generate class name strings *)
-  let class_name_strings =
-    List.mapi
-      (fun i cls -> (Printf.sprintf "string%d" (i + 1), cls))
-      class_order
-  in
-  (* "abort\n" from reference compiler *)
-  let abort_string =
-    let abort_num = List.length class_order + 1 in
-    [ (Printf.sprintf "string%d" abort_num, "abort\\n") ]
-  in
+(* Function to generate the string literal section *)
+let generate_string_literals (class_map : class_map) class_order impl_map =
+  init_string_literal_counter 1;
 
-  (* Generate standard strings that appear in all programs *)
-  let standard_strings =
+  let base_strings =
     [ ("the.empty.string", ""); ("percent.d", "%ld"); ("percent.ld", " %ld") ]
   in
 
-  let dynamic_strings = List.rev !string_literal_table in
-  let exception_string_num =
-    match dynamic_strings with
-    | [] ->
-        List.length class_order
-        + 2 (* if no dynamic strings, comes after abort *)
-    | _ ->
-        let last_num =
-          dynamic_strings |> List.hd |> fst |> fun s ->
-          int_of_string (String.sub s 6 (String.length s - 6))
-        in
-        last_num + 1
-  in
-  let exception_string =
-    [
-      ( Printf.sprintf "string%d" exception_string_num,
-        "ERROR: 0: Exception: String.substr out of range\\n" );
-    ]
+  (* Register class names *)
+  List.iter (fun cls -> ignore (register_string_literal cls)) class_order;
+  (* Debug: print class names *)
+  Printf.eprintf "class order: ";
+  List.iter (fun cls -> Printf.eprintf "%s, " cls) class_order;
+  Printf.eprintf "\n";
+
+  (* Register strings from class attributes *)
+  Hashtbl.iter
+    (fun _ (attrs, _) ->
+      let strings = collect_strings_from_attrs attrs in
+      List.iter (fun s -> ignore (register_string_literal s)) strings)
+    class_map;
+
+  (* 4. Register abort string *)
+  ignore (register_string_literal "abort\\n");
+
+  (* 5. Register strings from methods *)
+  Hashtbl.iter
+    (fun _ (_, _, _, body) ->
+      let strings = collect_strings_from_exp body in
+      List.iter (fun s -> ignore (register_string_literal s)) strings)
+    impl_map;
+
+  (* Optional debug: print the entire string literal table *)
+  Printf.eprintf "Registered string literals:\n";
+  List.iter
+    (fun (label, literal) -> Printf.eprintf "  %s -> \"%s\"\n" label literal)
+    !string_literal_table;
+
+  (* Generate assembly output as a list of lines *)
+  let lines =
+    ref
+      [
+        "                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
+        "                       ## global string constants";
+      ]
   in
 
-  (* Function to generate assembly for a single string *)
-  let generate_string_entry (label, literal) =
-    let bytes =
-      literal |> String.to_seq
-      |> Seq.map (fun c ->
-             Printf.sprintf ".byte %d\t# '%s'" (Char.code c) (Char.escaped c))
-      |> List.of_seq
-    in
-    [
-      Printf.sprintf ".globl %s" label;
-      Printf.sprintf "%s:\t\t\t  # \"%s\"" label literal;
-    ]
-    @ bytes @ [ ".byte 0\t"; "\n" ]
-  in
+  (* Add base string entries first *)
+  List.iter
+    (fun entry -> lines := !lines @ generate_string_entry entry)
+    base_strings;
 
-  (* Combine all strings in proper order *)
-  let all_strings =
-    standard_strings @ class_name_strings @ abort_string @ dynamic_strings
-    @ exception_string
-  in
+  (* Then add all other registered strings (in registration order) *)
+  List.iter
+    (fun entry -> lines := !lines @ generate_string_entry entry)
+    (List.rev !string_literal_table);
 
-  [
-    "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-    "                        ## global string constants";
-    "";
-  ]
-  @ List.concat_map generate_string_entry all_strings
+  !lines
 
 let generate_helper_functions_and_entry () =
   [
@@ -3107,21 +3481,13 @@ let main () =
     (* for string literal count*)
     (* Generate method definitions *)
     let methods =
-      generate_all_method_definitions class_map impl_map parent_map class_order
-        method_order
+      generate_all_method_definitions class_map impl_map parent_map method_order
     in
     let constructors = generate_constructors class_order class_map in
 
-    (* Process TAC program to collect all string literals *)
-    let _ =
-      List.map
-        (function
-          | TAC_Assign_String (_, value) ->
-              ignore (register_string_literal value)
-          | _ -> ())
-        tac_program
+    let string_literals =
+      generate_string_literals class_map class_order impl_map
     in
-    let string_literals = generate_data_section class_order in
 
     let helper_functions_and_entry = generate_helper_functions_and_entry () in
 

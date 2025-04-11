@@ -433,8 +433,8 @@ Main.main:           ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds 'hi\n'
-                        movq $string8, %r14
+                        ##  holds ''
+                        movq $, %r14
                         movq %r14, 24(%r13)
                         pushq %rbp
                         pushq %r12
@@ -668,9 +668,8 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
-
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
 the.empty.string:			  # ""
 .byte 0	
@@ -761,54 +760,9 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
-.byte 69	# 'E'
-.byte 82	# 'R'
-.byte 82	# 'R'
-.byte 79	# 'O'
-.byte 82	# 'R'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 48	# '0'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 69	# 'E'
-.byte 120	# 'x'
-.byte 99	# 'c'
-.byte 101	# 'e'
-.byte 112	# 'p'
-.byte 116	# 't'
+string8:			  # "hi\n"
+.byte 104	# 'h'
 .byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 83	# 'S'
-.byte 116	# 't'
-.byte 114	# 'r'
-.byte 105	# 'i'
-.byte 110	# 'n'
-.byte 103	# 'g'
-.byte 46	# '.'
-.byte 115	# 's'
-.byte 117	# 'u'
-.byte 98	# 'b'
-.byte 115	# 's'
-.byte 116	# 't'
-.byte 114	# 'r'
-.byte 32	# ' '
-.byte 111	# 'o'
-.byte 117	# 'u'
-.byte 116	# 't'
-.byte 32	# ' '
-.byte 111	# 'o'
-.byte 102	# 'f'
-.byte 32	# ' '
-.byte 114	# 'r'
-.byte 97	# 'a'
-.byte 110	# 'n'
-.byte 103	# 'g'
-.byte 101	# 'e'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
