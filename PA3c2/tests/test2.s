@@ -1,122 +1,122 @@
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bar..vtable
-Bar..vtable:            ## virtual function table for Bar
-                        .quad string1
-                        .quad Bar..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Bazz.printh
-                        .quad Foo.doh
+Bar..vtable:			## virtual function table for Bar
+						.quad string1
+						.quad Bar..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Bazz.printh
+						.quad Foo.doh
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bazz..vtable
-Bazz..vtable:           ## virtual function table for Bazz
-                        .quad string2
-                        .quad Bazz..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Bazz.printh
-                        .quad Bazz.doh
+Bazz..vtable:			## virtual function table for Bazz
+						.quad string2
+						.quad Bazz..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Bazz.printh
+						.quad Bazz.doh
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..vtable
-Bool..vtable:           ## virtual function table for Bool
-                        .quad string3
-                        .quad Bool..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Bool..vtable:			## virtual function table for Bool
+						.quad string3
+						.quad Bool..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Foo..vtable
-Foo..vtable:            ## virtual function table for Foo
-                        .quad string4
-                        .quad Foo..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Bazz.printh
-                        .quad Foo.doh
+Foo..vtable:			## virtual function table for Foo
+						.quad string4
+						.quad Foo..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Bazz.printh
+						.quad Foo.doh
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO..vtable
-IO..vtable:             ## virtual function table for IO
-                        .quad string5
-                        .quad IO..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
+IO..vtable:			## virtual function table for IO
+						.quad string5
+						.quad IO..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Int..vtable
-Int..vtable:            ## virtual function table for Int
-                        .quad string6
-                        .quad Int..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Int..vtable:			## virtual function table for Int
+						.quad string6
+						.quad Int..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main..vtable
-Main..vtable:           ## virtual function table for Main
-                        .quad string7
-                        .quad Main..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Main.main
+Main..vtable:			## virtual function table for Main
+						.quad string7
+						.quad Main..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
-Object..vtable:         ## virtual function table for Object
-                        .quad string8
-                        .quad Object..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Object..vtable:			## virtual function table for Object
+						.quad string8
+						.quad Object..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Razz..vtable
-Razz..vtable:           ## virtual function table for Razz
-                        .quad string9
-                        .quad Razz..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Bazz.printh
-                        .quad Foo.doh
+Razz..vtable:			## virtual function table for Razz
+						.quad string9
+						.quad Razz..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Bazz.printh
+						.quad Foo.doh
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String..vtable
-String..vtable:         ## virtual function table for String
-                        .quad string10
-                        .quad String..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad String.concat
-                        .quad String.length
-                        .quad String.substr
+String..vtable:			## virtual function table for String
+						.quad string10
+						.quad String..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad String.concat
+						.quad String.length
+						.quad String.substr
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bar..new
-Bar..new:               ## constructor for Bar
+Bar..new:              ## constructor for Bar
                         pushq %rbp
                         movq %rsp, %rbp
                         ## stack room for temporaries: 2
@@ -124,20 +124,20 @@ Bar..new:               ## constructor for Bar
                         subq %r14, %rsp
                         ## return address handling
                         movq $12, %r12
-                        ## guarantee 16-byte alignment before call
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
-                        movq $10, %r14
+			## store class tag, object size and vtable pointer
+                        movq $99, %r14
                         movq %r14, 0(%r12)
                         movq $12, %r14
                         movq %r14, 8(%r12)
                         movq $Bar..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## self[3] holds field h (Int)
                         ## new Int
                         pushq %rbp
@@ -147,49 +147,8 @@ Bar..new:               ## constructor for Bar
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field g (Foo)
-                        movq $0, %r13
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field i (Object)
-                        movq $0, %r13
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field a (Razz)
-                        movq $0, %r13
-                        movq %r13, 48(%r12)
-                        ## self[7] holds field b (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 56(%r12)
-                        ## self[8] holds field e (Bar)
-                        movq $0, %r13
-                        movq %r13, 64(%r12)
-                        ## self[9] holds field f (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 72(%r12)
-                        ## self[10] holds field c (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 80(%r12)
-                        ## self[11] holds field d (Object)
-                        movq $0, %r13
-                        movq %r13, 88(%r12)
                         ## self[3] h initializer <- 1
+                         ## new Int
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -200,73 +159,8 @@ Bar..new:               ## constructor for Bar
                         movq $1, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] g initializer <- case self ...
-                        ## case expression begins
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l1
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Bazz will jump to l2
-                        ## case Razz will jump to l3
-                        ## case Foo will jump to l4
-                        ## case Bar will jump to l5
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l5
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l2
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l6
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l4
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l6
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l6
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l6
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l6
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l3
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l6
-.globl l6
-l6:                     ## case expression: error case
-                        movq $string11, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l1
-l1:                     ## case expression: void case
-                        movq $string12, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l2
-l2:                     ## fp[0] holds case n (Bazz)
+                        ## self[4] holds field g (Foo)
                         ## new Foo
                         pushq %rbp
                         pushq %r12
@@ -274,125 +168,66 @@ l2:                     ## fp[0] holds case n (Bazz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l7
-.globl l3
-l3:                     ## fp[0] holds case n (Razz)
-                        ## new Bar
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bar..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l7
-.globl l4
-l4:                     ## fp[0] holds case n (Foo)
-                        ## new Razz
-                        pushq %rbp
-                        pushq %r12
-                        movq $Razz..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l7
-.globl l5
-l5:                     ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l7
-.globl l7
-l7:                     ## case expression ends
                         movq %r13, 32(%r12)
-                        ## self[5] i initializer <- printh(...)
-                        ## printh(...)
-                        pushq %r12
+                        ## self[4] g initializer <- t$30
+                         ## new Foo
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
+                        movq $Foo, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq %r13, 40(%r12)
-                        ## self[6] a initializer <- case self ...
-                        ## case expression begins
+                        popq %rbp
+                        movq %r13, 248(%rbp)
+                        movq 248(%rbp), %r13
+                        movq %r13, 240(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bar, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 256(%rbp)
+                        movq 256(%rbp), %r13
+                        movq %r13, 240(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 264(%rbp)
+                        movq 264(%rbp), %r13
+                        movq %r13, 240(%rbp)
+                        movq n, %r13
+                        movq %r13, 272(%rbp)
+                        movq 272(%rbp), %r13
+                        movq %r13, 240(%rbp)
+                        movq %r13, 32(%r12)
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l8
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Razz will jump to l9
-                        ## case Foo will jump to l10
-                        ## case Bar will jump to l11
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l11
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l10
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l12
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l9
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l12
-.globl l12
-l12:                    ## case expression: error case
-                        movq $string13, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l8
-l8:                     ## case expression: void case
-                        movq $string14, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l9
-l9:                     ## fp[0] holds case n (Razz)
-                        ## new Bar
+                        ## self[5] holds field i (Object)
+                        ## new Object
                         pushq %rbp
                         pushq %r12
-                        movq $Bar..new, %r14
+                        movq $Object..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l13
-.globl l10
-l10:                    ## fp[0] holds case n (Foo)
+                        movq %r13, 40(%r12)
+                        ## self[5] i initializer <- t$0
+                         ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, 40(%r12)
+                        movq %r12, %r13
+                        ## self[6] holds field a (Razz)
                         ## new Razz
                         pushq %rbp
                         pushq %r12
@@ -400,203 +235,93 @@ l10:                    ## fp[0] holds case n (Foo)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l13
-.globl l11
-l11:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l13
-.globl l13
-l13:                    ## case expression ends
                         movq %r13, 48(%r12)
-                        ## self[7] b initializer <- a.doh(...) + g.doh(...) + doh(...) + printh(...)
-                        ## a.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## a
-                        movq 48(%r12), %r13
-                        cmpq $0, %r13
-			jne l14
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l14
-l14:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Razz
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## g.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## g
-                        movq 32(%r12), %r13
-                        cmpq $0, %r13
-			jne l15
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l15
-l15:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Foo
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
+                        ## self[6] a initializer <- t$35
+                         ## new Razz
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bar, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## doh(...)
-                        pushq %r12
+                        movq %r13, 288(%rbp)
+                        movq 288(%rbp), %r13
+                        movq %r13, 280(%rbp)
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $Razz, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## printh(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 56(%r12)
-                        ## self[8] e initializer <- case self ...
-                        ## case expression begins
+                        movq %r13, 296(%rbp)
+                        movq 296(%rbp), %r13
+                        movq %r13, 280(%rbp)
+                        movq n, %r13
+                        movq %r13, 304(%rbp)
+                        movq 304(%rbp), %r13
+                        movq %r13, 280(%rbp)
+                        movq %r13, 48(%r12)
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l16
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Razz will jump to l17
-                        ## case Bar will jump to l18
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l18
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l19
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l17
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l19
-.globl l19
-l19:                    ## case expression: error case
-                        movq $string16, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l16
-l16:                    ## case expression: void case
-                        movq $string17, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l17
-l17:                    ## fp[0] holds case n (Razz)
+                        ## self[7] holds field b (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 56(%r12)
+                        ## self[7] b initializer <- t$43
+                         ## new Int
+                        movq a, %r13
+                        movq %r13, 312(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq g, %r13
+                        movq %r13, 320(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 328(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 328(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 336(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 336(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 344(%rbp)
+                        movq %r13, 56(%r12)
+                        movq %r12, %r13
+                        ## self[8] holds field e (Bar)
                         ## new Bar
                         pushq %rbp
                         pushq %r12
@@ -604,74 +329,26 @@ l17:                    ## fp[0] holds case n (Razz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l20
-.globl l18
-l18:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l20
-.globl l20
-l20:                    ## case expression ends
                         movq %r13, 64(%r12)
-                        ## self[9] f initializer <- a@Bazz.doh(...) + g.doh(...) + e.doh(...) + doh(...) + printh(...)
-                        ## a@Bazz.doh(...)
-                        pushq %r12
+                        ## self[8] e initializer <- t$44
+                         ## new Bar
+                        ## new object via type in op
                         pushq %rbp
-                        ## a
-                        movq 48(%r12), %r13
-                        cmpq $0, %r13
-			jne l21
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l21
-l21:                    pushq %r13
-                        ## obtain vtable for class Bazz
-                        movq $Bazz..vtable, %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## g.doh(...)
                         pushq %r12
-                        pushq %rbp
-                        ## g
-                        movq 32(%r12), %r13
-                        cmpq $0, %r13
-			jne l22
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l22
-l22:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Foo
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
+                        movq $Bar, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
+                        popq %rbp
+                        movq %r13, 360(%rbp)
+                        movq 360(%rbp), %r13
+                        movq %r13, 352(%rbp)
+                        movq n, %r13
+                        movq %r13, 368(%rbp)
+                        movq 368(%rbp), %r13
+                        movq %r13, 352(%rbp)
+                        movq %r13, 64(%r12)
+                        movq %r12, %r13
+                        ## self[9] holds field f (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -679,131 +356,106 @@ l22:                    pushq %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## e.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## e
-                        movq 64(%r12), %r13
-                        cmpq $0, %r13
-			jne l23
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l23
-l23:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Bar
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## printh(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
                         movq %r13, 72(%r12)
-                        ## self[10] c initializer <- doh(...)
-                        ## doh(...)
-                        pushq %r12
+                        ## self[9] f initializer <- t$54
+                         ## new Int
+                        movq a, %r13
+                        movq %r13, 376(%rbp)
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
+                        movq $doh, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq %r13, 384(%rbp)
+                        movq g, %r13
+                        movq %r13, 392(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 384(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 400(%rbp)
+                        movq e, %r13
+                        movq %r13, 408(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 400(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 416(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 416(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 424(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 424(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 432(%rbp)
+                        movq %r13, 72(%r12)
+                        movq %r12, %r13
+                        ## self[10] holds field c (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
                         movq %r13, 80(%r12)
-                        ## self[11] d initializer <- printh(...)
-                        ## printh(...)
-                        pushq %r12
+                        ## self[10] c initializer <- t$0
+                         ## new Int
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
+                        movq $doh, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, 80(%r12)
+                        movq %r12, %r13
+                        ## self[11] holds field d (Object)
+                        ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $Object..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 88(%r12)
+                        ## self[11] d initializer <- t$0
+                         ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
                         movq %r13, 88(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -820,20 +472,20 @@ Bazz..new:              ## constructor for Bazz
                         subq %r14, %rsp
                         ## return address handling
                         movq $6, %r12
-                        ## guarantee 16-byte alignment before call
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
-                        movq $11, %r14
+			## store class tag, object size and vtable pointer
+                        movq $99, %r14
                         movq %r14, 0(%r12)
                         movq $6, %r14
                         movq %r14, 8(%r12)
                         movq $Bazz..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## self[3] holds field h (Int)
                         ## new Int
                         pushq %rbp
@@ -843,13 +495,8 @@ Bazz..new:              ## constructor for Bazz
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field g (Foo)
-                        movq $0, %r13
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field i (Object)
-                        movq $0, %r13
-                        movq %r13, 40(%r12)
                         ## self[3] h initializer <- 1
+                         ## new Int
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -860,73 +507,8 @@ Bazz..new:              ## constructor for Bazz
                         movq $1, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] g initializer <- case self ...
-                        ## case expression begins
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l24
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Bazz will jump to l25
-                        ## case Razz will jump to l26
-                        ## case Foo will jump to l27
-                        ## case Bar will jump to l28
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l28
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l25
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l29
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l27
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l29
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l29
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l29
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l29
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l26
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l29
-.globl l29
-l29:                    ## case expression: error case
-                        movq $string11, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l24
-l24:                    ## case expression: void case
-                        movq $string12, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l25
-l25:                    ## fp[0] holds case n (Bazz)
+                        ## self[4] holds field g (Foo)
                         ## new Foo
                         pushq %rbp
                         pushq %r12
@@ -934,48 +516,63 @@ l25:                    ## fp[0] holds case n (Bazz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l30
-.globl l26
-l26:                    ## fp[0] holds case n (Razz)
-                        ## new Bar
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bar..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l30
-.globl l27
-l27:                    ## fp[0] holds case n (Foo)
-                        ## new Razz
-                        pushq %rbp
-                        pushq %r12
-                        movq $Razz..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l30
-.globl l28
-l28:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l30
-.globl l30
-l30:                    ## case expression ends
                         movq %r13, 32(%r12)
-                        ## self[5] i initializer <- printh(...)
-                        ## printh(...)
-                        pushq %r12
+                        ## self[4] g initializer <- t$56
+                         ## new Foo
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Bazz
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
+                        movq $Foo, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq %r13, 456(%rbp)
+                        movq 456(%rbp), %r13
+                        movq %r13, 448(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bar, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 464(%rbp)
+                        movq 464(%rbp), %r13
+                        movq %r13, 448(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 472(%rbp)
+                        movq 472(%rbp), %r13
+                        movq %r13, 448(%rbp)
+                        movq n, %r13
+                        movq %r13, 480(%rbp)
+                        movq 480(%rbp), %r13
+                        movq %r13, 448(%rbp)
+                        movq %r13, 32(%r12)
+                        movq %r12, %r13
+                        ## self[5] holds field i (Object)
+                        ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $Object..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 40(%r12)
+                        ## self[5] i initializer <- t$0
+                         ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
                         movq %r13, 40(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -1017,7 +614,7 @@ Bool..new:              ## constructor for Bool
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Foo..new
-Foo..new:               ## constructor for Foo
+Foo..new:              ## constructor for Foo
                         pushq %rbp
                         movq %rsp, %rbp
                         ## stack room for temporaries: 2
@@ -1025,20 +622,20 @@ Foo..new:               ## constructor for Foo
                         subq %r14, %rsp
                         ## return address handling
                         movq $8, %r12
-                        ## guarantee 16-byte alignment before call
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
-                        movq $12, %r14
+			## store class tag, object size and vtable pointer
+                        movq $99, %r14
                         movq %r14, 0(%r12)
                         movq $8, %r14
                         movq %r14, 8(%r12)
                         movq $Foo..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## self[3] holds field h (Int)
                         ## new Int
                         pushq %rbp
@@ -1048,25 +645,8 @@ Foo..new:               ## constructor for Foo
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field g (Foo)
-                        movq $0, %r13
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field i (Object)
-                        movq $0, %r13
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field a (Razz)
-                        movq $0, %r13
-                        movq %r13, 48(%r12)
-                        ## self[7] holds field b (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 56(%r12)
                         ## self[3] h initializer <- 1
+                         ## new Int
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1077,73 +657,8 @@ Foo..new:               ## constructor for Foo
                         movq $1, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] g initializer <- case self ...
-                        ## case expression begins
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l31
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Bazz will jump to l32
-                        ## case Razz will jump to l33
-                        ## case Foo will jump to l34
-                        ## case Bar will jump to l35
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l35
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l32
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l36
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l34
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l36
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l36
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l36
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l36
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l33
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l36
-.globl l36
-l36:                    ## case expression: error case
-                        movq $string11, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l31
-l31:                    ## case expression: void case
-                        movq $string12, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l32
-l32:                    ## fp[0] holds case n (Bazz)
+                        ## self[4] holds field g (Foo)
                         ## new Foo
                         pushq %rbp
                         pushq %r12
@@ -1151,125 +666,66 @@ l32:                    ## fp[0] holds case n (Bazz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l37
-.globl l33
-l33:                    ## fp[0] holds case n (Razz)
-                        ## new Bar
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bar..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l37
-.globl l34
-l34:                    ## fp[0] holds case n (Foo)
-                        ## new Razz
-                        pushq %rbp
-                        pushq %r12
-                        movq $Razz..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l37
-.globl l35
-l35:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l37
-.globl l37
-l37:                    ## case expression ends
                         movq %r13, 32(%r12)
-                        ## self[5] i initializer <- printh(...)
-                        ## printh(...)
-                        pushq %r12
+                        ## self[4] g initializer <- t$62
+                         ## new Foo
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Foo
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
+                        movq $Foo, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq %r13, 40(%r12)
-                        ## self[6] a initializer <- case self ...
-                        ## case expression begins
+                        popq %rbp
+                        movq %r13, 504(%rbp)
+                        movq 504(%rbp), %r13
+                        movq %r13, 496(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bar, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 512(%rbp)
+                        movq 512(%rbp), %r13
+                        movq %r13, 496(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 520(%rbp)
+                        movq 520(%rbp), %r13
+                        movq %r13, 496(%rbp)
+                        movq n, %r13
+                        movq %r13, 528(%rbp)
+                        movq 528(%rbp), %r13
+                        movq %r13, 496(%rbp)
+                        movq %r13, 32(%r12)
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l38
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Razz will jump to l39
-                        ## case Foo will jump to l40
-                        ## case Bar will jump to l41
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l41
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l40
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l42
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l39
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l42
-.globl l42
-l42:                    ## case expression: error case
-                        movq $string13, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l38
-l38:                    ## case expression: void case
-                        movq $string14, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l39
-l39:                    ## fp[0] holds case n (Razz)
-                        ## new Bar
+                        ## self[5] holds field i (Object)
+                        ## new Object
                         pushq %rbp
                         pushq %r12
-                        movq $Bar..new, %r14
+                        movq $Object..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l43
-.globl l40
-l40:                    ## fp[0] holds case n (Foo)
+                        movq %r13, 40(%r12)
+                        ## self[5] i initializer <- t$0
+                         ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, 40(%r12)
+                        movq %r12, %r13
+                        ## self[6] holds field a (Razz)
                         ## new Razz
                         pushq %rbp
                         pushq %r12
@@ -1277,74 +733,36 @@ l40:                    ## fp[0] holds case n (Foo)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l43
-.globl l41
-l41:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l43
-.globl l43
-l43:                    ## case expression ends
                         movq %r13, 48(%r12)
-                        ## self[7] b initializer <- a.doh(...) + g.doh(...) + doh(...) + printh(...)
-                        ## a.doh(...)
-                        pushq %r12
+                        ## self[6] a initializer <- t$67
+                         ## new Razz
+                        ## new object via type in op
                         pushq %rbp
-                        ## a
-                        movq 48(%r12), %r13
-                        cmpq $0, %r13
-			jne l44
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l44
-l44:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Razz
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## g.doh(...)
                         pushq %r12
-                        pushq %rbp
-                        ## g
-                        movq 32(%r12), %r13
-                        cmpq $0, %r13
-			jne l45
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l45
-l45:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Foo
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
+                        movq $Bar, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
+                        popq %rbp
+                        movq %r13, 544(%rbp)
+                        movq 544(%rbp), %r13
+                        movq %r13, 536(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 552(%rbp)
+                        movq 552(%rbp), %r13
+                        movq %r13, 536(%rbp)
+                        movq n, %r13
+                        movq %r13, 560(%rbp)
+                        movq 560(%rbp), %r13
+                        movq %r13, 536(%rbp)
+                        movq %r13, 48(%r12)
+                        movq %r12, %r13
+                        ## self[7] holds field b (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1352,62 +770,53 @@ l45:                    pushq %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## doh(...)
-                        pushq %r12
+                        movq %r13, 56(%r12)
+                        ## self[7] b initializer <- t$75
+                         ## new Int
+                        movq a, %r13
+                        movq %r13, 568(%rbp)
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Foo
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $doh, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## printh(...)
-                        pushq %r12
+                        movq %r13, %r13
+                        movq g, %r13
+                        movq %r13, 576(%rbp)
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Foo
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $doh, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
+                        movq %r13, %r13
+                        movq %r13, %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 584(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 584(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 592(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 592(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 600(%rbp)
                         movq %r13, 56(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -1431,7 +840,7 @@ IO..new:                ## constructor for IO
 			call calloc
 			movq %rax, %r12
                         ## store class tag, object size and vtable pointer
-                        movq $13, %r14
+                        movq $10, %r14
                         movq %r14, 0(%r12)
                         movq $3, %r14
                         movq %r14, 8(%r12)
@@ -1485,33 +894,21 @@ Main..new:              ## constructor for Main
                         subq %r14, %rsp
                         ## return address handling
                         movq $7, %r12
-                        ## guarantee 16-byte alignment before call
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
-                        movq $14, %r14
+			## store class tag, object size and vtable pointer
+                        movq $11, %r14
                         movq %r14, 0(%r12)
                         movq $7, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## self[3] holds field a (Bazz)
-                        movq $0, %r13
-                        movq %r13, 24(%r12)
-                        ## self[4] holds field b (Foo)
-                        movq $0, %r13
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field c (Razz)
-                        movq $0, %r13
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field d (Bar)
-                        movq $0, %r13
-                        movq %r13, 48(%r12)
-                        ## self[3] a initializer <- new Bazz
                         ## new Bazz
                         pushq %rbp
                         pushq %r12
@@ -1520,7 +917,19 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] b initializer <- new Foo
+                        ## self[3] a initializer <- t$76
+                         ## new Bazz
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bazz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 608(%rbp)
+                        movq %r13, 24(%r12)
+                        movq %r12, %r13
+                        ## self[4] holds field b (Foo)
                         ## new Foo
                         pushq %rbp
                         pushq %r12
@@ -1529,7 +938,19 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 32(%r12)
-                        ## self[5] c initializer <- new Razz
+                        ## self[4] b initializer <- t$77
+                         ## new Foo
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Foo, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 616(%rbp)
+                        movq %r13, 32(%r12)
+                        movq %r12, %r13
+                        ## self[5] holds field c (Razz)
                         ## new Razz
                         pushq %rbp
                         pushq %r12
@@ -1538,7 +959,19 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 40(%r12)
-                        ## self[6] d initializer <- new Bar
+                        ## self[5] c initializer <- t$78
+                         ## new Razz
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 624(%rbp)
+                        movq %r13, 40(%r12)
+                        movq %r12, %r13
+                        ## self[6] holds field d (Bar)
                         ## new Bar
                         pushq %rbp
                         pushq %r12
@@ -1546,6 +979,17 @@ Main..new:              ## constructor for Main
                         call *%r14
                         popq %r12
                         popq %rbp
+                        movq %r13, 48(%r12)
+                        ## self[6] d initializer <- t$79
+                         ## new Bar
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bar, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 632(%rbp)
                         movq %r13, 48(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -1569,7 +1013,7 @@ Object..new:            ## constructor for Object
 			call calloc
 			movq %rax, %r12
                         ## store class tag, object size and vtable pointer
-                        movq $15, %r14
+                        movq $12, %r14
                         movq %r14, 0(%r12)
                         movq $3, %r14
                         movq %r14, 8(%r12)
@@ -1590,20 +1034,20 @@ Razz..new:              ## constructor for Razz
                         subq %r14, %rsp
                         ## return address handling
                         movq $10, %r12
-                        ## guarantee 16-byte alignment before call
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
-                        movq $16, %r14
+			## store class tag, object size and vtable pointer
+                        movq $99, %r14
                         movq %r14, 0(%r12)
                         movq $10, %r14
                         movq %r14, 8(%r12)
                         movq $Razz..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
+                        movq %r12, %r13
                         ## self[3] holds field h (Int)
                         ## new Int
                         pushq %rbp
@@ -1613,37 +1057,8 @@ Razz..new:              ## constructor for Razz
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field g (Foo)
-                        movq $0, %r13
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field i (Object)
-                        movq $0, %r13
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field a (Razz)
-                        movq $0, %r13
-                        movq %r13, 48(%r12)
-                        ## self[7] holds field b (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 56(%r12)
-                        ## self[8] holds field e (Bar)
-                        movq $0, %r13
-                        movq %r13, 64(%r12)
-                        ## self[9] holds field f (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 72(%r12)
                         ## self[3] h initializer <- 1
+                         ## new Int
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1654,73 +1069,8 @@ Razz..new:              ## constructor for Razz
                         movq $1, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] g initializer <- case self ...
-                        ## case expression begins
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l46
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Bazz will jump to l47
-                        ## case Razz will jump to l48
-                        ## case Foo will jump to l49
-                        ## case Bar will jump to l50
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l50
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l47
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l51
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l49
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l51
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l51
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l51
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l51
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l48
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l51
-.globl l51
-l51:                    ## case expression: error case
-                        movq $string11, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l46
-l46:                    ## case expression: void case
-                        movq $string12, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l47
-l47:                    ## fp[0] holds case n (Bazz)
+                        ## self[4] holds field g (Foo)
                         ## new Foo
                         pushq %rbp
                         pushq %r12
@@ -1728,125 +1078,66 @@ l47:                    ## fp[0] holds case n (Bazz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l52
-.globl l48
-l48:                    ## fp[0] holds case n (Razz)
-                        ## new Bar
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bar..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l52
-.globl l49
-l49:                    ## fp[0] holds case n (Foo)
-                        ## new Razz
-                        pushq %rbp
-                        pushq %r12
-                        movq $Razz..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        jmp l52
-.globl l50
-l50:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l52
-.globl l52
-l52:                    ## case expression ends
                         movq %r13, 32(%r12)
-                        ## self[5] i initializer <- printh(...)
-                        ## printh(...)
-                        pushq %r12
+                        ## self[4] g initializer <- t$81
+                         ## new Foo
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Razz
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
+                        movq $Foo, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq %r13, 40(%r12)
-                        ## self[6] a initializer <- case self ...
-                        ## case expression begins
+                        popq %rbp
+                        movq %r13, 656(%rbp)
+                        movq 656(%rbp), %r13
+                        movq %r13, 648(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bar, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 664(%rbp)
+                        movq 664(%rbp), %r13
+                        movq %r13, 648(%rbp)
+                        ## new object via type in op
+                        pushq %rbp
+                        pushq %r12
+                        movq $Razz, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 672(%rbp)
+                        movq 672(%rbp), %r13
+                        movq %r13, 648(%rbp)
+                        movq n, %r13
+                        movq %r13, 680(%rbp)
+                        movq 680(%rbp), %r13
+                        movq %r13, 648(%rbp)
+                        movq %r13, 32(%r12)
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l53
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Razz will jump to l54
-                        ## case Foo will jump to l55
-                        ## case Bar will jump to l56
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l56
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l55
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l57
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l54
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l57
-.globl l57
-l57:                    ## case expression: error case
-                        movq $string13, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l53
-l53:                    ## case expression: void case
-                        movq $string14, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l54
-l54:                    ## fp[0] holds case n (Razz)
-                        ## new Bar
+                        ## self[5] holds field i (Object)
+                        ## new Object
                         pushq %rbp
                         pushq %r12
-                        movq $Bar..new, %r14
+                        movq $Object..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l58
-.globl l55
-l55:                    ## fp[0] holds case n (Foo)
+                        movq %r13, 40(%r12)
+                        ## self[5] i initializer <- t$0
+                         ## new Object
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, 40(%r12)
+                        movq %r12, %r13
+                        ## self[6] holds field a (Razz)
                         ## new Razz
                         pushq %rbp
                         pushq %r12
@@ -1854,203 +1145,93 @@ l55:                    ## fp[0] holds case n (Foo)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l58
-.globl l56
-l56:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l58
-.globl l58
-l58:                    ## case expression ends
                         movq %r13, 48(%r12)
-                        ## self[7] b initializer <- a.doh(...) + g.doh(...) + doh(...) + printh(...)
-                        ## a.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## a
-                        movq 48(%r12), %r13
-                        cmpq $0, %r13
-			jne l59
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l59
-l59:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Razz
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## g.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## g
-                        movq 32(%r12), %r13
-                        cmpq $0, %r13
-			jne l60
-                        movq $string15, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l60
-l60:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Foo
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
+                        ## self[6] a initializer <- t$86
+                         ## new Razz
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bar, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## doh(...)
-                        pushq %r12
+                        movq %r13, 696(%rbp)
+                        movq 696(%rbp), %r13
+                        movq %r13, 688(%rbp)
+                        ## new object via type in op
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Razz
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $Razz, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## printh(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Razz
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 56(%r12)
-                        ## self[8] e initializer <- case self ...
-                        ## case expression begins
+                        movq %r13, 704(%rbp)
+                        movq 704(%rbp), %r13
+                        movq %r13, 688(%rbp)
+                        movq n, %r13
+                        movq %r13, 712(%rbp)
+                        movq 712(%rbp), %r13
+                        movq %r13, 688(%rbp)
+                        movq %r13, 48(%r12)
                         movq %r12, %r13
-                        cmpq $0, %r13
-			je l61
-                        movq %r13, 0(%rbp)
-                        movq 0(%r13), %r13
-                        ## case Razz will jump to l62
-                        ## case Bar will jump to l63
-                        ## case expression: compare type tags
-                        movq $10, %r14
-                        cmpq %r14, %r13
-			je l63
-                        movq $11, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $0, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $12, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $13, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $1, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $14, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $15, %r14
-                        cmpq %r14, %r13
-			je l64
-                        movq $16, %r14
-                        cmpq %r14, %r13
-			je l62
-                        movq $3, %r14
-                        cmpq %r14, %r13
-			je l64
-.globl l64
-l64:                    ## case expression: error case
-                        movq $string16, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l61
-l61:                    ## case expression: void case
-                        movq $string17, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-                        ## case expression: branches
-.globl l62
-l62:                    ## fp[0] holds case n (Razz)
+                        ## self[7] holds field b (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 56(%r12)
+                        ## self[7] b initializer <- t$94
+                         ## new Int
+                        movq a, %r13
+                        movq %r13, 720(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq g, %r13
+                        movq %r13, 728(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 736(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 736(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 744(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 744(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 752(%rbp)
+                        movq %r13, 56(%r12)
+                        movq %r12, %r13
+                        ## self[8] holds field e (Bar)
                         ## new Bar
                         pushq %rbp
                         pushq %r12
@@ -2058,74 +1239,26 @@ l62:                    ## fp[0] holds case n (Razz)
                         call *%r14
                         popq %r12
                         popq %rbp
-                        jmp l65
-.globl l63
-l63:                    ## fp[0] holds case n (Bar)
-                        ## n
-                        movq 0(%rbp), %r13
-                        jmp l65
-.globl l65
-l65:                    ## case expression ends
                         movq %r13, 64(%r12)
-                        ## self[9] f initializer <- a@Bazz.doh(...) + g.doh(...) + e.doh(...) + doh(...) + printh(...)
-                        ## a@Bazz.doh(...)
-                        pushq %r12
+                        ## self[8] e initializer <- t$95
+                         ## new Bar
+                        ## new object via type in op
                         pushq %rbp
-                        ## a
-                        movq 48(%r12), %r13
-                        cmpq $0, %r13
-			jne l66
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l66
-l66:                    pushq %r13
-                        ## obtain vtable for class Bazz
-                        movq $Bazz..vtable, %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## g.doh(...)
                         pushq %r12
-                        pushq %rbp
-                        ## g
-                        movq 32(%r12), %r13
-                        cmpq $0, %r13
-			jne l67
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l67
-l67:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Foo
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
+                        movq $Bar, %r14
                         call *%r14
-                        addq $8, %rsp
-                        popq %rbp
                         popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
+                        popq %rbp
+                        movq %r13, 768(%rbp)
+                        movq 768(%rbp), %r13
+                        movq %r13, 760(%rbp)
+                        movq n, %r13
+                        movq %r13, 776(%rbp)
+                        movq 776(%rbp), %r13
+                        movq %r13, 760(%rbp)
+                        movq %r13, 64(%r12)
+                        movq %r12, %r13
+                        ## self[9] holds field f (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2133,103 +1266,66 @@ l67:                    pushq %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## e.doh(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## e
-                        movq 64(%r12), %r13
-                        cmpq $0, %r13
-			jne l68
-                        movq $string18, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl l68
-l68:                    pushq %r13
-                        ## obtain vtable from object in r1 with static type Bar
-                        movq 16(%r13), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
+                        movq %r13, 72(%r12)
+                        ## self[9] f initializer <- t$105
+                         ## new Int
+                        movq a, %r13
+                        movq %r13, 784(%rbp)
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $doh, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## doh(...)
-                        pushq %r12
+                        movq %r13, 792(%rbp)
+                        movq g, %r13
+                        movq %r13, 800(%rbp)
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Razz
-                        movq 16(%r12), %r14
-                        ## look up doh() at offset 10 in vtable
-                        movq 80(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $doh, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## printh(...)
-                        pushq %r12
+                        movq %r13, %r13
+                        movq 792(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 808(%rbp)
+                        movq e, %r13
+                        movq %r13, 816(%rbp)
                         pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Razz
-                        movq 16(%r12), %r14
-                        ## look up printh() at offset 9 in vtable
-                        movq 72(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $doh, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
+                        movq %r13, %r13
+                        movq 808(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 824(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $doh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 824(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 832(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $printh, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq 832(%rbp), %r14
+                        movq %r13, %r13
+                        addq %r13, %r14
+                        movq %r14, 840(%rbp)
                         movq %r13, 72(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -2279,17 +1375,8 @@ Object.abort:           ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
-                        movq $string19, %r13
+                        movq $string7, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -2314,15 +1401,6 @@ Object.copy:            ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
                         movq 8(%r12), %r14
                         ## guarantee 16-byte alignment before call
@@ -2332,9 +1410,9 @@ Object.copy:            ## method definition
 			call calloc
 			movq %rax, %r13
                         pushq %r13
-.globl l69
-l69:                    cmpq $0, %r14
-			je l70
+.globl l1
+l1:                     cmpq $0, %r14
+			je l2
                         movq 0(%r12), %r15
                         movq %r15, 0(%r13)
                         movq $8, %r15
@@ -2342,9 +1420,9 @@ l69:                    cmpq $0, %r14
                         addq %r15, %r13
                         movq $1, %r15
                         subq %r15, %r14
-                        jmp l69
-.globl l70
-l70:                    ## done with Object.copy loop
+                        jmp l1
+.globl l2
+l2:                     ## done with Object.copy loop
                         popq %r13
 .globl Object.copy.end
 Object.copy.end:        ## method body ends
@@ -2362,15 +1440,6 @@ Object.type_name:       ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -2400,15 +1469,6 @@ IO.in_int:              ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
                         ## new Int
                         pushq %rbp
@@ -2457,15 +1517,6 @@ IO.in_string:           ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -2497,15 +1548,6 @@ IO.out_int:             ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## fp[3] holds argument x (Int)
                         ## method body begins
                         movq 24(%rbp), %r14
@@ -2535,15 +1577,6 @@ IO.out_string:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## fp[3] holds argument x (String)
                         ## method body begins
                         movq 24(%rbp), %r14
@@ -2561,39 +1594,24 @@ IO.out_string.end:      ## method body ends
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bazz.printh
-Bazz.printh:            ## method definition
+Bazz.printh:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
-                        ## out_int(...)
-                        pushq %r12
+                        ## Basic block: BB0
+                        movq h, %r13
+                        movq %r13, 120(%rbp)
                         pushq %rbp
-                        ## h
-                        movq 24(%r12), %r13
-                        pushq %r13
                         pushq %r12
-                        ## obtain vtable for self object of type Bar
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
+                        movq $out_int, %r14
                         call *%r14
-                        addq $16, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq %r13, %r13
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2604,39 +1622,29 @@ Bazz.printh:            ## method definition
                         movq $0, %r14
                         movq %r14, 24(%r13)
 .globl Bazz.printh.end
-Bazz.printh.end:        ## method body ends
+Bazz.printh.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Foo.doh
-Foo.doh:                ## method definition
+Foo.doh:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 4
-                        movq $32, %r14
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
-                        ## self[6] holds field a (Razz)
-                        ## self[7] holds field b (Int)
-                        ## self[8] holds field e (Bar)
-                        ## self[9] holds field f (Int)
-                        ## self[10] holds field c (Int)
-                        ## self[11] holds field d (Object)
                         ## method body begins
-                        ## fp[0] holds local i (Int)
-                        ## h
-                        movq 24(%r12), %r13
-                        movq %r13, 0(%rbp)
-                        ## h
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
+                        ## Basic block: BB0
+                        movq h, %r13
+                        movq %r13, 136(%rbp)
+                        movq 136(%rbp), %r13
+                        movq %r13, i
+                        movq h, %r13
+                        movq %r13, 144(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2646,50 +1654,40 @@ Foo.doh:                ## method definition
                         popq %rbp
                         movq $2, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -8(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        ## i
-                        movq 0(%rbp), %r13
+                        movq 144(%rbp), %r14
+                        movq 152(%rbp), %r13
+                        addq %r13, %r14
+                        movq %r14, 160(%rbp)
+                        movq 160(%rbp), %r13
+                        movq %r13, h
+                        movq h, %r13
+                        movq %r13, %r13
+                        movq i, %r13
+                        movq %r13, 168(%rbp)
 .globl Foo.doh.end
-Foo.doh.end:            ## method body ends
+Foo.doh.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bazz.doh
-Bazz.doh:               ## method definition
+Bazz.doh:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 4
-                        movq $32, %r14
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
-                        ## self[3] holds field h (Int)
-                        ## self[4] holds field g (Foo)
-                        ## self[5] holds field i (Object)
                         ## method body begins
-                        ## fp[0] holds local i (Int)
-                        ## h
-                        movq 24(%r12), %r13
-                        movq %r13, 0(%rbp)
-                        ## h
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
+                        ## Basic block: BB0
+                        movq h, %r13
+                        movq %r13, 176(%rbp)
+                        movq 176(%rbp), %r13
+                        movq %r13, i
+                        movq h, %r13
+                        movq %r13, 184(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2699,46 +1697,34 @@ Bazz.doh:               ## method definition
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -8(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        ## i
-                        movq 0(%rbp), %r13
+                        movq 184(%rbp), %r14
+                        movq 192(%rbp), %r13
+                        addq %r13, %r14
+                        movq %r14, 200(%rbp)
+                        movq 200(%rbp), %r13
+                        movq %r13, h
+                        movq h, %r13
+                        movq %r13, %r13
+                        movq i, %r13
+                        movq %r13, 208(%rbp)
 .globl Bazz.doh.end
-Bazz.doh.end:           ## method body ends
+Bazz.doh.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
-Main.main:              ## method definition
+Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
-                        ## return address handling
-                        ## self[3] holds field a (Bazz)
-                        ## self[4] holds field b (Foo)
-                        ## self[5] holds field c (Razz)
-                        ## self[6] holds field d (Bar)
                         ## method body begins
-                        ## out_string(...)
-                        pushq %r12
-                        pushq %rbp
+                        ## Basic block: BB0
                         ## new String
                         pushq %rbp
                         pushq %r12
@@ -2746,19 +1732,16 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string20 holds "\n"
-                        movq $string20, %r14
+                        ## load address of literal \n
+                        movq $\n, %r14
                         movq %r14, 24(%r13)
-                        pushq %r13
+                        pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
+                        movq $out_string, %r14
                         call *%r14
-                        addq $16, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq %r13, %r13
                         ## new String
                         pushq %rbp
                         pushq %r12
@@ -2766,16 +1749,17 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string21 holds "do nothing"
-                        movq $string21, %r14
+                        ## load address of literal do nothing
+                        movq $do nothing, %r14
                         movq %r14, 24(%r13)
 .globl Main.main.end
-Main.main.end:          ## method body ends
+Main.main.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
                         pushq %rbp
@@ -2812,7 +1796,7 @@ String.concat.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.length
 String.length:          ## method definition
                         pushq %rbp
@@ -2846,7 +1830,7 @@ String.length.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.substr
 String.substr:          ## method definition
                         pushq %rbp
@@ -2880,18 +1864,18 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l71
-                        movq $string22, %r13
+			jne l3
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
 			call cooloutstr
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
+			movl $0,  %edi
 			call exit
-.globl l71
-l71:                    movq %r13, 24(%r15)
+.globl l3
+l3:                     movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -2899,563 +1883,152 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
-the.empty.string:       # ""
-.byte 0
+the.empty.string:			  # ""
+.byte 0	
+
 
 .globl percent.d
-percent.d:              # "%ld"
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.d:			  # "%ld"
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl percent.ld
-percent.ld:             # " %ld"
-.byte  32 # ' '
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.ld:			  # " %ld"
+.byte 32	# ' '
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl string1
-string1:                # "Bar"
-.byte  66 # 'B'
-.byte  97 # 'a'
-.byte 114 # 'r'
-.byte 0
+string1:			  # "Bar"
+.byte 66	# 'B'
+.byte 97	# 'a'
+.byte 114	# 'r'
+.byte 0	
+
 
 .globl string2
-string2:                # "Bazz"
-.byte  66 # 'B'
-.byte  97 # 'a'
-.byte 122 # 'z'
-.byte 122 # 'z'
-.byte 0
+string2:			  # "Bazz"
+.byte 66	# 'B'
+.byte 97	# 'a'
+.byte 122	# 'z'
+.byte 122	# 'z'
+.byte 0	
+
 
 .globl string3
-string3:                # "Bool"
-.byte  66 # 'B'
-.byte 111 # 'o'
-.byte 111 # 'o'
-.byte 108 # 'l'
-.byte 0
+string3:			  # "Bool"
+.byte 66	# 'B'
+.byte 111	# 'o'
+.byte 111	# 'o'
+.byte 108	# 'l'
+.byte 0	
+
 
 .globl string4
-string4:                # "Foo"
-.byte  70 # 'F'
-.byte 111 # 'o'
-.byte 111 # 'o'
-.byte 0
+string4:			  # "Foo"
+.byte 70	# 'F'
+.byte 111	# 'o'
+.byte 111	# 'o'
+.byte 0	
+
 
 .globl string5
-string5:                # "IO"
-.byte  73 # 'I'
-.byte  79 # 'O'
-.byte 0
+string5:			  # "IO"
+.byte 73	# 'I'
+.byte 79	# 'O'
+.byte 0	
+
 
 .globl string6
-string6:                # "Int"
-.byte  73 # 'I'
-.byte 110 # 'n'
-.byte 116 # 't'
-.byte 0
+string6:			  # "Int"
+.byte 73	# 'I'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string7
-string7:                # "Main"
-.byte  77 # 'M'
-.byte  97 # 'a'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 0
+string7:			  # "Main"
+.byte 77	# 'M'
+.byte 97	# 'a'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string8
-string8:                # "Object"
-.byte  79 # 'O'
-.byte  98 # 'b'
-.byte 106 # 'j'
-.byte 101 # 'e'
-.byte  99 # 'c'
-.byte 116 # 't'
-.byte 0
+string8:			  # "Object"
+.byte 79	# 'O'
+.byte 98	# 'b'
+.byte 106	# 'j'
+.byte 101	# 'e'
+.byte 99	# 'c'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string9
-string9:                # "Razz"
-.byte  82 # 'R'
-.byte  97 # 'a'
-.byte 122 # 'z'
-.byte 122 # 'z'
-.byte 0
+string9:			  # "Razz"
+.byte 82	# 'R'
+.byte 97	# 'a'
+.byte 122	# 'z'
+.byte 122	# 'z'
+.byte 0	
+
 
 .globl string10
-string10:               # "String"
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 0
+string10:			  # "String"
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 0	
+
 
 .globl string11
-string11:               # "ERROR: 39: Exception: case without matching branch\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  51 # '3'
-.byte  57 # '9'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 119 # 'w'
-.byte 105 # 'i'
-.byte 116 # 't'
-.byte 104 # 'h'
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 109 # 'm'
-.byte  97 # 'a'
-.byte 116 # 't'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  32 # ' '
-.byte  98 # 'b'
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string11:			  # "abort\n"
+.byte 97	# 'a'
+.byte 98	# 'b'
+.byte 111	# 'o'
+.byte 114	# 'r'
+.byte 116	# 't'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string12
-string12:               # "ERROR: 39: Exception: case on void\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  51 # '3'
-.byte  57 # '9'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  32 # ' '
-.byte 118 # 'v'
-.byte 111 # 'o'
-.byte 105 # 'i'
-.byte 100 # 'd'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string12:			  # "\n"
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string13
-string13:               # "ERROR: 4: Exception: case without matching branch\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  52 # '4'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 119 # 'w'
-.byte 105 # 'i'
-.byte 116 # 't'
-.byte 104 # 'h'
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 109 # 'm'
-.byte  97 # 'a'
-.byte 116 # 't'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  32 # ' '
-.byte  98 # 'b'
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string13:			  # "do nothing"
+.byte 100	# 'd'
+.byte 111	# 'o'
+.byte 32	# ' '
+.byte 110	# 'n'
+.byte 111	# 'o'
+.byte 116	# 't'
+.byte 104	# 'h'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 0	
 
-.globl string14
-string14:               # "ERROR: 4: Exception: case on void\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  52 # '4'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  32 # ' '
-.byte 118 # 'v'
-.byte 111 # 'o'
-.byte 105 # 'i'
-.byte 100 # 'd'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string15
-string15:               # "ERROR: 10: Exception: dispatch on void\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  49 # '1'
-.byte  48 # '0'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte 100 # 'd'
-.byte 105 # 'i'
-.byte 115 # 's'
-.byte 112 # 'p'
-.byte  97 # 'a'
-.byte 116 # 't'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  32 # ' '
-.byte 118 # 'v'
-.byte 111 # 'o'
-.byte 105 # 'i'
-.byte 100 # 'd'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string16
-string16:               # "ERROR: 26: Exception: case without matching branch\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  50 # '2'
-.byte  54 # '6'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 119 # 'w'
-.byte 105 # 'i'
-.byte 116 # 't'
-.byte 104 # 'h'
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 109 # 'm'
-.byte  97 # 'a'
-.byte 116 # 't'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  32 # ' '
-.byte  98 # 'b'
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string17
-string17:               # "ERROR: 26: Exception: case on void\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  50 # '2'
-.byte  54 # '6'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  99 # 'c'
-.byte  97 # 'a'
-.byte 115 # 's'
-.byte 101 # 'e'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  32 # ' '
-.byte 118 # 'v'
-.byte 111 # 'o'
-.byte 105 # 'i'
-.byte 100 # 'd'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string18
-string18:               # "ERROR: 31: Exception: dispatch on void\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  51 # '3'
-.byte  49 # '1'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte 100 # 'd'
-.byte 105 # 'i'
-.byte 115 # 's'
-.byte 112 # 'p'
-.byte  97 # 'a'
-.byte 116 # 't'
-.byte  99 # 'c'
-.byte 104 # 'h'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  32 # ' '
-.byte 118 # 'v'
-.byte 111 # 'o'
-.byte 105 # 'i'
-.byte 100 # 'd'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string19
-string19:               # "abort\\n"
-.byte  97 # 'a'
-.byte  98 # 'b'
-.byte 111 # 'o'
-.byte 114 # 'r'
-.byte 116 # 't'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string20
-string20:               # "\\n"
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string21
-string21:               # "do nothing"
-.byte 100 # 'd'
-.byte 111 # 'o'
-.byte  32 # ' '
-.byte 110 # 'n'
-.byte 111 # 'o'
-.byte 116 # 't'
-.byte 104 # 'h'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 0
-
-.globl string22
-string22:               # "ERROR: 0: Exception: String.substr out of range\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  48 # '0'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  46 # '.'
-.byte 115 # 's'
-.byte 117 # 'u'
-.byte  98 # 'b'
-.byte 115 # 's'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 102 # 'f'
-.byte  32 # ' '
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 101 # 'e'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
 
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
@@ -4023,4 +2596,3 @@ coolsubstr:
 	.cfi_endproc
 .LFE10:
 	.size	coolsubstr, .-coolsubstr
-

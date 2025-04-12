@@ -282,6 +282,100 @@ String..new:            ## constructor for String
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object.abort
+Object.abort:           ## method definition
+                        pushq %rbp
+                        movq %rsp, %rbp
+                        movq 16(%rbp), %r12
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
+                        subq %r14, %rsp
+                        ## return address handling
+                        ## method body begins
+                        movq $string7, %r13
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movq %r13, %rdi
+			call cooloutstr
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movl $0, %edi
+			call exit
+.globl Object.abort.end
+Object.abort.end:       ## method body ends
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object.copy
+Object.copy:            ## method definition
+                        pushq %rbp
+                        movq %rsp, %rbp
+                        movq 16(%rbp), %r12
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
+                        subq %r14, %rsp
+                        ## return address handling
+                        ## method body begins
+                        movq 8(%r12), %r14
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movq $8, %rsi
+			movq %r14, %rdi
+			call calloc
+			movq %rax, %r13
+                        pushq %r13
+.globl l1
+l1:                     cmpq $0, %r14
+			je l2
+                        movq 0(%r12), %r15
+                        movq %r15, 0(%r13)
+                        movq $8, %r15
+                        addq %r15, %r12
+                        addq %r15, %r13
+                        movq $1, %r15
+                        subq %r15, %r14
+                        jmp l1
+.globl l2
+l2:                     ## done with Object.copy loop
+                        popq %r13
+.globl Object.copy.end
+Object.copy.end:        ## method body ends
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object.type_name
+Object.type_name:       ## method definition
+                        pushq %rbp
+                        movq %rsp, %rbp
+                        movq 16(%rbp), %r12
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
+                        subq %r14, %rsp
+                        ## return address handling
+                        ## method body begins
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## obtain vtable for self object
+                        movq 16(%r12), %r14
+                        ## look up type name at offset 0 in vtable
+                        movq 0(%r14), %r14
+                        movq %r14, 24(%r13)
+.globl Object.type_name.end
+Object.type_name.end:   ## method body ends
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO.in_int
 IO.in_int:              ## method definition
                         pushq %rbp
@@ -507,100 +601,6 @@ Main.main.end:       ## method body ends
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.abort
-Object.abort:           ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        movq $string7, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl Object.abort.end
-Object.abort.end:       ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.copy
-Object.copy:            ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        movq 8(%r12), %r14
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq $8, %rsi
-			movq %r14, %rdi
-			call calloc
-			movq %rax, %r13
-                        pushq %r13
-.globl l1
-l1:                     cmpq $0, %r14
-			je l2
-                        movq 0(%r12), %r15
-                        movq %r15, 0(%r13)
-                        movq $8, %r15
-                        addq %r15, %r12
-                        addq %r15, %r13
-                        movq $1, %r15
-                        subq %r15, %r14
-                        jmp l1
-.globl l2
-l2:                     ## done with Object.copy loop
-                        popq %r13
-.globl Object.copy.end
-Object.copy.end:        ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.type_name
-Object.type_name:       ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## obtain vtable for self object
-                        movq 16(%r12), %r14
-                        ## look up type name at offset 0 in vtable
-                        movq 0(%r14), %r14
-                        movq %r14, 24(%r13)
-.globl Object.type_name.end
-Object.type_name.end:   ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
                          ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
