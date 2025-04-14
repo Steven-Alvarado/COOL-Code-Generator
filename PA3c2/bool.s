@@ -1,63 +1,59 @@
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..vtable
-Bool..vtable:           ## virtual function table for Bool
-                        .quad string1
-                        .quad Bool..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Bool..vtable:			## virtual function table for Bool
+						.quad string1
+						.quad Bool..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO..vtable
-IO..vtable:             ## virtual function table for IO
-                        .quad string2
-                        .quad IO..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
+IO..vtable:			## virtual function table for IO
+						.quad string2
+						.quad IO..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Int..vtable
-Int..vtable:            ## virtual function table for Int
-                        .quad string3
-                        .quad Int..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Int..vtable:			## virtual function table for Int
+						.quad string3
+						.quad Int..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main..vtable
-Main..vtable:           ## virtual function table for Main
-                        .quad string4
-                        .quad Main..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Main.main
+Main..vtable:			## virtual function table for Main
+						.quad string4
+						.quad Main..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
-Object..vtable:         ## virtual function table for Object
-                        .quad string5
-                        .quad Object..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Object..vtable:			## virtual function table for Object
+						.quad string5
+						.quad Object..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String..vtable
-String..vtable:         ## virtual function table for String
-                        .quad string6
-                        .quad String..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad String.concat
-                        .quad String.length
-                        .quad String.substr
+String..vtable:			## virtual function table for String
+						.quad string6
+						.quad String..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad String.concat
+						.quad String.length
+						.quad String.substr
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..new
 Bool..new:              ## constructor for Bool
@@ -161,40 +157,42 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $6, %r12
-                        ## guarantee 16-byte alignment before call
+                        movq $5, %r12
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
+			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $6, %r14
+                        movq $5, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
+                        movq %r12, %r13
                         ## initialize attributes
-                        ## self[3] holds field x (Int)
-                        ## new Int
+                        ## self[3] holds field istrue (Bool)
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field y (String)
-                        ## new String
+                        ## initialize attributes
+                        ## self[4] holds field x (Int)
+                        ## new Int
                         pushq %rbp
                         pushq %r12
-                        movq $String..new, %r14
+                        movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
                         movq %r13, 32(%r12)
-                        ## self[5] holds field z (Int)
+                        ## self[3] istrue initializer <- t$6
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -202,31 +200,63 @@ Main..new:              ## constructor for Main
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq %r13, 40(%r12)
-                        ## self[3] x initializer <- 5
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
+                        movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 8(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 8(%rbp)
+                        ## comparing t$4 < t$5
+                        movq 8(%rbp), %r13
+                        movq %r13, -8(%rbp)
+                        movq 8(%rbp), %r13
+                        movq -8(%rbp), %r14
+                        cmpq %r13, %r14
+                        setl %al
+                        movzbq %al, %r13
+                        movq %r13, 8(%rbp)
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer <- "hi\n"
-                        ## new String
+                        ## self[4] x initializer <- t$9
+                        ## new Int
                         pushq %rbp
                         pushq %r12
-                        movq $String..new, %r14
+                        movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string7 holds "hi\n"
-                        movq $string7, %r14
+                        movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 8(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 8(%rbp)
+                        ## multiplying t$7 and t$8
+                        movq 8(%rbp), %r13
+                        movq %r13, 0(%rbp)
+                        movq 8(%rbp), %r13
+                        movq 0(%rbp), %rax
+                        imulq %r13, %rax
+                        movq %rax, %r13
+                        movq %r13, 8(%rbp)
                         movq %r13, 32(%r12)
-                        ## self[5] z initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -304,7 +334,7 @@ Object.abort:           ## method definition
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
-                        movq $string8, %r13
+                        movq $string7, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -522,90 +552,85 @@ IO.out_string.end:      ## method body ends
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
-Main.main:              ## method definition
+Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 4
+                        movq $32, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field x (Int)
-                        ## self[4] holds field y (String)
-                        ## self[5] holds field z (Int)
+                        ## self[3] holds field istrue (Bool)
+                        ## self[4] holds field x (Int)
                         ## method body begins
+                        ## Basic block: BB1
+                        ## conditional jump based on t$0
+                        movq 8(%rbp), %r13
+                        cmpq $0, %r13
+                        je Main_main_0
+                        ## Basic block: BB6
+                        ## if-join
+                        ## Basic block: BB3
+.globl Main_main_0
+Main_main_0:
+                        ## x@4
                         ## x
+                        movq 32(%r12), %r13
+                        movq 24(%r13), %r13
+                        ## storing to t$2
+                        movq %r13, 8(%rbp)
+                        jmp Main_main_2
+                        ## Basic block: BB2
+                        ## then branch
+                        ## Basic block: BB4
+                        ## else branch
+                        ## Basic block: BB7
+.globl Main_main_2
+Main_main_2:
+                        ## Basic block: BB5
+.globl Main_main_1
+Main_main_1:
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 8(%rbp)
+                        ## t$3
+                        movq 8(%rbp), %r13
+                        ## storing to t$0
+                        movq %r13, 8(%rbp)
+                        jmp Main_main_2
+                        ## Basic block: BB0
+                        ## istrue@3
+                        ## istrue
                         movq 24(%r12), %r13
                         movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 40(%r12)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## z
-                        movq 40(%r12), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        ## out_string(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string9 holds "\n"
-                        movq $string9, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
+                        ## storing to t$0
+                        movq %r13, 8(%rbp)
+                        ## logical NOT of t$0
+                        movq 8(%rbp), %r13
+                        cmpq $0, %r13
+                        sete %al
+                        movzbq %al, %r13
+                        movq %r13, 8(%rbp)
+                        ## conditional jump based on t$1
+                        movq 8(%rbp), %r13
+                        cmpq $0, %r13
+                        je Main_main_1
 .globl Main.main.end
-Main.main.end:          ## method body ends
+Main.main.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
                         pushq %rbp
@@ -642,7 +667,7 @@ String.concat.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.length
 String.length:          ## method definition
                         pushq %rbp
@@ -676,7 +701,7 @@ String.length.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.substr
 String.substr:          ## method definition
                         pushq %rbp
@@ -711,14 +736,14 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string10, %r13
+                        movq $string8, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
 			call cooloutstr
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
+			movl $0,  %edi
 			call exit
 .globl l3
 l3:                     movq %r13, 24(%r15)
@@ -729,153 +754,150 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
-the.empty.string:       # ""
-.byte 0
+the.empty.string:			  # ""
+.byte 0	
+
 
 .globl percent.d
-percent.d:              # "%ld"
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.d:			  # "%ld"
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl percent.ld
-percent.ld:             # " %ld"
-.byte  32 # ' '
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.ld:			  # " %ld"
+.byte 32	# ' '
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl string1
-string1:                # "Bool"
-.byte  66 # 'B'
-.byte 111 # 'o'
-.byte 111 # 'o'
-.byte 108 # 'l'
-.byte 0
+string1:			  # "Bool"
+.byte 66	# 'B'
+.byte 111	# 'o'
+.byte 111	# 'o'
+.byte 108	# 'l'
+.byte 0	
+
 
 .globl string2
-string2:                # "IO"
-.byte  73 # 'I'
-.byte  79 # 'O'
-.byte 0
+string2:			  # "IO"
+.byte 73	# 'I'
+.byte 79	# 'O'
+.byte 0	
+
 
 .globl string3
-string3:                # "Int"
-.byte  73 # 'I'
-.byte 110 # 'n'
-.byte 116 # 't'
-.byte 0
+string3:			  # "Int"
+.byte 73	# 'I'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string4
-string4:                # "Main"
-.byte  77 # 'M'
-.byte  97 # 'a'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 0
+string4:			  # "Main"
+.byte 77	# 'M'
+.byte 97	# 'a'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string5
-string5:                # "Object"
-.byte  79 # 'O'
-.byte  98 # 'b'
-.byte 106 # 'j'
-.byte 101 # 'e'
-.byte  99 # 'c'
-.byte 116 # 't'
-.byte 0
+string5:			  # "Object"
+.byte 79	# 'O'
+.byte 98	# 'b'
+.byte 106	# 'j'
+.byte 101	# 'e'
+.byte 99	# 'c'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string6
-string6:                # "String"
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 0
+string6:			  # "String"
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 0	
+
 
 .globl string7
-string7:                # "hi\\n"
-.byte 104 # 'h'
-.byte 105 # 'i'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string7:			  # "abort\n"
+.byte 97	# 'a'
+.byte 98	# 'b'
+.byte 111	# 'o'
+.byte 114	# 'r'
+.byte 116	# 't'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string8
-string8:                # "abort\\n"
-.byte  97 # 'a'
-.byte  98 # 'b'
-.byte 111 # 'o'
-.byte 114 # 'r'
-.byte 116 # 't'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.byte 69	# 'E'
+.byte 82	# 'R'
+.byte 82	# 'R'
+.byte 79	# 'O'
+.byte 82	# 'R'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 48	# '0'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 120	# 'x'
+.byte 99	# 'c'
+.byte 101	# 'e'
+.byte 112	# 'p'
+.byte 116	# 't'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 46	# '.'
+.byte 115	# 's'
+.byte 117	# 'u'
+.byte 98	# 'b'
+.byte 115	# 's'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 117	# 'u'
+.byte 116	# 't'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 102	# 'f'
+.byte 32	# ' '
+.byte 114	# 'r'
+.byte 97	# 'a'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 101	# 'e'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
 
-.globl string9
-string9:                # "\\n"
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string10
-string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  48 # '0'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  46 # '.'
-.byte 115 # 's'
-.byte 117 # 'u'
-.byte  98 # 'b'
-.byte 115 # 's'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 102 # 'f'
-.byte  32 # ' '
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 101 # 'e'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
 
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
@@ -1443,4 +1465,3 @@ coolsubstr:
 	.cfi_endproc
 .LFE10:
 	.size	coolsubstr, .-coolsubstr
-

@@ -441,7 +441,7 @@ IO.out_int:             ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (Int)
+                        ## fp[3] holds argument x (?)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -470,7 +470,7 @@ IO.out_string:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (String)
+                        ## fp[3] holds argument x (?)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -649,7 +649,7 @@ String.concat:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument s (String)
+                        ## fp[3] holds argument s (?)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -720,8 +720,8 @@ String.substr:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[4] holds argument i (Int)
-                        ## fp[3] holds argument l (Int)
+                        ## fp[4] holds argument i (?)
+                        ## fp[3] holds argument l (?)
                         ## method body begins
                         ## new String
                         pushq %rbp

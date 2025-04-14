@@ -1,7 +1,6 @@
 comment start
 label Foo_foo_0
-t$1 <- x
-t$0 <- t$1
+t$0 <- x@3
 return t$0
 comment start
 label Main_main_0

@@ -34,10 +34,6 @@ Main..vtable:           ## virtual function table for Main
                         .quad Object.abort
                         .quad Object.copy
                         .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
                         .quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
@@ -545,7 +541,7 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $1, %r14
+                        movq $5, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq 0(%rbp), %r14
@@ -560,45 +556,33 @@ Main.main:              ## method definition
                         popq %rbp
                         movq 0(%rbp), %r14
                         movq %r14, 24(%r13)
-                        movq %r13, 40(%r12)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## z
-                        movq 40(%r12), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        ## out_string(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## new String
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
                         pushq %rbp
                         pushq %r12
-                        movq $String..new, %r14
+                        movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string9 holds "\n"
-                        movq $string9, %r14
+                        movq $1, %r14
                         movq %r14, 24(%r13)
-                        pushq %r13
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
                         pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
+                        movq $Int..new, %r14
                         call *%r14
-                        addq $16, %rsp
-                        popq %rbp
                         popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 40(%r12)
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -711,7 +695,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string10, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -819,13 +803,7 @@ string8:                # "abort\\n"
 .byte 0
 
 .globl string9
-string9:                # "\\n"
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
-
-.globl string10
-string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
+string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
