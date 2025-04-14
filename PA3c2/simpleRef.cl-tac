@@ -1,0 +1,9 @@
+comment start
+label Main_main_0
+t$3 <- x
+t$4 <- int 5
+t$1 <- + t$3 t$4
+t$2 <- int 1
+z <- - t$1 t$2
+t$0 <- z
+return t$0

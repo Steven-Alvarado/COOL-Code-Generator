@@ -6,7 +6,7 @@ t$2 <- int 4
 t$3 <- int 1
 t$0 <- call substr t$2, t$3
 t$0 <- call out_string t$0
-ERROR: unhandled TAC Instruction: TAC_Assign_IsVoid
+ERROR: unhandled TAC Instruction
 t$0 <- call type_name 
 t$5 <- int 1
 t$6 <- int 3

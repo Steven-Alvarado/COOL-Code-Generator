@@ -1,0 +1,10 @@
+comment start
+label Foo_foo_0
+t$1 <- z@2
+t$0 <- t$1
+return t$0
+comment start
+label Main_main_0
+t$2 <- y@3
+t$0 <- t$2
+return t$0

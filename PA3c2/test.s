@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $4, %r12
+                        movq $5, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,7 +171,7 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $4, %r14
+                        movq $5, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
@@ -197,6 +197,28 @@ Main..new:              ## constructor for Main
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
+                        movq %r12, %r13
+                        ## self[4] holds field y (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 32(%r12)
+                        ## self[4] y initializer <- 4
+                         ## new Int
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -499,10 +521,16 @@ Main.main:           ## method definition
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
+                        ## return address handling
+                        ## self[3] holds field x (Int)
+                        ## self[4] holds field y (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        movq x, %r13
-                        movq %r13, 40(%rbp)
+                        ## x@3
+                        movq 24(%r12), %r13
+                        movq 24(%r13), %r13
+                        ## storing to t$1
+                        movq %r13, 0(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -512,13 +540,78 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
-                        movq 40(%rbp), %r14
-                        movq 48(%rbp), %r13
-                        subq %r13, %r14
-                        movq %r14, 56(%rbp)
-                        movq 56(%rbp), %r13
+                        movq 24(%r13), %r13
+                        ## MINUS      ============================
+                        movq %r13, 0(%rbp)
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, 0(%rbp)
+                        movq %r13, 0(%rbp)
+                        ## t$3
+                        movq 0(%rbp), %r13
+                        ## storing to x
                         movq %r13, x
+                        ## x
                         movq x, %r13
+                        ## storing to t$0
+                        movq %r13, %r13
+                        ## y@4
+                        movq 32(%r12), %r13
+                        movq 32(%r13), %r13
+                        ## storing to t$4
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %rax
+                        imulq 0(%rbp), %rax
+                        movq %rax, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        ## PLUS     ============================
+                        movq 0(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        ## MINUS      ============================
+                        movq %r13, 0(%rbp)
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, 0(%rbp)
+                        movq %r13, 0(%rbp)
+                        ## t$10
+                        movq 0(%rbp), %r13
+                        ## storing to x
+                        movq %r13, x
+                        ## x
+                        movq x, %r13
+                        ## storing to t$0
                         movq %r13, %r13
                         ## new String
                         pushq %rbp
@@ -532,11 +625,30 @@ Main.main:           ## method definition
                         movq %r14, 24(%r13)
                         pushq %rbp
                         pushq %r12
-                        movq $out_string, %r14
+                        movq 16(%r12), %r14
+                        movq 56(%r14), %r14
                         call *%r14
                         popq %r12
                         popq %rbp
                         movq %r13, %r13
+                        ## x@3
+                        movq 24(%r12), %r13
+                        movq 24(%r13), %r13
+                        ## storing to t$12
+                        movq %r13, 0(%rbp)
+                        pushq %rbp
+                        pushq %r12
+                        movq 16(%r12), %r14
+                        movq 48(%r14), %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, %r13
+                        movq %r13, %r13
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling

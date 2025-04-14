@@ -39,16 +39,16 @@ for test in *.cl-type; do
     pushd "$tmpdir" > /dev/null
 
     # Run the reference compiler on base.cl; it will generate file.s
-    ./cool --x86 "${base}.cl --out ${base}Ref"|| { echo "Reference compiler failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    cool --x86 "${base}.cl" --out "${base}Ref" || { echo "Reference compiler failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
     mv "${base}Ref.s" ref.s
 
     # Run your code generator on base.cl-type; it will generate file.s
-    ./main.exe "${base}.cl-type" || { echo "Your code generator failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    ../main.exe "${base}.cl-type" || { echo "Your code generator failed for ${base}"; popd; rm -rf "$tmpdir"; continue; }
     mv "${base}.s" file.s
 
     # Assemble the generated assembly into executables
-    gcc -o ref_exe ref.s || { echo "GCC failed for reference assembly of ${base}"; popd; rm -rf "$tmpdir"; continue; }
-    gcc -o test_exe test.s || { echo "GCC failed for test assembly of ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    gcc --no-pie --static -o ref_exe ref.s || { echo "GCC failed for reference assembly of ${base}"; popd; rm -rf "$tmpdir"; continue; }
+    gcc --no-pie --static -o test_exe test.s || { echo "GCC failed for test assembly of ${base}"; popd; rm -rf "$tmpdir"; continue; }
 
     # Run the executables and capture their outputs (stdout and stderr)
     ./ref_exe > ref.out 2>&1

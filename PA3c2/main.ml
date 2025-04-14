@@ -5,6 +5,7 @@
    Produce "three-address-code" TAC intermediate representation for (some) cool
    programs
 *)
+
 open Printf
 
 type static_type = Class of string | SELF_TYPE of string
@@ -31,7 +32,7 @@ and exp = {
 }
 
 and exp_kind =
-  | AST_Integer of string (* "really an integer"*)
+  | AST_Integer of string
   | AST_Assign of id * exp
   | AST_DynamicDispatch of exp * id * exp list
   | AST_StaticDispatch of exp * id * id * exp list
@@ -58,7 +59,6 @@ and exp_kind =
   | AST_Case of exp * (id * id * exp) list
   | AST_Internal of string
 
-(* Debug and double check ast definition*)
 and tac_expr =
   | TAC_Variable of string (* Named variables and temporaries *)
   | TAC_Constant_Int of int (* Integer constants*)
@@ -67,8 +67,6 @@ and tac_expr =
   | TAC_BinaryOp of string * tac_expr * tac_expr
   | TAC_UnaryOp of string * tac_expr
   | TAC_FunctionCall of string * tac_expr list
-
-(*TODO*)
 
 (* (class_name, method_name) -> formals, defining_class, method_body *)
 type impl_map =
@@ -97,7 +95,6 @@ type tac_instr =
   | TAC_Assign_New of string * tac_expr
   | TAC_Assign_Call of string * tac_expr
   | TAC_Assign_Eq of string * tac_expr * tac_expr
-  | TAC_Binary of string * string * string * string
   | TAC_Label of string (* label L1 *)
   | TAC_Jump of string (* jmp L1 *)
   | TAC_ConditionalJump of string * string (* bt x L2 *)
@@ -110,44 +107,69 @@ type tac_instr =
   | TAC_Compare of string * string * string * string
   | TAC_Not of string * string
   | TAC_Negate of string * string
-  | TAC_Assign_StaticCall of string * string * string * string list
   | TAC_Comment of string
   | TAC_Assign_Default of string * string
 
+let rec tac_expr_to_string expr =
+  match expr with
+  | TAC_Variable v -> v (* Just return the variable name *)
+  | TAC_Constant_Int i -> string_of_int i
+  | TAC_Constant_Bool b -> string_of_bool b
+  | TAC_Constant_String s -> "\"" ^ s ^ "\""
+  | TAC_BinaryOp (op, e1, e2) ->
+      Printf.sprintf "(%s %s %s)" (tac_expr_to_string e1) op
+        (tac_expr_to_string e2)
+  | TAC_UnaryOp (op, e) -> Printf.sprintf "(%s %s)" op (tac_expr_to_string e)
+  | TAC_FunctionCall (f, args) ->
+      let args_str = String.concat ", " (List.map tac_expr_to_string args) in
+      Printf.sprintf "%s(%s)" f args_str
+
 let tac_instr_to_str x =
   match x with
-  | TAC_Assign_Int _ -> "TAC_Assign_Int"
-  | TAC_Assign_Variable _ -> "TAC_Assign_Variable"
-  | TAC_Assign_Plus _ -> "TAC_Assign_Plus"
-  | TAC_Assign_Minus _ -> "TAC_Assign_Minus"
-  | TAC_Assign_Times _ -> "TAC_Assign_Times"
-  | TAC_Assign_Divide _ -> "TAC_Assign_Divide"
-  | TAC_Assign_Bool _ -> "TAC_Assign_Bool"
-  | TAC_Assign_String _ -> "TAC_Assign_String"
-  | TAC_Assign_Lt _ -> "TAC_Assign_Lt"
-  | TAC_Assign_Le _ -> "TAC_Assign_Le"
-  | TAC_Assign_Not _ -> "TAC_Assign_Not"
-  | TAC_Assign_Negate _ -> "TAC_Assign_Negate"
-  | TAC_Assign_IsVoid _ -> "TAC_Assign_IsVoid"
-  | TAC_Assign_New _ -> "TAC_Assign_New"
-  | TAC_Assign_Call _ -> "TAC_Assign_Call"
-  | TAC_Assign_Eq _ -> "TAC_Assign_Eq"
-  | TAC_Binary _ -> "TAC_Binary"
-  | TAC_Label _ -> "TAC_Label"
-  | TAC_Jump _ -> "TAC_Jump"
-  | TAC_ConditionalJump _ -> "TAC_ConditionalJump"
-  | TAC_Return _ -> "TAC_Return"
-  | TAC_Assign _ -> "TAC_Assignment"
-  | TAC_Call _ -> "TAC_Call"
-  | TAC_StaticCall _ -> "TAC_StaticCall"
-  | TAC_New _ -> "TAC_New"
-  | TAC_IsVoid _ -> "TAC_IsVoid"
-  | TAC_Compare _ -> "TAC_Compare"
-  | TAC_Not _ -> "TAC_Not"
-  | TAC_Negate _ -> "TAC_Negate"
-  | TAC_Assign_StaticCall _ -> "TAC_Assign_StaticCall"
-  | TAC_Comment _ -> "TAC_Comment"
-  | TAC_Assign_Default _ -> "TAC_Assign_Default"
+  | TAC_Comment text -> "comment " ^ text ^ "\n"
+  | TAC_Assign (target, expr) ->
+      target ^ " <- " ^ tac_expr_to_string expr ^ "\n"
+  | TAC_Assign_Default (target, type_name) ->
+      target ^ " <- default " ^ type_name ^ "\n"
+  | TAC_Assign_Int (x, i) -> Printf.sprintf "%s <- int %d\n" x i
+  | TAC_Assign_String (x, s) -> x ^ " <- string\n" ^ s ^ "\n"
+  | TAC_Assign_Variable (x, y) -> x ^ " <- " ^ y ^ "\n"
+  | TAC_Assign_Plus (x, y, z) ->
+      let op1 = tac_expr_to_string y in
+      let op2 = tac_expr_to_string z in
+      Printf.sprintf "%s <- + %s %s\n" x op1 op2
+  | TAC_Assign_Minus (x, y, z) ->
+      Printf.sprintf "%s <- - %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Times (x, y, z) ->
+      Printf.sprintf "%s <- * %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Divide (x, y, z) ->
+      Printf.sprintf "%s <- / %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Lt (x, y, z) ->
+      Printf.sprintf "%s <- < %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Le (x, y, z) ->
+      Printf.sprintf "%s <- <= %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Eq (x, y, z) ->
+      Printf.sprintf "%s <- = %s %s\n" x (tac_expr_to_string y)
+        (tac_expr_to_string z)
+  | TAC_Assign_Not (x, y) ->
+      Printf.sprintf "%s <- not %s\n" x (tac_expr_to_string y)
+  | TAC_Assign_Negate (x, y) ->
+      Printf.sprintf "%s <- ~ %s\n" x (tac_expr_to_string y)
+  | TAC_Assign_New (x, y) ->
+      Printf.sprintf "%s <- new %s\n" x (tac_expr_to_string y)
+  | TAC_Assign_Bool (x, b) -> Printf.sprintf "%s <- bool %b\n" x b
+  | TAC_Label lbl -> "label " ^ lbl ^ "\n"
+  | TAC_Jump lbl -> "jmp " ^ lbl ^ "\n"
+  | TAC_ConditionalJump (x, lbl) -> "bt " ^ x ^ " " ^ lbl ^ "\n"
+  | TAC_Return x -> "return " ^ x ^ "\n"
+  | TAC_Call (result, method_name, args) ->
+      result ^ " <- call " ^ method_name ^ " " ^ String.concat ", " args ^ "\n"
+  | _ -> "ERROR: unhandled TAC Instruction\n"
 
 let ast_to_string x =
   match x with
@@ -180,33 +202,83 @@ let ast_to_string x =
   | AST_Identifier _ -> "identifier"
   | AST_Internal _ -> "internal"
 
-(* Track string literals and their labels *)
-let string_literal_table = ref []
-let string_literal_counter = ref 0
+type value =
+  | Int of int
+  | Bool of bool
+  | String of string
+  | Object of object_data
+  | Null
 
-let init_string_literal_counter n =
-  string_literal_counter := n;
-  string_literal_table := []
+and object_data = {
+  type_tag : string;
+  fields : (string, int) Hashtbl.t; (* maybe vtable pointer *)
+}
 
-let register_string_literal literal =
-  let label = "string" ^ string_of_int !string_literal_counter in
-  incr string_literal_counter;
-  string_literal_table := (label, literal) :: !string_literal_table;
-  label
+type env = (string, int) Hashtbl.t (*variable -> location *)
+type store = (int, value) Hashtbl.t (*location -> value *)
 
-let rec tac_expr_to_string expr =
-  match expr with
-  | TAC_Variable v -> v (* Just return the variable name *)
-  | TAC_Constant_Int i -> string_of_int i
-  | TAC_Constant_Bool b -> string_of_bool b
-  | TAC_Constant_String s -> "\"" ^ s ^ "\""
-  | TAC_BinaryOp (op, e1, e2) ->
-      Printf.sprintf "(%s %s %s)" (tac_expr_to_string e1) op
-        (tac_expr_to_string e2)
-  | TAC_UnaryOp (op, e) -> Printf.sprintf "(%s %s)" op (tac_expr_to_string e)
-  | TAC_FunctionCall (f, args) ->
-      let args_str = String.concat ", " (List.map tac_expr_to_string args) in
-      Printf.sprintf "%s(%s)" f args_str
+(* Collects strings from an expression.*)
+let rec collect_strings_from_exp (e : exp) =
+  match e.exp_kind with
+  | AST_String s -> [ s ]
+  | AST_Assign (_, e') -> collect_strings_from_exp e'
+  | AST_DynamicDispatch (obj, _mname, args) ->
+      collect_strings_from_exp obj
+      @ List.concat (List.map collect_strings_from_exp args)
+  | AST_StaticDispatch (obj, _tname, _mname, args) ->
+      collect_strings_from_exp obj
+      @ List.concat (List.map collect_strings_from_exp args)
+  | AST_SelfDispatch (_mname, args) ->
+      List.concat (List.map collect_strings_from_exp args)
+  | AST_If (predicate, then_branch, else_branch) ->
+      collect_strings_from_exp predicate
+      @ collect_strings_from_exp then_branch
+      @ collect_strings_from_exp else_branch
+  | AST_While (predicate, body) ->
+      collect_strings_from_exp predicate @ collect_strings_from_exp body
+  | AST_Block exprs -> List.concat (List.map collect_strings_from_exp exprs)
+  | AST_New _ -> [] (* no subexpressions to check *)
+  | AST_IsVoid e1 -> collect_strings_from_exp e1
+  | AST_Plus (e1, e2)
+  | AST_Minus (e1, e2)
+  | AST_Times (e1, e2)
+  | AST_Divide (e1, e2)
+  | AST_Lt (e1, e2)
+  | AST_Le (e1, e2)
+  | AST_Eq (e1, e2) ->
+      collect_strings_from_exp e1 @ collect_strings_from_exp e2
+  | AST_Not e1 | AST_Negate e1 -> collect_strings_from_exp e1
+  | AST_Integer _ -> []
+  | AST_Identifier _ -> [] (* not a string *)
+  | AST_True | AST_False -> []
+  | AST_Let (bindings, body) ->
+      let strings_from_bindings =
+        List.concat
+          (List.map
+             (fun (_var, _type, maybe_init) ->
+               match maybe_init with
+               | Some e -> collect_strings_from_exp e
+               | None -> [])
+             bindings)
+      in
+      strings_from_bindings @ collect_strings_from_exp body
+  | AST_Case (expr, case_elements) ->
+      let strings_in_expr = collect_strings_from_exp expr in
+      let strings_in_cases =
+        List.concat
+          (List.map
+             (fun (_id, _type, e) -> collect_strings_from_exp e)
+             case_elements)
+      in
+      strings_in_expr @ strings_in_cases
+  | AST_Internal _ -> []
+
+(* Collect strings from a list of attributes.*)
+let collect_strings_from_attrs attrs =
+  List.fold_left
+    (fun acc (_, _, init) ->
+      match init with Some e -> acc @ collect_strings_from_exp e | None -> acc)
+    [] attrs
 
 (* basic block struct for cfg*)
 type basic_block = {
@@ -220,20 +292,30 @@ type basic_block = {
 type cfg = (string, basic_block) Hashtbl.t
 
 (* count variables*)
-let temp_var_counter = ref 1
+let temp_var_counter = ref 0
 
+
+(* Keep track of temporaries needed for stack*)
 let fresh_variable () =
   let v = "t$" ^ string_of_int !temp_var_counter in
   temp_var_counter := !temp_var_counter + 1;
   v
-
-let label_counter = ref 1
+let reset_temp_var_counter () = temp_var_counter := 0
+let get_temp_var_count () = !temp_var_counter
 
 (* Count labals *)
+let label_counter = ref 1
 let fresh_label class_name method_name =
   let l = class_name ^ "_" ^ method_name ^ "_" ^ string_of_int !label_counter in
   label_counter := !label_counter + 1;
   l
+
+let reset_label_counter () = label_counter := 0
+(* “annotates” a variable name with its location*)
+
+
+let annotate_var (var_name : string) (loc : int) : string =
+  var_name ^ "@" ^ string_of_int loc
 
 (* The traditional approach to converting expressions to three-address 
    code involves a recursive descent traversal of the abstract syntax tree. 
@@ -243,111 +325,126 @@ let fresh_label class_name method_name =
 *)
 
 (* Main logic for parsing ast and converting to tac *)
-let rec convert (current_class : string) (current_method : string) (a : exp) :
-    tac_instr list * tac_expr =
+(* keep track of ordering location: *)
+let newloc_counter = ref 2
+
+let newloc () =
+  incr newloc_counter;
+  !newloc_counter
+
+let reset_newloc_counter () = newloc_counter := 2
+
+let rec convert (current_class : string) (current_method : string) (env : env)
+    (a : exp) : tac_instr list * tac_expr * env =
   match a.exp_kind with
   | AST_Identifier var_name ->
       if snd var_name = "self" then
-        ([], TAC_Variable "self")
+        ([], TAC_Variable "self", env)
       else
         let temp = fresh_variable () in
-        ([ TAC_Assign_Variable (temp, snd var_name) ], TAC_Variable temp)
+        (* Lookup the variable in the environment; if not found, allocate a new location *)
+        let loc =
+          try Hashtbl.find env (snd var_name)
+          with Not_found ->
+            let new_loc = newloc () in
+            Hashtbl.add env (snd var_name) new_loc;
+            new_loc
+        in
+        ( [ TAC_Assign_Variable (temp, annotate_var (snd var_name) loc) ],
+          TAC_Variable temp,
+          env )
   | AST_Integer i ->
       let new_var = fresh_variable () in
-      ([ TAC_Assign_Int (new_var, int_of_string i) ], TAC_Variable new_var)
+      ([ TAC_Assign_Int (new_var, int_of_string i) ], TAC_Variable new_var, env)
   | AST_String s ->
       let new_var = fresh_variable () in
-      ([ TAC_Assign_String (new_var, s) ], TAC_Variable new_var)
+      ([ TAC_Assign_String (new_var, s) ], TAC_Variable new_var, env)
   | AST_True ->
       let new_var = fresh_variable () in
-      ([ TAC_Assign_Bool (new_var, true) ], TAC_Variable new_var)
+      ([ TAC_Assign_Bool (new_var, true) ], TAC_Variable new_var, env)
   | AST_False ->
       let new_var = fresh_variable () in
-      ([ TAC_Assign_Bool (new_var, false) ], TAC_Variable new_var)
+      ([ TAC_Assign_Bool (new_var, false) ], TAC_Variable new_var, env)
   | AST_Plus (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Plus (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Minus (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Minus (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Times (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Times (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Divide (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Divide (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Lt (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Lt (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Le (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Le (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Eq (a1, a2) ->
-      let i1, ta1 = convert current_class current_method a1 in
-      let i2, ta2 = convert current_class current_method a2 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
+      let i2, ta2, env2 = convert current_class current_method env1 a2 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Eq (new_var, ta1, ta2) in
-      (i1 @ i2 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
   | AST_Not a1 ->
-      let i1, ta1 = convert current_class current_method a1 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Not (new_var, ta1) in
-      (i1 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ [ to_output ], TAC_Variable new_var, env1)
   | AST_Negate a1 ->
-      let i1, ta1 = convert current_class current_method a1 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_Negate (new_var, ta1) in
-      (i1 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ [ to_output ], TAC_Variable new_var, env1)
   | AST_IsVoid a1 ->
-      let i1, ta1 = convert current_class current_method a1 in
+      let i1, ta1, env1 = convert current_class current_method env a1 in
       let new_var = fresh_variable () in
       let to_output = TAC_Assign_IsVoid (new_var, ta1) in
-      (i1 @ [ to_output ], TAC_Variable new_var)
+      (i1 @ [ to_output ], TAC_Variable new_var, env1)
   | AST_New type_name ->
       let new_var = fresh_variable () in
       ( [ TAC_Assign_New (new_var, TAC_Variable (snd type_name)) ],
-        TAC_Variable new_var )
+        TAC_Variable new_var,
+        env )
   | AST_If (cond, then_branch, else_branch) ->
-      (* Convert condition (assumed to produce its result in a temporary) *)
-      let cond_instrs, cond_expr = convert current_class current_method cond in
-      (* Compute negation of condition *)
+      let cond_instrs, cond_expr, env1 =
+        convert current_class current_method env cond
+      in
       let not_temp = fresh_variable () in
       let not_instr = TAC_Assign_Not (not_temp, cond_expr) in
-      (* Use fixed labels per expected output *)
       let label_then = fresh_label current_class current_method in
       let label_else = fresh_label current_class current_method in
       let label_join = fresh_label current_class current_method in
-
-      (* Convert the then branch *)
-      let then_instrs, then_expr =
-        convert current_class current_method then_branch
+      let then_instrs, then_expr, env2 =
+        convert current_class current_method env1 then_branch
       in
       let then_code =
         [ TAC_Comment "then branch"; TAC_Label label_then ]
         @ then_instrs @ [ TAC_Jump label_join ]
       in
-
-      (* Convert the else branch *)
-      let else_instrs, else_expr =
-        convert current_class current_method else_branch
+      let else_instrs, else_expr, env3 =
+        convert current_class current_method env2 else_branch
       in
       let else_code =
         [ TAC_Comment "else branch"; TAC_Label label_else ]
@@ -357,7 +454,6 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
             TAC_Jump label_join;
           ]
       in
-
       let if_instrs =
         cond_instrs
         @ [
@@ -368,45 +464,47 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
         @ then_code @ else_code
         @ [ TAC_Comment "if-join"; TAC_Label label_join ]
       in
-      (if_instrs, TAC_Variable "t$0")
+      (if_instrs, TAC_Variable "t$0", env3)
   | AST_Assign (var_name, expr) ->
-      let instrs, expr_val = convert current_class current_method expr in
+      let instrs, expr_val, env1 =
+        convert current_class current_method env expr
+      in
+      (* Here we assume var_name is already bound in env.
+         In a complete implementation, you might check for unbound variables. *)
       let assign_instr =
         TAC_Assign_Variable (snd var_name, tac_expr_to_string expr_val)
       in
       let final_copy = TAC_Assign_Variable ("t$0", snd var_name) in
-      (instrs @ [ assign_instr; final_copy ], TAC_Variable "t$0")
+      (instrs @ [ assign_instr; final_copy ], TAC_Variable "t$0", env1)
   | AST_Block exprs ->
-      (* For blocks, evaluate each expression sequentially and return the last one *)
-      let rec process_block exprs =
+      let rec process_block exprs env_acc =
         match exprs with
-        | [] -> ([], TAC_Variable "void") (* Empty block returns void *)
-        | [ last ] ->
-            convert current_class current_method
-              last (* Last expression determines the block's value *)
+        | [] -> ([], TAC_Variable "void", env_acc)
+        | [ last ] -> convert current_class current_method env_acc last
         | first :: rest ->
-            let first_instrs, _ = convert current_class current_method first in
-            let rest_instrs, rest_expr = process_block rest in
-            (first_instrs @ rest_instrs, rest_expr)
+            let first_instrs, _, env_updated =
+              convert current_class current_method env_acc first
+            in
+            let rest_instrs, rest_expr, env_final =
+              process_block rest env_updated
+            in
+            (first_instrs @ rest_instrs, rest_expr, env_final)
       in
-      process_block exprs
-  (*| AST_If (cond, then_branch, else_branch) ->*)
+      process_block exprs env
   | AST_While (cond, body) ->
-      (* Reset label counter for consistent naming *)
       label_counter := 0;
       let while_start = fresh_label current_class current_method in
       let while_pred = fresh_label current_class current_method in
       let while_join = fresh_label current_class current_method in
       let while_body = fresh_label current_class current_method in
-      let cond_instrs, cond_expr = convert current_class current_method cond in
-      let body_instrs, body_expr = convert current_class current_method body in
-
-      (* Create a result variable for the condition evaluation *)
+      let cond_instrs, cond_expr, env1 =
+        convert current_class current_method env cond
+      in
+      let body_instrs, body_expr, env2 =
+        convert current_class current_method env1 body
+      in
       let cond_var = fresh_variable () in
-
-      (* Not condition for branch to exit *)
       let not_cond_var = fresh_variable () in
-
       let tac_instrs =
         [
           TAC_Comment "start";
@@ -417,7 +515,6 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
         ]
         @ cond_instrs
         @ [
-            (* Store the result of condition in cond_var *)
             TAC_Assign (cond_var, cond_expr);
             TAC_Assign_Not (not_cond_var, TAC_Variable cond_var);
             TAC_ConditionalJump (not_cond_var, while_join);
@@ -431,63 +528,47 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
           ]
         @ body_instrs @ [ TAC_Jump while_pred ]
       in
-
-      (* While loops return void in your implementation *)
       let result_var = fresh_variable () in
-      (tac_instrs, TAC_Variable result_var)
+      (tac_instrs, TAC_Variable result_var, env2)
   | AST_DynamicDispatch (obj, method_name, args) ->
-      (* Convert object expression *)
-      let obj_instrs, obj_expr = convert current_class current_method obj in
-
-      (* Convert each argument *)
+      let obj_instrs, obj_expr, env1 =
+        convert current_class current_method env obj
+      in
       let args_data =
-        List.map (fun arg -> convert current_class current_method arg) args
+        List.map (fun arg -> convert current_class current_method env1 arg) args
       in
-      let arg_instrs = List.concat (List.map fst args_data) in
-      let arg_exprs = List.map snd args_data in
-
-      (* Generate function call instruction, storing result in t$0 *)
-      let call_instr =
-        TAC_Call ("t$0", snd method_name, List.map tac_expr_to_string arg_exprs)
+      let arg_instrs = List.concat (List.map (fun (i, _, _) -> i) args_data) in
+      let arg_exprs =
+        List.map (fun (_, e, _) -> tac_expr_to_string e) args_data
       in
-
-      (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable "t$0")
+      let call_instr = TAC_Call ("t$0", snd method_name, arg_exprs) in
+      (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable "t$0", env1)
   | AST_StaticDispatch (obj, type_name, method_name, args) ->
-      (* Convert object expression *)
-      let obj_instrs, obj_expr = convert current_class current_method obj in
-
+      (* Convert the object expression *)
+      let obj_instrs, obj_expr, env1 =
+        convert current_class current_method env obj
+      in
       (* Convert each argument *)
       let args_data =
-        List.map (fun arg -> convert current_class current_method arg) args
+        List.map (fun arg -> convert current_class current_method env1 arg) args
       in
-      let arg_instrs = List.concat (List.map fst args_data) in
-      let arg_exprs = List.map snd args_data in
-
+      let arg_instrs = List.concat (List.map (fun (i, _, _) -> i) args_data) in
+      let arg_exprs =
+        List.map (fun (_, e, _) -> tac_expr_to_string e) args_data
+      in
       let result_var = fresh_variable () in
       let obj_var = tac_expr_to_string obj_expr in
-
-      (* Generate static call instruction *)
-      let call_instr =
-        TAC_Assign_StaticCall
-          ( result_var,
-            obj_var,
-            snd method_name,
-            List.map tac_expr_to_string arg_exprs )
-      in
-
-      (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable result_var)
+      (* Instead of TAC_Assign_StaticCall, we now use TAC_Call for static dispatch *)
+      let call_instr = TAC_Call (result_var, snd method_name, arg_exprs) in
+      (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable result_var, env1)
   | AST_SelfDispatch (method_name, args) ->
-      (* Create a proper exp record for "self" identifier *)
       let self_exp =
         {
           loc = "0";
-          (* Use appropriate location *)
           exp_kind = AST_Identifier ("0", "self");
           static_type = None;
         }
       in
-
-      (* Create a proper exp record for the dynamic dispatch *)
       let dispatch_exp =
         {
           loc = a.loc;
@@ -495,68 +576,33 @@ let rec convert (current_class : string) (current_method : string) (a : exp) :
           static_type = None;
         }
       in
-
-      (* Now call convert on the properly formed expression *)
-      convert current_class current_method dispatch_exp
-  | AST_Let (bindings, body) ->
-      (* Process each binding in order *)
-      let rec process_bindings bindings acc_instrs =
-        match bindings with
-        | [] -> acc_instrs
-        | ((_, var_name), (_, type_name), None) :: rest ->
-            (* A binding without initialization *)
-            process_bindings rest acc_instrs
-        | ((_, var_name), (_, type_name), Some init) :: rest ->
-            (* A binding with initialization *)
-            let init_instrs, init_expr =
-              convert current_class current_method init
-            in
-            let assign_instr =
-              TAC_Assign_Variable (var_name, tac_expr_to_string init_expr)
-            in
-            process_bindings rest (acc_instrs @ init_instrs @ [ assign_instr ])
-      in
-      let binding_instrs = process_bindings bindings [] in
-      let body_instrs, body_expr = convert current_class current_method body in
-      (binding_instrs @ body_instrs, body_expr)
+      convert current_class current_method env dispatch_exp
   | AST_Case (expr, case_elements) ->
-      (* Convert the case expression *)
-      let expr_instrs, expr_temp = convert current_class current_method expr in
-
-      (* Generate a fresh variable for the case result *)
+      let expr_instrs, expr_temp, env1 =
+        convert current_class current_method env expr
+      in
       let result_var = fresh_variable () in
-
-      (* Process each case branch *)
       let case_instrs, _ =
         List.fold_left
           (fun (instrs, idx) (id, type_name, body) ->
-            (* Generate labels for this case branch *)
-            let case_label = fresh_label in
-            let next_label = fresh_label in
-
-            (* Convert the branch body *)
-            let body_instrs, body_temp =
-              convert current_class current_method body
+            let case_label = fresh_label current_class current_method in
+            let next_label = fresh_label current_class current_method in
+            let body_instrs, body_temp, env_updated =
+              convert current_class current_method env1 body
             in
-
-            (* Generate instructions for this case branch *)
             let branch_instrs =
-              [] @ body_instrs
+              body_instrs
               @ [
                   TAC_Assign_Variable (result_var, tac_expr_to_string body_temp);
                 ]
             in
-
-            (* Accumulate instructions and increment index *)
             (instrs @ branch_instrs, idx + 1))
           ([], 0) case_elements
       in
-
-      (* Combine all instructions *)
-      (expr_instrs @ case_instrs, TAC_Variable result_var)
+      (expr_instrs @ case_instrs, TAC_Variable result_var, env1)
   | AST_Internal s ->
       let new_var = fresh_variable () in
-      ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var)
+      ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env)
   | x -> failwith ("Unimplemented AST Node: " ^ ast_to_string x)
 
 (* Function to identify leaders (first instructions of basic blocks) *)
@@ -588,7 +634,7 @@ let identify_leaders (instructions : tac_instr list) : int list =
 (* Create basic blocks from leaders *)
 let create_basic_blocks (instructions : tac_instr list) (leaders : int list) :
     basic_block list =
-  (* We first need to sort the leaders to ensure correct block creation *)
+  (* sort the leaders to ensure correct block creation *)
   let sorted_leaders = List.sort compare leaders in
 
   (* Helper function to extract instructions for a block *)
@@ -726,7 +772,7 @@ let build_cfg (blocks : basic_block list) : cfg =
 
   cfg_map
 
-(* Function to visualize CFG (for debugging) *)
+(*  debugging *)
 let print_cfg cfg =
   Printf.printf "Control Flow Graph:\n";
   Hashtbl.iter
@@ -741,7 +787,7 @@ let print_cfg cfg =
       Printf.printf "  Successors: %s\n\n" (String.concat ", " block.successors))
     cfg
 
-(* Helper function for existing code - you might need to adapt this based on your code *)
+(* Helper function for existing code *)
 let rec get_all_methods parent_map method_order class_name =
   (* Get parent's methods first, if any *)
   let parent_methods =
@@ -761,12 +807,98 @@ let rec get_all_methods parent_map method_order class_name =
 
 (* Function to convert a method to CFG *)
 let method_to_cfg class_name method_name body_exp : cfg =
-  let tac_instructions, _ = convert class_name method_name body_exp in
+  let initial_env = Hashtbl.create 10 in
+  let tac_instructions, _tac_expr, _final_env =
+    convert class_name method_name initial_env body_exp
+  in
   let leaders = identify_leaders tac_instructions in
   let basic_blocks = create_basic_blocks tac_instructions leaders in
   build_cfg basic_blocks
 
+(* Create a mapping from string literals to their labels *)
+let string_label_map = Hashtbl.create 100
+
+(* global counter for string literals throughout program*)
+let string_literal_counter = ref 0
+
+(* List to keep track of strings in registration order *)
+let string_literal_list = ref []
+
+(* Base strings that are always included *)
+let base_strings =
+  [ ("the.empty.string", ""); ("percent.d", "%ld"); ("percent.ld", " %ld") ]
+
+let init_string_literal_counter n =
+  string_literal_counter := n;
+  Hashtbl.clear string_label_map;
+
+  (* Add base strings to the hashtable but not to the list yet *)
+  List.iter
+    (fun (label, str) -> Hashtbl.add string_label_map str label)
+    base_strings;
+
+  string_literal_list := []
+
+(* Register a string literal and return a unique label *)
+let register_string_literal literal =
+  (* If already registered, return the label *)
+  match Hashtbl.find_opt string_label_map literal with
+  | Some label -> label
+  | None ->
+      let label = "string" ^ string_of_int !string_literal_counter in
+      incr string_literal_counter;
+      Hashtbl.add string_label_map literal label;
+      string_literal_list := (label, literal) :: !string_literal_list;
+      label
+
+let get_string_label str =
+  match Hashtbl.find_opt string_label_map str with
+  | Some label -> label
+  | None ->
+      (* Automatically register it if it's not already in the map *)
+      register_string_literal str
+
+(* This function collects all strings but doesn't generate code yet *)
+let collect_all_strings class_map class_order impl_map =
+  init_string_literal_counter 1;
+
+  (* Register class names *)
+  List.iter (fun cls -> ignore (register_string_literal cls)) class_order;
+
+  (* Attributes *)
+  Hashtbl.iter
+    (fun _ (attrs, _) ->
+      let strings = collect_strings_from_attrs attrs in
+      List.iter (fun s -> ignore (register_string_literal s)) strings)
+    class_map;
+
+  ignore (register_string_literal "abort\\n");
+
+  (* Method bodies *)
+  Hashtbl.iter
+    (fun _ (_, _, _, body) ->
+      let strings = collect_strings_from_exp body in
+      List.iter (fun s -> ignore (register_string_literal s)) strings)
+    impl_map;
+
+  (* Add default exception messages *)
+  ignore
+    (register_string_literal
+       "ERROR: 0: Exception: String.substr out of range\\n");
+
+  !string_literal_list
+
+let print_string_label_map () =
+  Printf.printf "---- String Label Map ----\n";
+  Hashtbl.iter
+    (fun literal label -> Printf.printf "  \"%s\" -> %s\n" literal label)
+    string_label_map;
+  Printf.printf "--------------------------\n"
+
 let generate_object_abort_method () =
+  let error_str = "abort\\n" in
+  let error_label = get_string_label error_str in
+
   [
     "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
     ".globl Object.abort";
@@ -779,7 +911,7 @@ let generate_object_abort_method () =
     "                        subq %r14, %rsp";
     "                        ## return address handling";
     "                        ## method body begins";
-    "                        movq $string7, %r13";
+    "                        movq $" ^ error_label ^ ", %r13";
     "                        ## guarantee 16-byte alignment before call";
     "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
     "\t\t\tmovq %r13, %rdi";
@@ -1103,6 +1235,8 @@ let generate_string_length_method () =
   ]
 
 let generate_string_substr_method () =
+  let error_str = "ERROR: 0: Exception: String.substr out of range\\n" in
+  let error_label = get_string_label error_str in
   [
     "                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
     ".globl String.substr";
@@ -1139,7 +1273,7 @@ let generate_string_substr_method () =
     "\t\t\tmovq %rax, %r13";
     "                        cmpq $0, %r13";
     "\t\t\tjne l3";
-    "                        movq $string9, %r13";
+    "                        movq $" ^ error_label ^ ", %r13";
     "                        ## guarantee 16-byte alignment before call";
     "\t\t\tandq $0xFFFFFFFFFFFFFFF0, %rsp";
     "\t\t\tmovq %r13, %rdi";
@@ -1159,18 +1293,10 @@ let generate_string_substr_method () =
     "                        ret";
   ]
 
-(* global counter for string literals throughout program*)
-let string_literal_counter = ref 0
-let init_string_literal_counter n = string_literal_counter := n
+type vtable_mapping = (string * string, int) Hashtbl.t
 
-(* Register a string literal and return a unique label *)
-let register_string_literal literal =
-  let label = "string" ^ string_of_int !string_literal_counter in
-  incr string_literal_counter;
-  (* Optionally, record the literal in your data section table here *)
-  label
+let vtable_offsets : vtable_mapping = Hashtbl.create 100
 
-(*  generate the vtables *)
 let generate_vtables (class_map : class_map) (impl_map : impl_map)
     (parent_map : parent_map) (class_order : string list)
     (method_order : (string * string) list) =
@@ -1190,18 +1316,15 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
 
   (* Helper to get all methods for a class, including inherited ones, in proper order *)
   let rec get_all_methods class_name =
-    (* Get parent's methods, if any *)
     let parent_methods =
       match Hashtbl.find_opt parent_map class_name with
       | Some parent -> get_all_methods parent
       | None -> []
     in
-    (* Get methods defined directly in this class from method_order, excluding "new" *)
     let own_methods =
       List.filter (fun (c, m) -> c = class_name && m <> "new") method_order
       |> List.map snd
     in
-    (* Combine parent's methods and then append any new methods defined in this class *)
     parent_methods
     @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
   in
@@ -1211,7 +1334,20 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
     let string_num = Hashtbl.find string_numbers class_name in
     let methods = get_all_methods class_name in
 
-    (* Generate method entries; always prepend "new" as the constructor *)
+    (* Always include "new" as the constructor *)
+    let all_methods = "new" :: methods in
+
+    (* 8 bytes per pointer *)
+    let word_size = 8 in
+
+    (* For each method, compute the offset and populate vtable_offsets *)
+    List.iteri
+      (fun i method_name ->
+        let offset = i * word_size in
+        Hashtbl.add vtable_offsets (class_name, method_name) offset)
+      all_methods;
+
+    (* Generate the method entries assembly code *)
     let method_entries =
       List.map
         (fun method_name ->
@@ -1219,8 +1355,6 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
             if method_name = "new" then
               class_name ^ "..new"
             else
-              (* Lookup in impl_map: if the method is defined in this class, use that definition.
-                 Otherwise, recursively check parent classes. *)
               match Hashtbl.find_opt impl_map (class_name, method_name) with
               | Some (_, _, defining_class, _) ->
                   defining_class ^ "." ^ method_name
@@ -1237,7 +1371,7 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
                   defining_class ^ "." ^ method_name
           in
           "\t\t\t\t\t\t.quad " ^ label)
-        ("new" :: methods)
+        all_methods
     in
 
     (* Build the VTable assembly for this class *)
@@ -1253,16 +1387,67 @@ let generate_vtables (class_map : class_map) (impl_map : impl_map)
   (* Generate VTables for all classes in the specified order *)
   List.concat_map generate_class_vtable all_classes
 
-(* generate class tags and set defaults for internal classes*)
+let generate_vtable_offsets (class_map : class_map) (impl_map : impl_map)
+    (parent_map : parent_map) (class_order : string list)
+    (method_order : (string * string) list) : (string * string, int) Hashtbl.t =
+  let vtable_offsets = Hashtbl.create 50 in
+  let word_size = 8 in
+
+  (* Helper to get all methods for a class*)
+  let rec get_all_methods class_name =
+    let parent_methods =
+      match Hashtbl.find_opt parent_map class_name with
+      | Some parent -> get_all_methods parent
+      | None -> []
+    in
+    let own_methods =
+      List.filter (fun (c, m) -> c = class_name && m <> "new") method_order
+      |> List.map snd
+    in
+    parent_methods
+    @ List.filter (fun m -> not (List.mem m parent_methods)) own_methods
+  in
+
+  (* Iterate through each class to build its method list and record offsets *)
+  List.iter
+    (fun class_name ->
+      (* Get the ordered list of methods for this class *)
+      let methods = get_all_methods class_name in
+      (* Prepend the constructor "new" *)
+      let all_methods = "new" :: methods in
+      (* For each method, compute its offset and store in the hash table *)
+      List.iteri
+        (fun i method_name ->
+          let offset = i * word_size in
+          Hashtbl.add vtable_offsets (class_name, method_name) offset)
+        all_methods)
+    class_order;
+  vtable_offsets
+
+(* Store assigned class tags *)
+let class_tag_table = Hashtbl.create 50
+
+let () =
+  List.iter
+    (fun (cls, tag) -> Hashtbl.add class_tag_table cls tag)
+    [
+      ("Bool", 0);
+      ("Int", 1);
+      ("String", 3);
+      ("IO", 10);
+      ("Main", 11);
+      ("Object", 12);
+    ]
+
+let next_class_tag = ref 13
+
 let get_class_tag class_name =
-  match class_name with
-  | "Bool" -> 0
-  | "Int" -> 1
-  | "IO" -> 10
-  | "Main" -> 11
-  | "Object" -> 12
-  | "String" -> 3
-  | _ -> 99 (* TODO Ensure that this does not interfere with logic *)
+  try Hashtbl.find class_tag_table class_name
+  with Not_found ->
+    let tag = !next_class_tag in
+    incr next_class_tag;
+    Hashtbl.add class_tag_table class_name tag;
+    tag
 
 let get_object_size class_name class_map =
   let base_size = 3 in
@@ -1455,16 +1640,74 @@ let generate_internal_constructor class_name =
       ]
   | _ -> []
 
-(* Register allocation for TAC variables*)
+(* Register allocation for TAC variables *)
 let reg_map var =
   match var with
   | "t$0" -> "%r13" (* Return value register *)
   | "self" -> "%r12" (* Self object *)
   | var when String.starts_with ~prefix:"t$" var ->
-      (* Map other temporaries to registers or stack *)
-      let idx = int_of_string (String.sub var 2 (String.length var - 2)) in
-      string_of_int (idx * 8) ^ "(%rbp)"
-  | var -> var (* Named variables stay as-is *)
+      (* Subtract 1 so that t$1 maps to 0(%rbp), t$2 to 8(%rbp), etc. *)
+      string_of_int 0 ^ "(%rbp)"
+  | var -> var
+(* Named variables stay as-is *)
+(* Splits a variable name by the '@' character produced in tac generation *)
+
+let parse_annotated_var var =
+  try
+    let parts = String.split_on_char '@' var in
+    match parts with
+    | [ name; offset_str ] -> (name, int_of_string offset_str)
+    | _ -> (var, -1)
+  with _ -> (var, -1)
+
+(* Load a value from source into %r13 *)
+let generate_load src =
+  let name, offset = parse_annotated_var src in
+  if offset >= 0 then
+    (* It's a field in self object at offset*8 *)
+    "                        ## " ^ name ^ "\n"
+    ^ "                        movq "
+    ^ string_of_int (offset * 8)
+    ^ "(%r12), %r13\n"
+    ^ "                        movq 24(%r13), %r13" (* Get actual Int value *)
+  else
+    (* It's a local or temporary *)
+    "                        movq "
+    ^ string_of_int (-offset * 8)
+    ^ "(%rbp), %r13"
+
+(* Store into a variable *)
+let generate_store reg dest =
+  let name, offset = parse_annotated_var dest in
+  if offset >= 0 then
+    (* Store into a field in self object *)
+    "                        movq " ^ reg ^ ", "
+    ^ string_of_int (offset * 8)
+    ^ "(%r12)"
+  else
+    (* Store into a local/temporary *)
+    "                        movq " ^ reg ^ ", "
+    ^ string_of_int (-offset * 8)
+    ^ "(%rbp)"
+
+(* Track stack locations for temporaries *)
+let temp_offset = ref 0
+
+(* Get a new stack location for a temporary *)
+let get_temp_location () =
+  let offset = !temp_offset in
+  temp_offset := !temp_offset - 8;
+  (* 8 bytes per word *)
+  string_of_int offset ^ "(%rbp)"
+
+(* Reset for a new function *)
+let reset_temp_tracking () = temp_offset := 0
+
+(* registers used consistently *)
+let target_reg = "%r13" (* For results *)
+let temp_reg = "%r14" (* For temporary values *)
+let self_reg = "%r12" (* For 'self' object *)
+let arith_reg = "%rax" (* For arithmetic operations *)
 
 let translate_tac_to_assembly tac =
   match tac with
@@ -1481,33 +1724,50 @@ let translate_tac_to_assembly tac =
         "                        popq %rbp";
         "                        movq $" ^ string_of_int value ^ ", %r14";
         "                        movq %r14, 24(%r13)";
+        "                        movq 24(%r13), %r13";
+        (* Load the actual value *)
+        generate_store "%r13" dest;
       ]
   | TAC_Assign_Variable (dest, src) ->
+      (* For a variable assignment, generate a load from the source and a store to destination.*)
       [
-        "                        movq " ^ reg_map src ^ ", %r13";
-        "                        movq %r13, " ^ reg_map dest;
+        "                        ## " ^ src;
+        generate_load src;
+        "                        ## storing to " ^ dest;
       ]
+      @ [ generate_store "%r13" dest ]
   | TAC_Assign_Plus (dest, op1, op2) ->
       [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %r14";
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r13";
-        "                        addq %r13, %r14";
-        "                        movq %r14, " ^ reg_map dest;
+        (* Load first operand *)
+        generate_load (tac_expr_to_string op1);
+        "                        movq %r13, 0(%rbp)";
+        (* Store temporarily *)
+
+        (* Load second operand *)
+        generate_load (tac_expr_to_string op2);
+        "                        movq 0(%rbp), %r14";
+        (* Retrieve first operand *)
+        "                        addq %r14, %r13";
+        (* Add them *)
+        generate_store "%r13" dest;
       ]
   | TAC_Assign_Minus (dest, op1, op2) ->
       [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %r14";
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op2)
-        ^ ", %r13";
-        "                        subq %r13, %r14";
-        "                        movq %r14, " ^ reg_map dest;
+        (* Load first operand *)
+        generate_load (tac_expr_to_string op1);
+        "                        movq %r13, 0(%rbp)";
+        (* Store temporarily *)
+
+        (* Load second operand *)
+        generate_load (tac_expr_to_string op2);
+        "                        movq 0(%rbp), %r14";
+        (* Retrieve first operand *)
+        "                        movq %r14, %rax";
+        "                        subq %r13, %rax";
+        (* Subtract *)
+        "                        movq %rax, %r13";
+        (* Result to %r13 *)
+        generate_store "%r13" dest;
       ]
   | TAC_Assign_Times (dest, op1, op2) ->
       [
@@ -1520,13 +1780,40 @@ let translate_tac_to_assembly tac =
         "                        movq %rax, " ^ reg_map dest;
       ]
   | TAC_Assign_Divide (dest, op1, op2) ->
+      let div_ok_label = "l4" in
+      (* Use consistent label names like reference *)
+
       [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op1)
-        ^ ", %rax";
-        "                        cqto";
-        "                        idivq " ^ reg_map (tac_expr_to_string op2);
-        "                        movq %rax, " ^ reg_map dest;
+        (* Load operands *)
+        generate_load (tac_expr_to_string op1);
+        "                        movq %r13, -8(%rbp)";
+        (* Save to stack at -8(%rbp) *)
+        generate_load (tac_expr_to_string op2);
+        "                        movq 24(%r13), %r14";
+        (* Get divisor value *)
+        "                        cmpq $0, %r14";
+        "                        jne " ^ div_ok_label;
+        (* Division by zero handling *)
+        "                        movq $string8, %r13";
+        "                        ## guarantee 16-byte alignment before call";
+        "                        andq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "                        movq %r13, %rdi";
+        "                        call cooloutstr";
+        "                        ## guarantee 16-byte alignment before call";
+        "                        andq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "                        movl $0, %edi";
+        "                        call exit";
+        (* Division code *)
+        ".globl " ^ div_ok_label;
+        div_ok_label ^ ":                     ## division is OK";
+        "                        movq 24(%r13), %r13";
+        "                        movq -8(%rbp), %r14";
+        "movq $0, %rdx";
+        "movq %r14, %rax";
+        "cdq";
+        "idivl %r13d";
+        "movq %rax, %r13";
+        generate_store "%r13" "-8(%rbp)" (* Store at specific location *);
       ]
   | TAC_Assign_Bool (dest, b) ->
       [
@@ -1539,6 +1826,7 @@ let translate_tac_to_assembly tac =
         "                        movq %r14, " ^ reg_map dest;
       ]
   | TAC_Assign_String (dest, value) ->
+      let string_label = get_string_label value in
       [
         "                        ## new String";
         "                        pushq %rbp";
@@ -1547,9 +1835,11 @@ let translate_tac_to_assembly tac =
         "                        call *%r14";
         "                        popq %r12";
         "                        popq %rbp";
-        "                        ## load address of literal " ^ value;
-        "                        movq $" ^ value ^ ", %r14";
+        "                        ## " ^ string_label ^ " holds \"" ^ value
+        ^ "\"";
+        "                        movq $" ^ string_label ^ ", %r14";
         "                        movq %r14, 24(%r13)";
+        generate_store "%r13" dest;
       ]
   | TAC_Assign_Lt (dest, op1, op2) ->
       [
@@ -1618,13 +1908,6 @@ let translate_tac_to_assembly tac =
         "                        popq %rbp";
         "                        movq %r13, " ^ reg_map dest;
       ]
-  | TAC_Assign_Call (dest, op) ->
-      [
-        "                        movq "
-        ^ reg_map (tac_expr_to_string op)
-        ^ ", %r14";
-        "                        movq %r14, " ^ reg_map dest;
-      ]
   | TAC_Assign_Eq (dest, op1, op2) ->
       [
         "                        movq "
@@ -1638,21 +1921,6 @@ let translate_tac_to_assembly tac =
         "                        movzbq %al, %r14";
         "                        movq %r14, " ^ reg_map dest;
       ]
-  | TAC_Binary (dest, op, arg1, arg2) ->
-      [
-        "                        movq " ^ reg_map arg1 ^ ", %r14";
-        "                        movq " ^ reg_map arg2 ^ ", %r13";
-        "                        ## binary op: " ^ op;
-        (match op with
-        | "add" -> "                        addq %r13, %r14"
-        | "sub" -> "                        subq %r13, %r14"
-        | "mul" -> "                        imulq %r13, %r14"
-        | "div" ->
-            "                        cqto\n                        idivq "
-            ^ reg_map arg2
-        | _ -> "                        ## unknown binary op");
-        "                        movq %r14, " ^ reg_map dest;
-      ]
   | TAC_Jump label -> [ "                        jmp " ^ label ]
   | TAC_ConditionalJump (cond, label) ->
       [
@@ -1660,13 +1928,11 @@ let translate_tac_to_assembly tac =
         "                        je " ^ label;
       ]
   | TAC_Return var ->
-      [
-        "                        movq " ^ reg_map var ^ ", %r13";
-        "                        ## return address handling";
-        "                        movq %rbp, %rsp";
-        "                        popq %rbp";
-        "                        ret";
-      ]
+      [ (* "                        movq " ^ reg_map var ^ ", %r13"; *)
+        (* "                        ## return address handling"; *)
+        (* "                        movq %rbp, %rsp"; *)
+        (* "                        popq %rbp"; *)
+        (* "                        ret"; *) ]
   | TAC_Assign (dest, op) ->
       [
         "                        movq "
@@ -1675,16 +1941,50 @@ let translate_tac_to_assembly tac =
         "                        movq %r14, " ^ reg_map dest;
       ]
   | TAC_Call (dest, method_name, args) ->
-      let args_str = String.concat ", " args in
-      [
-        "                        pushq %rbp";
-        "                        pushq %r12";
-        "                        movq $" ^ method_name ^ ", %r14";
-        "                        call *%r14";
-        "                        popq %r12";
-        "                        popq %rbp";
-        "                        movq %r13, " ^ reg_map dest;
-      ]
+      (* Get correct offset based on method name *)
+      let method_offset =
+        match method_name with
+        | "in_int" -> "40" (* offset 5 * 8 *)
+        | "out_int" -> "56" (* offset 7 * 8 *)
+        | "out_string" -> "64" (* offset 8 * 8 *)
+        | _ -> (
+            try
+              string_of_int (Hashtbl.find vtable_offsets ("Main", method_name))
+            with Not_found -> "0")
+      in
+
+      (* Generate argument pushing code *)
+      let arg_setup =
+        List.fold_right
+          (fun arg acc ->
+            [
+              "                        ## " ^ arg;
+              generate_load arg;
+              (* Load argument into %r13 *)
+              "                        pushq %r13" (* Push onto stack *);
+            ]
+            @ acc)
+          args []
+      in
+
+      (* Complete method call sequence *)
+      arg_setup
+      @ [
+          "                        pushq %r12";
+          (* Push self *)
+          "                        ## obtain vtable for self object of type \
+           Main";
+          "                        movq 16(%r12), %r14";
+          "                        ## look up " ^ method_name ^ "() at offset "
+          ^ String.sub method_offset 0 (String.length method_offset)
+          ^ " in vtable";
+          "                        movq " ^ method_offset ^ "(%r14), %r14";
+          "                        call *%r14";
+          "                        addq $"
+          ^ string_of_int ((List.length args + 1) * 8)
+          ^ ", %rsp";
+          "                        movq %r13, " ^ reg_map dest;
+        ]
   | TAC_StaticCall (dest, obj, method_name, args) ->
       let args_str = String.concat ", " args in
       [
@@ -1741,17 +2041,6 @@ let translate_tac_to_assembly tac =
         "                        movq " ^ reg_map op ^ ", %r14";
         "                        negq %r14";
         "                        movq %r14, " ^ reg_map dest;
-      ]
-  | TAC_Assign_StaticCall (dest, obj, method_name, args) ->
-      let args_str = String.concat ", " args in
-      [
-        "                        pushq %rbp";
-        "                        pushq %r12";
-        "                        movq $" ^ method_name ^ ", %r14";
-        "                        call *%r14";
-        "                        popq %r12";
-        "                        popq %rbp";
-        "                        movq %r13, " ^ reg_map dest;
       ]
   | TAC_Assign_Default (dest, default_val) ->
       [
@@ -1932,21 +2221,6 @@ let translate_tac_to_constructor_asm tac =
         "                        movzbq %al, %r14";
         "                        movq %r14, " ^ reg_map dest;
       ]
-  | TAC_Binary (dest, op, arg1, arg2) ->
-      [
-        "                        movq " ^ reg_map arg1 ^ ", %r14";
-        "                        movq " ^ reg_map arg2 ^ ", %r13";
-        "                        ## binary op: " ^ op;
-        (match op with
-        | "add" -> "                        addq %r13, %r14"
-        | "sub" -> "                        subq %r13, %r14"
-        | "mul" -> "                        imulq %r13, %r14"
-        | "div" ->
-            "                        cqto\n                        idivq "
-            ^ reg_map arg2
-        | _ -> "                        ## unknown binary op");
-        "                        movq %r14, " ^ reg_map dest;
-      ]
   | TAC_Jump label -> [ "                        jmp " ^ label ]
   | TAC_ConditionalJump (cond, label) ->
       [
@@ -2036,17 +2310,6 @@ let translate_tac_to_constructor_asm tac =
         "                        negq %r14";
         "                        movq %r14, " ^ reg_map dest;
       ]
-  | TAC_Assign_StaticCall (dest, obj, method_name, args) ->
-      let args_str = String.concat ", " args in
-      [
-        "                        pushq %rbp";
-        "                        pushq %r12";
-        "                        movq $" ^ method_name ^ ", %r14";
-        "                        call *%r14";
-        "                        popq %r12";
-        "                        popq %rbp";
-        "                        movq %r13, " ^ reg_map dest;
-      ]
   | TAC_Assign_Default (dest, default_val) ->
       [
         "                        movq $" ^ default_val ^ ", %r14";
@@ -2091,11 +2354,10 @@ let generate_custom_constructor class_map class_name
       "                        movq %r12, %r13";
     ]
   in
-
   (* Generate initialization code for each attribute.
-     The first attribute is stored at offset 24, the second at 32, etc.
-     For each attribute, if an initializer is provided, generate code to evaluate it;
-     otherwise, call the default constructor for the attribute’s type. *)
+   The first attribute is stored at offset 24, the second at 32, etc.
+   For each attribute, if an initializer is provided, generate code to evaluate it;
+   otherwise, call the default constructor for the attribute’s type. *)
   let attr_lines =
     List.mapi
       (fun idx (attr_name, attr_type, init_opt) ->
@@ -2123,7 +2385,10 @@ let generate_custom_constructor class_map class_name
         match init_opt with
         | None -> base_init
         | Some expr ->
-            let tac_instrs, tac_result = convert class_name "<init>" expr in
+            let initial_env = Hashtbl.create 10 in
+            let tac_instrs, tac_result, _final_env =
+              convert class_name "<init>" initial_env expr
+            in
 
             (* For initializers, add comment and create a new object *)
             let init_header =
@@ -2175,6 +2440,7 @@ let generate_custom_constructor class_map class_name
 (* Generate constructors for all classes.
    For internal classes, call a separate internal constructor generator.
    For user-defined classes, extract the full attribute triple list from the class map. *)
+
 let generate_constructors (class_order : string list) (class_map : class_map) =
   List.concat_map
     (fun class_name ->
@@ -2188,12 +2454,81 @@ let generate_constructors (class_order : string list) (class_map : class_map) =
           generate_custom_constructor class_map class_name attributes)
     class_order
 
+(* Returns a list of (field_name, field_type, index) for the given class,
+   merging inherited and direct attributes while avoiding duplicates.
+    inherited attributes come first.
+*)
+let rec get_class_attributes
+    (class_map : (string, (string * string * exp option) list * 'a) Hashtbl.t)
+    (parent_map : (string, string) Hashtbl.t) (class_name : string) :
+    (string * string * int) list =
+  (* Get inherited attributes, if any *)
+  let inherited =
+    match Hashtbl.find_opt parent_map class_name with
+    | Some parent -> get_class_attributes class_map parent_map parent
+    | None -> []
+  in
+  (* Build a set/list of inherited attribute names to avoid duplicates *)
+  let inherited_names = List.map (fun (name, _, _) -> name) inherited in
+  (* For the direct attributes of this class, filter out ones that are inherited *)
+  let direct =
+    try
+      let attrs, _ = Hashtbl.find class_map class_name in
+      List.filter
+        (fun (attr_name, _attr_type, _init_opt) ->
+          not (List.mem attr_name inherited_names))
+        attrs
+      |> List.mapi (fun i (attr_name, attr_type, _init_opt) ->
+             (attr_name, attr_type, List.length inherited + i + 3))
+    with Not_found -> []
+  in
+  inherited @ direct
+
 (* Generate method definition assembly code *)
-let generate_method_definition class_name method_name params return_type body =
+let generate_method_definition class_name method_name params return_type body
+    class_map parent_map =
   let method_label = class_name ^ "." ^ method_name in
 
-  (* Header and prologue *)
-  let header =
+  (* Retrieve the attributes for the class dynamically.
+     The get_class_attributes function returns a list of (field_name, field_type, index)
+     for the given class (including inherited fields). *)
+  let attributes_comments =
+    let attrs = get_class_attributes class_map parent_map class_name in
+    List.map
+      (fun (field_name, field_type, index) ->
+        "                        ## self[" ^ string_of_int index
+        ^ "] holds field " ^ field_name ^ " (" ^ field_type ^ ")")
+      attrs
+  in
+
+  reset_temp_var_counter ();
+  reset_label_counter ();
+  reset_newloc_counter ();
+
+
+ (* Create an initial environment for the method.
+     Here, 'params' is a string list (the first component from impl_map).
+     We iterate over this list and allocate a fresh location for each parameter. *)
+  let initial_env = Hashtbl.create 10 in
+  List.iter
+    (fun param ->
+      let loc = newloc () in
+      Hashtbl.add initial_env param loc)
+    params;
+
+    (*Convert method body to TAC instructions*)
+  let tac_instrs, final_expr, _ =
+    convert class_name method_name initial_env body
+  in
+   
+  let temp_count = get_temp_var_count () in
+(* Calculate the stack space needed (8 bytes per temporary) 
+     Ensure it's 16-byte aligned by rounding up to the next multiple of 16 *)
+  let stack_space = ((temp_count * 8) + 15) / 16 * 16  in
+
+    
+  (* Build the full header dynamically *)
+let header =
     [
       "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
       ".globl " ^ method_label;
@@ -2201,17 +2536,38 @@ let generate_method_definition class_name method_name params return_type body =
       "                        pushq %rbp";
       "                        movq %rsp, %rbp";
       "                        movq 16(%rbp), %r12";
-      "                        ## stack room for temporaries: 2";
-      "                        movq $16, %r14";
+      "                        ## stack room for temporaries: " ^ string_of_int temp_count;
+      "                        movq $" ^ string_of_int stack_space ^ ", %r14";
       "                        subq %r14, %rsp";
       "                        ## return address handling";
-      "                        ## method body begins";
     ]
+    @ attributes_comments
+    @ [ "                        ## method body begins" ]
   in
+ 
+  (*     It returns a triple: (TAC instructions, result TAC expression, updated environment). *)
+ 
+  let return_var = match final_expr with TAC_Variable v -> v | _ -> "t$0" in
+  let tac_with_return = tac_instrs @ [ TAC_Return return_var ] in
+  (* Translate the generated TAC instructions into assembly instructions *)
+  let leaders = identify_leaders tac_instrs in
+  let basic_blocks = create_basic_blocks tac_with_return leaders in
+  let cfg = build_cfg basic_blocks in
 
-  let body_instrs, final_expr = convert class_name method_name body in
-  (* Translate the generated TAC instructions into assembly *)
-  let body_asm = List.concat_map translate_tac_to_assembly body_instrs in
+  print_cfg cfg;
+  (* Translate each basic block in the CFG to assembly *)
+  let body_asm =
+    Hashtbl.fold
+      (fun _ block acc ->
+        let block_code =
+          List.concat_map translate_tac_to_assembly block.instructions
+        in
+        acc
+        (*include a comment: *)
+        @ [ "                        ## Basic block: " ^ block.id ]
+        @ block_code)
+      cfg []
+  in
   (* Method epilogue *)
   let epilogue =
     [
@@ -2227,51 +2583,6 @@ let generate_method_definition class_name method_name params return_type body =
 
   header @ body_asm @ epilogue
 
-(* standard prologue and epilogue for each method*)
-let generate_method_prologue class_name method_name =
-  [
-    ".globl " ^ class_name ^ "." ^ method_name;
-    class_name ^ "." ^ method_name ^ ":           ## method definition";
-    "                        pushq %rbp";
-    "                        movq %rsp, %rbp";
-    "                        movq 16(%rbp), %r12";
-    "                        ## stack room for temporaries: 2";
-    "                        movq $16, %r14";
-    "                        subq %r14, %rsp";
-    "                        ## return address handling";
-    "                        ## method body begins";
-  ]
-
-let generate_method_epilogue class_name method_name =
-  [
-    ".globl " ^ class_name ^ "." ^ method_name ^ ".end";
-    class_name ^ "." ^ method_name ^ ".end:       ## method body ends";
-    "                        ## return address handling";
-    "                        movq %rbp, %rsp";
-    "                        popq %rbp";
-    "                        ret";
-  ]
-
-(* Analyze the tac_program to extract classes, methods, etc. *)
-let extract_method_info (tac_instrs : tac_instr list) : (string * string) option
-    =
-  (* Look for labels that match the pattern "ClassName_MethodName_0" *)
-  let rec find_method_label instrs =
-    match instrs with
-    | [] -> None
-    | TAC_Label label :: _ -> (
-        (* Check if label follows the expected format *)
-        try
-          let parts = String.split_on_char '_' label in
-          if List.length parts >= 3 then
-            Some (List.nth parts 0, List.nth parts 1)
-          else
-            None
-        with _ -> None)
-    | _ :: rest -> find_method_label rest
-  in
-  find_method_label tac_instrs
-
 let generate_all_method_definitions class_map impl_map parent_map defining_order
     =
   (* defined_methods tracks which methods have been generated already *)
@@ -2284,7 +2595,7 @@ let generate_all_method_definitions class_map impl_map parent_map defining_order
       let method_label = class_name ^ "." ^ method_name in
       if Hashtbl.mem defined_methods method_label then
         acc
-        (* skip duplicate *)
+      (* skip duplicate *)
       else (
         Hashtbl.add defined_methods method_label true;
         let method_def =
@@ -2300,61 +2611,12 @@ let generate_all_method_definitions class_map impl_map parent_map defining_order
           | "String", "length" -> generate_string_length_method ()
           | "String", "substr" -> generate_string_substr_method ()
           | _ -> (
-              (* For non-native methods, use your implementation map *)
+              (* For non-native methods, retrieve parameters, return type, defining class, and method body *)
               match Hashtbl.find_opt impl_map (class_name, method_name) with
               | Some (params, return_type, defining_class, body_exp) ->
                   if class_name = defining_class then
-                    (* Instead of converting directly to TAC, convert to a CFG *)
-                    let cfg = method_to_cfg class_name method_name body_exp in
-                    let () = print_cfg cfg in
-                    (* Header (prologue) for the method *)
-                    let header =
-                      [
-                        "                        ## \
-                         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-                        ".globl " ^ method_label;
-                        method_label ^ ":           ## method definition";
-                        "                        pushq %rbp";
-                        "                        movq %rsp, %rbp";
-                        "                        movq 16(%rbp), %r12";
-                        "                        ## stack room for \
-                         temporaries: 2";
-                        "                        movq $16, %r14";
-                        "                        subq %r14, %rsp";
-                        "                        ## method body begins";
-                      ]
-                    in
-                    (* Generate assembly for each basic block in the CFG *)
-                    let blocks_asm =
-                      Hashtbl.fold
-                        (fun _ block acc ->
-                          let block_header =
-                            [
-                              "                        ## Basic block: "
-                              ^ block.id;
-                            ]
-                          in
-                          let block_body =
-                            List.concat_map translate_tac_to_assembly
-                              block.instructions
-                          in
-                          acc @ block_header @ block_body)
-                        cfg []
-                    in
-                    (* Epilogue for the method *)
-                    let epilogue =
-                      [
-                        ".globl " ^ method_label ^ ".end";
-                        method_label ^ ".end:       ## method body ends";
-                        "                        ## return address handling";
-                        "                        movq %rbp, %rsp";
-                        "                        popq %rbp";
-                        "                        ret";
-                        "                        ## \
-                         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
-                      ]
-                    in
-                    header @ blocks_asm @ epilogue
+                    generate_method_definition class_name method_name params
+                      return_type body_exp class_map parent_map
                   else
                     []
                     (* skip inherited methods *)
@@ -2362,21 +2624,6 @@ let generate_all_method_definitions class_map impl_map parent_map defining_order
         in
         acc @ method_def))
     [] defining_order
-
-(* Track string literals and their labels *)
-let string_literal_table = ref []
-let string_literal_counter = ref 0
-
-let init_string_literal_counter n =
-  string_literal_counter := n;
-  string_literal_table := []
-
-let register_string_literal literal =
-  let label = "string" ^ string_of_int !string_literal_counter in
-  incr string_literal_counter;
-  (* Prepend the new literal so that later a List.rev returns them in registration order *)
-  string_literal_table := (label, literal) :: !string_literal_table;
-  label
 
 (* Function to generate assembly for a single string *)
 let generate_string_entry (label, literal) =
@@ -2392,109 +2639,9 @@ let generate_string_entry (label, literal) =
   ]
   @ bytes @ [ ".byte 0\t"; "\n" ]
 
-(* Collects strings from an expression.*)
-let rec collect_strings_from_exp (e : exp) =
-  match e.exp_kind with
-  | AST_String s -> [ s ]
-  | AST_Assign (_, e') -> collect_strings_from_exp e'
-  | AST_DynamicDispatch (obj, _mname, args) ->
-      collect_strings_from_exp obj
-      @ List.concat (List.map collect_strings_from_exp args)
-  | AST_StaticDispatch (obj, _tname, _mname, args) ->
-      collect_strings_from_exp obj
-      @ List.concat (List.map collect_strings_from_exp args)
-  | AST_SelfDispatch (_mname, args) ->
-      List.concat (List.map collect_strings_from_exp args)
-  | AST_If (predicate, then_branch, else_branch) ->
-      collect_strings_from_exp predicate
-      @ collect_strings_from_exp then_branch
-      @ collect_strings_from_exp else_branch
-  | AST_While (predicate, body) ->
-      collect_strings_from_exp predicate @ collect_strings_from_exp body
-  | AST_Block exprs -> List.concat (List.map collect_strings_from_exp exprs)
-  | AST_New _ -> [] (* no subexpressions to check *)
-  | AST_IsVoid e1 -> collect_strings_from_exp e1
-  | AST_Plus (e1, e2)
-  | AST_Minus (e1, e2)
-  | AST_Times (e1, e2)
-  | AST_Divide (e1, e2)
-  | AST_Lt (e1, e2)
-  | AST_Le (e1, e2)
-  | AST_Eq (e1, e2) ->
-      collect_strings_from_exp e1 @ collect_strings_from_exp e2
-  | AST_Not e1 | AST_Negate e1 -> collect_strings_from_exp e1
-  | AST_Integer _ -> [] (* not a string *)
-  | AST_Identifier _ -> [] (* not a string *)
-  | AST_True | AST_False -> [] (* booleans do not contain string literals *)
-  | AST_Let (bindings, body) ->
-      let strings_from_bindings =
-        List.concat
-          (List.map
-             (fun (_var, _type, maybe_init) ->
-               match maybe_init with
-               | Some e -> collect_strings_from_exp e
-               | None -> [])
-             bindings)
-      in
-      strings_from_bindings @ collect_strings_from_exp body
-  | AST_Case (expr, case_elements) ->
-      let strings_in_expr = collect_strings_from_exp expr in
-      let strings_in_cases =
-        List.concat
-          (List.map
-             (fun (_id, _type, e) -> collect_strings_from_exp e)
-             case_elements)
-      in
-      strings_in_expr @ strings_in_cases
-  | AST_Internal _ -> []
-
-(* Collect strings from a list of attributes.*)
-let collect_strings_from_attrs attrs =
-  List.fold_left
-    (fun acc (_, _, init) ->
-      match init with Some e -> acc @ collect_strings_from_exp e | None -> acc)
-    [] attrs
-
-(* Function to generate the string literal section *)
-let generate_string_literals (class_map : class_map) class_order impl_map =
-  init_string_literal_counter 1;
-
-  let base_strings =
-    [ ("the.empty.string", ""); ("percent.d", "%ld"); ("percent.ld", " %ld") ]
-  in
-
-  (* Register class names *)
-  List.iter (fun cls -> ignore (register_string_literal cls)) class_order;
-  (* Debug: print class names *)
-  Printf.eprintf "class order: ";
-  List.iter (fun cls -> Printf.eprintf "%s, " cls) class_order;
-  Printf.eprintf "\n";
-
-  (* Register strings from class attributes *)
-  Hashtbl.iter
-    (fun _ (attrs, _) ->
-      let strings = collect_strings_from_attrs attrs in
-      List.iter (fun s -> ignore (register_string_literal s)) strings)
-    class_map;
-
-  (*Register abort string *)
-  ignore (register_string_literal "abort\\n");
-
-  (*Register strings from methods *)
-  Hashtbl.iter
-    (fun _ (_, _, _, body) ->
-      let strings = collect_strings_from_exp body in
-      List.iter (fun s -> ignore (register_string_literal s)) strings)
-    impl_map;
-
-  (* print the entire string literal table *)
-  (* Printf.eprintf "Registered string literals:\n"; *)
-  (* List.iter *)
-  (*   (fun (label, literal) -> Printf.eprintf "  %s -> \"%s\"\n" label literal) *)
-  (*   !string_literal_table; *)
-  (**)
-
-  (* Generate assembly output as a list of lines *)
+(* Generate all string literals as assembly *)
+let generate_string_literals () =
+  (* Header *)
   let lines =
     ref
       [
@@ -2503,17 +2650,36 @@ let generate_string_literals (class_map : class_map) class_order impl_map =
       ]
   in
 
-  (* Add base string entries first *)
+  (* Base strings *)
   List.iter
-    (fun entry -> lines := !lines @ generate_string_entry entry)
+    (fun (label, literal) ->
+      lines := !lines @ generate_string_entry (label, literal))
     base_strings;
 
-  (* Then add all other registered strings (in registration order) *)
+  (* Get the real list in correct order and process each string *)
+  let entries = List.rev !string_literal_list in
   List.iter
-    (fun entry -> lines := !lines @ generate_string_entry entry)
-    (List.rev !string_literal_table);
+    (fun (label, literal) ->
+      lines := !lines @ generate_string_entry (label, literal))
+    entries;
 
   !lines
+
+(* Utility function to print the string label map for debugging *)
+let print_string_label_map () =
+  Printf.printf "---- String Label Map ----\n";
+  Hashtbl.iter
+    (fun literal label -> Printf.printf "  \"%s\" -> %s\n" literal label)
+    string_label_map;
+  Printf.printf "--------------------------\n"
+
+(* Utility function to print the string literal list *)
+let print_string_literal_list () =
+  Printf.printf "---- String Literal List (registration order) ----\n";
+  List.iter
+    (fun (label, literal) -> Printf.printf "  %s -> \"%s\"\n" label literal)
+    (List.rev !string_literal_list);
+  Printf.printf "------------------------------------------------\n"
 
 let generate_helper_functions_and_entry () =
   [
@@ -3565,10 +3731,18 @@ let main () =
         (* (**) *)
         let class_name = snd class_id in
         let method_name = snd method_id in
+        (* Create an initial environment; maybe pre-populate it with formal parameters *)
+        let initial_env = Hashtbl.create 10 in
+        (*
+              List.iter (fun (param, _) ->
+                let loc = newloc () in
+                Hashtbl.add initial_env param loc
+              ) formals;
+         *)
 
-        (* Generate TAC for the method's body with the proper context *)
-        let tac_instrs, result_expr = convert class_name method_name body in
-
+        let tac_instrs, result_expr, _final_env =
+          convert class_name method_name initial_env body
+        in
         (* Create preamble *)
         let preamble =
           [
@@ -3614,62 +3788,7 @@ let main () =
   let fout = open_out tacname in
 
   (* Emit the cl-tac program *)
-  List.iter
-    (fun tac ->
-      match tac with
-      | TAC_Comment text -> fprintf fout "comment %s\n" text
-      | TAC_Assign (target, expr) ->
-          fprintf fout "%s <- %s\n" target (tac_expr_to_string expr)
-      | TAC_Assign_Default (target, type_name) ->
-          fprintf fout "%s <- default %s\n" target type_name
-      | TAC_Assign_Int (x, i) -> fprintf fout "%s <- int %d\n" x i
-      | TAC_Assign_String (x, s) -> fprintf fout "%s <- string\n%s\n" x s
-      | TAC_Assign_Variable (x, y) -> fprintf fout "%s <- %s\n" x y
-      | TAC_Assign_Plus (x, y, z) ->
-          let op1 = tac_expr_to_string y in
-          let op2 = tac_expr_to_string z in
-          fprintf fout "%s <- + %s %s\n" x op1 op2
-      | TAC_Assign_Minus (x, y, z) ->
-          fprintf fout "%s <- - %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Times (x, y, z) ->
-          fprintf fout "%s <- * %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Divide (x, y, z) ->
-          fprintf fout "%s <- / %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Lt (x, y, z) ->
-          fprintf fout "%s <- < %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Le (x, y, z) ->
-          fprintf fout "%s <- <= %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Eq (x, y, z) ->
-          fprintf fout "%s <- = %s %s\n" x (tac_expr_to_string y)
-            (tac_expr_to_string z)
-      | TAC_Assign_Not (x, y) ->
-          fprintf fout "%s <- not %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_Negate (x, y) ->
-          fprintf fout "%s <- ~ %s\n" x (tac_expr_to_string y)
-      (* | TAC_Assign_IsVoid (x, y) -> *)
-      (*     fprintf fout "%s <- isvoid %s\n" x (tac_expr_to_string y) *)
-      | TAC_Assign_New (x, y) ->
-          fprintf fout "%s <- new %s\n" x (tac_expr_to_string y)
-      | TAC_Assign_Bool (x, b) -> fprintf fout "%s <- bool %b\n" x b
-      | TAC_Label lbl -> fprintf fout "label %s\n" lbl
-      | TAC_Jump lbl -> fprintf fout "jmp %s\n" lbl
-      | TAC_ConditionalJump (x, lbl) -> fprintf fout "bt %s %s\n" x lbl
-      | TAC_Return x -> fprintf fout "return %s\n" x
-      | TAC_Call (result, method_name, args) ->
-          fprintf fout "%s <- call %s %s\n" result method_name
-            (String.concat ", " args)
-      | TAC_Assign_StaticCall (result, obj, method_name, args) ->
-          fprintf fout "%s <- static_call %s.%s(%s)\n" result obj method_name
-            (String.concat ", " args)
-      | x ->
-          fprintf fout "ERROR: unhandled TAC Instruction: %s\n"
-            (tac_instr_to_str x))
-    tac_program;
+  List.iter (fun tac -> output_string fout (tac_instr_to_str tac)) tac_program;
 
   close_out fout;
   (* Main assembly generation function *)
@@ -3677,13 +3796,14 @@ let main () =
       (impl_map : impl_map) (parent_map : parent_map)
       (class_order : string list) : string list =
     (* Read the class information from your input files *)
-
+    collect_all_strings class_map class_order impl_map;
+    print_string_label_map ();
+    print_string_literal_list ();
     (* Generate standard vtables first *)
     let vtables =
       generate_vtables class_map impl_map parent_map class_order method_order
     in
 
-    init_string_literal_counter (List.length class_order + 2);
     (* for string literal count*)
     (* Generate method definitions *)
     let methods =
@@ -3692,9 +3812,7 @@ let main () =
     in
     let constructors = generate_constructors class_order class_map in
 
-    let string_literals =
-      generate_string_literals class_map class_order impl_map
-    in
+    let string_literals = generate_string_literals () in
 
     let helper_functions_and_entry = generate_helper_functions_and_entry () in
 

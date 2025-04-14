@@ -1,14 +1,14 @@
 comment start
 label Main_main_0
-t$1 <- i
-t$2 <- x
+t$1 <- i@3
+t$2 <- x@4
 t$3 <- < t$1 t$2
 t$4 <- not t$3
 bt t$4 Main_main_2
 bt t$3 Main_main_1
 comment then branch
 label Main_main_1
-t$5 <- x
+t$5 <- x@4
 t$6 <- int 1
 t$7 <- + t$5 t$6
 i <- t$7
@@ -16,7 +16,7 @@ t$0 <- i
 jmp Main_main_3
 comment else branch
 label Main_main_2
-t$8 <- x
+t$8 <- x@4
 t$9 <- int 3
 t$10 <- = t$8 t$9
 t$0 <- t$10

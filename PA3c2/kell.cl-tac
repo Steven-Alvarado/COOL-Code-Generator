@@ -1,0 +1,12 @@
+comment start
+label Main_main_0
+t$1 <- int 1
+t$2 <- int 3
+t$3 <- + t$1 t$2
+t$4 <- int 5
+t$5 <- + t$3 t$4
+t$6 <- y@3
+t$7 <- - t$5 t$6
+x <- t$7
+t$0 <- x
+return t$0

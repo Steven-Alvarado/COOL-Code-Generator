@@ -517,17 +517,23 @@ Main.main:           ## method definition
                         ## stack room for temporaries: 2
                         movq $16, %r14
                         subq %r14, %rsp
+                        ## return address handling
+                        ## self[3] holds field i (Int)
+                        ## self[4] holds field x (Int)
                         ## method body begins
                         ## Basic block: BB1
-                        cmpq $0, 104(%rbp)
-                        je Main_main_4
+                        cmpq $0, 0(%rbp)
+                        je Main_main_1
                         ## Basic block: BB6
                         ## if-join
                         ## Basic block: BB3
-.globl Main_main_4
-Main_main_4:
-                        movq x, %r13
-                        movq %r13, 120(%rbp)
+.globl Main_main_1
+Main_main_1:
+                        ## x@4
+                        movq 32(%r12), %r13
+                        movq 32(%r13), %r13
+                        ## storing to t$5
+                        movq %r13, 0(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -537,27 +543,40 @@ Main_main_4:
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        movq 120(%rbp), %r14
-                        movq 128(%rbp), %r13
-                        addq %r13, %r14
-                        movq %r14, 136(%rbp)
-                        movq 136(%rbp), %r13
+                        movq 24(%r13), %r13
+                        ## PLUS     ============================
+                        movq 0(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, 0(%rbp)
+                        ## t$7
+                        movq 0(%rbp), %r13
+                        ## storing to i
                         movq %r13, i
+                        ## i
                         movq i, %r13
+                        ## storing to t$0
                         movq %r13, %r13
-                        jmp Main_main_6
+                        jmp Main_main_3
                         ## Basic block: BB2
                         ## then branch
                         ## Basic block: BB4
                         ## else branch
                         ## Basic block: BB7
-.globl Main_main_6
-Main_main_6:
+.globl Main_main_3
+Main_main_3:
+                        movq %r13, %r13
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
                         ## Basic block: BB5
-.globl Main_main_5
-Main_main_5:
-                        movq x, %r13
-                        movq %r13, 144(%rbp)
+.globl Main_main_2
+Main_main_2:
+                        ## x@4
+                        movq 32(%r12), %r13
+                        movq 32(%r13), %r13
+                        ## storing to t$8
+                        movq %r13, 0(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -567,33 +586,42 @@ Main_main_5:
                         popq %rbp
                         movq $3, %r14
                         movq %r14, 24(%r13)
-                        movq 144(%rbp), %r14
-                        movq 152(%rbp), %r13
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        movq 0(%rbp), %r13
                         cmpq %r13, %r14
                         sete %al
                         movzbq %al, %r14
-                        movq %r14, 160(%rbp)
-                        movq 160(%rbp), %r13
+                        movq %r14, 0(%rbp)
+                        ## t$10
+                        movq 0(%rbp), %r13
+                        ## storing to t$0
                         movq %r13, %r13
-                        jmp Main_main_6
+                        jmp Main_main_3
                         ## Basic block: BB0
-                        movq i, %r13
-                        movq %r13, 88(%rbp)
-                        movq x, %r13
-                        movq %r13, 96(%rbp)
-                        movq 88(%rbp), %r14
-                        movq 96(%rbp), %r13
+                        ## i@3
+                        movq 24(%r12), %r13
+                        movq 24(%r13), %r13
+                        ## storing to t$1
+                        movq %r13, 0(%rbp)
+                        ## x@4
+                        movq 32(%r12), %r13
+                        movq 32(%r13), %r13
+                        ## storing to t$2
+                        movq %r13, 0(%rbp)
+                        movq 0(%rbp), %r14
+                        movq 0(%rbp), %r13
                         cmpq %r13, %r14
                         setl %al
                         movzbq %al, %r14
-                        movq %r14, 104(%rbp)
-                        movq 104(%rbp), %r14
+                        movq %r14, 0(%rbp)
+                        movq 0(%rbp), %r14
                         cmpq $0, %r14
                         sete %al
                         movzbq %al, %r14
-                        movq %r14, 112(%rbp)
-                        cmpq $0, 112(%rbp)
-                        je Main_main_5
+                        movq %r14, 0(%rbp)
+                        cmpq $0, 0(%rbp)
+                        je Main_main_2
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
