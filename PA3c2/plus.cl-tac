@@ -1,10 +1,18 @@
 comment start
 label Main_main_0
-t$0 <- y@3
-t$1 <- x@4
-t$2 <- + t$0 t$1
-x <- t$2
+t$0 <- call in_int 
+x <- t$0
 t$0 <- x
-t$3 <- y@3
-t$0 <- call out_int t$3
+t$0 <- x
+t$1 <- int 3
+t$2 <- + t$0 t$1
+t$3 <- int 4
+t$4 <- + t$2 t$3
+x <- t$4
+t$0 <- x
+t$5 <- x
+t$0 <- call out_int t$5
+t$6 <- string
+\n
+t$0 <- call out_string t$6
 return t$0

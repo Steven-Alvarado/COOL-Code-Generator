@@ -3,8 +3,10 @@ class Main inherits IO {
     y : Int <- 6;
     main () : Object{
         {
-        x <- y + x;
-        out_int(y);
+        x <- in_int();
+        x <- x + 3 + 4;
+        out_int(x);
+        out_string("\n");
        } 
     };
 };

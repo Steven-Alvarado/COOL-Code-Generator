@@ -1,9 +1,12 @@
 comment start
 label Main_main_0
-t$3 <- x
-t$4 <- int 5
-t$1 <- + t$3 t$4
-t$2 <- int 1
-z <- - t$1 t$2
-t$0 <- z
+t$2 <- z
+t$3 <- int 1
+z <- + t$2 t$3
+t$1 <- z
+t$5 <- z
+t$4 <- call out_int t$5
+t$6 <- string
+\n
+t$0 <- call out_string t$6
 return t$0

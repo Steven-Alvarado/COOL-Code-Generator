@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $6, %r12
+                        movq $4, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,12 +171,12 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $6, %r14
+                        movq $4, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
                         ## initialize attributes
-                        ## self[3] holds field x (Int)
+                        ## self[3] holds field z (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -185,27 +185,7 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
-                        ## self[4] holds field y (String)
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 32(%r12)
-                        ## initialize attributes
-                        ## self[5] holds field z (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 40(%r12)
-                        ## self[3] x initializer <- 5
+                        ## self[3] z initializer <- 5
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -216,19 +196,6 @@ Main..new:              ## constructor for Main
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer <- "hi\n"
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string7 holds "hi\n"
-                        movq $string7, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%r12)
-                        ## self[5] z initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -306,7 +273,7 @@ Object.abort:           ## method definition
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
-                        movq $string8, %r13
+                        movq $string7, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -532,15 +499,11 @@ Main.main:           ## method definition
                         movq $48, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field x (Int)
-                        ## self[4] holds field y (String)
-                        ## self[5] holds field z (Int)
+                        ## self[3] holds field z (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## Copy variable x@3 to t$0
-                        ## Load field x at offset 3
+                        ## z
                         movq 24(%r12), %r13
-                        movq 24(%r13), %r13
                         movq %r13, 0(%rbp)
                         ## new Int
                         pushq %rbp
@@ -551,25 +514,39 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        ##  t$0+t$1
                         movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        ## Copy variable t$2 to z
-                        movq 16(%rbp), %r13
-                        movq %r13, 8(%rbp)
-                        ## Copy variable z to t$0
-                        movq 8(%rbp), %r13
-                        movq %r13, 0(%rbp)
-                        ## Copy variable z@4 to t$3
-                        ## Load field z at offset 4
-                        movq 32(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 24(%rbp)
-                        ## pushing self
-                        pushq %r12
+                        movq %r13,-8(%rbp)
+                        movq 0(%rbp), %r13
+                        movq -8(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -16(%rbp)
+                        ## new Int
                         pushq %rbp
                         pushq %r12
-                       ## obtain vtable for self object of type Main
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -16(%rbp), %r13
+                        movq %r13, 24(%rbp)
+                        ## z
+                        movq 24(%r12), %r13
+                        movq %r13, 0(%rbp)
+                        ## z
+                        movq 24(%r12), %r13
+                        movq %r13, -24(%rbp)
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$3
+                        movq -24(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
                         movq 16(%r12), %r14
                         ## look up out_int() at offset 7 in vtable
                         movq 56(%r14), %r14
@@ -577,22 +554,26 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        ## new String
+                        movq %r13, 0(%rbp)
+                         ## new String
+                         pushq %rbp
+                         pushq %r12
+                         movq $String..new, %r14
+                         call *%r14
+                         popq %r12
+                         popq %rbp
+                         ## string8 holds "\n"
+                         movq $string8, %r14
+                         movq %r14, 24(%r13)
+                         movq %r13, -32(%rbp)
+                        ## out_string(...)
+                        pushq %r12
                         pushq %rbp
+                        ## t$4
+                        movq -32(%rbp), %r13
+                        pushq %r13
                         pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string9 holds "\n"
-                        movq $string9, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%rbp)
-                        ## pushing self
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                       ## obtain vtable for self object of type Main
+                        ## obtain vtable for self object of type Main
                         movq 16(%r12), %r14
                         ## look up out_string() at offset 8 in vtable
                         movq 64(%r14), %r14
@@ -600,6 +581,8 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
+                        movq %r13, 0(%rbp)
+
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
@@ -607,6 +590,7 @@ Main.main.end:       ## method body ends
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
                         pushq %rbp
@@ -712,7 +696,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string10, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -810,16 +794,7 @@ string6:			  # "String"
 
 
 .globl string7
-string7:			  # "hi\n"
-.byte 104	# 'h'
-.byte 105	# 'i'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string8
-string8:			  # "abort\n"
+string7:			  # "abort\n"
 .byte 97	# 'a'
 .byte 98	# 'b'
 .byte 111	# 'o'
@@ -830,15 +805,15 @@ string8:			  # "abort\n"
 .byte 0	
 
 
-.globl string9
-string9:			  # "\n"
+.globl string8
+string8:			  # "\n"
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
 
 
-.globl string10
-string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.globl string9
+string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -880,13 +855,13 @@ string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 32	# ' '
 .byte 111	# 'o'
 .byte 102	# 'f'
-.byte  32	# ' '
+.byte 32	# ' '
 .byte 114	# 'r'
-.byte  97	# 'a'
+.byte 97	# 'a'
 .byte 110	# 'n'
 .byte 103	# 'g'
 .byte 101	# 'e'
-.byte  92	# '\\'
+.byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
 

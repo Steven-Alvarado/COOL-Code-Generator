@@ -176,7 +176,7 @@ Main..new:              ## constructor for Main
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
                         ## initialize attributes
-                        ## self[3] holds field z (Int)
+                        ## self[3] holds field x (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -185,17 +185,7 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[3] z initializer <- 5
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
+                        ## self[3] x initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -499,10 +489,17 @@ Main.main:              ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field z (Int)
+                        ## self[3] holds field x (Int)
                         ## method body begins
-                        ## z
-                        movq 24(%r12), %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, 0(%rbp)
                         ## new Int
@@ -512,7 +509,7 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $1, %r14
+                        movq $4, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq 0(%rbp), %r14
@@ -531,7 +528,7 @@ Main.main:              ## method definition
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## z
+                        ## x
                         movq 24(%r12), %r13
                         pushq %r13
                         pushq %r12
@@ -553,7 +550,7 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds "\n"
+                        ## string8 holds " heloo\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
@@ -778,7 +775,13 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "\\n"
+string8:                # " heloo\\n"
+.byte  32 # ' '
+.byte 104 # 'h'
+.byte 101 # 'e'
+.byte 108 # 'l'
+.byte 111 # 'o'
+.byte 111 # 'o'
 .byte  92 # '\\'
 .byte 110 # 'n'
 .byte 0

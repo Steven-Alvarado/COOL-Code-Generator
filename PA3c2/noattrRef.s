@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $4, %r12
+                        movq $3, %r12
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,31 +171,10 @@ Main..new:              ## constructor for Main
                         ## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $4, %r14
+                        movq $3, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
-                        ## self[3] holds field z (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 24(%r12)
-                        ## self[3] z initializer <- 5
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -445,7 +424,7 @@ IO.out_int:             ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (?)
+                        ## fp[3] holds argument x (Int)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -474,7 +453,7 @@ IO.out_string:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (?)
+                        ## fp[3] holds argument x (String)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -495,16 +474,12 @@ Main.main:              ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 4
+                        movq $32, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field z (Int)
                         ## method body begins
-                        ## z
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
+                        ## fp[0] holds local x (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -512,27 +487,26 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $1, %r14
+                        movq $5, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
                         movq %r13, 0(%rbp)
-                        ## new Int
+                        ## fp[-1] holds local y (String)
+                        ## new String
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
+                        ## string8 holds "hi\n"
+                        movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
+                        movq %r13, -8(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## z
-                        movq 24(%r12), %r13
+                        ## x
+                        movq 0(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -546,16 +520,8 @@ Main.main:              ## method definition
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string8 holds "\n"
-                        movq $string8, %r14
-                        movq %r14, 24(%r13)
+                        ## y
+                        movq -8(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -582,7 +548,7 @@ String.concat:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument s (?)
+                        ## fp[3] holds argument s (String)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -653,8 +619,8 @@ String.substr:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[4] holds argument i (?)
-                        ## fp[3] holds argument l (?)
+                        ## fp[4] holds argument i (Int)
+                        ## fp[3] holds argument l (Int)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -778,7 +744,9 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "\\n"
+string8:                # "hi\\n"
+.byte 104 # 'h'
+.byte 105 # 'i'
 .byte  92 # '\\'
 .byte 110 # 'n'
 .byte 0

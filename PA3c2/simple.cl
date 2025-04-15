@@ -1,11 +1,9 @@
 class Main inherits IO
 {
-    x : Int <- 5;
-    y : String <- "hi\n";
-    z : Int;
+    z : Int <- 5;
     main () : Object{
         {
-        z <- x + 1;
+        z <- z + 1;
         out_int(z);
         out_string("\n");
         }

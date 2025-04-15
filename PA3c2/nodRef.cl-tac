@@ -1,0 +1,9 @@
+comment start
+label Main_main_0
+t$2 <- y
+t$3 <- int 4
+x <- + t$2 t$3
+t$1 <- x
+t$4 <- x
+t$0 <- call out_int t$4
+return t$0
