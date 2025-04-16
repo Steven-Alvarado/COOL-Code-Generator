@@ -1793,72 +1793,130 @@ let is_temp_var var =
 (*     "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13\n" ^ *)
 (*     "                        movq " ^ string_of_int field_offset ^ "(%r13), %r13" *)
 
+let accessed_fields = ref (Hashtbl.create 10) 
 let codegen context tac =
-  let class_name = context.class_name in
-  let method_name = context.method_name in
-  let class_attrs = context.class_attributes in
+    let class_name = context.class_name in
+    let method_name = context.method_name in
+    let class_attrs = context.class_attributes in
 
 
-  match tac with
-  | TAC_Comment text -> [ "                        ## " ^ text ]
-  | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
+    match tac with
+    | TAC_Comment text -> [ "                        ## " ^ text ]
+    | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
 
- 
-(* For field assignment from a temporary *)
 
-| TAC_Assign_Variable (dest, src) ->
-      let dest_offset = lookup_offset context dest in
-      if String.length src >= 2 && (String.sub src 0 2) = "t$" then
-        let src_offset = lookup_offset context src in
-        [ "                        movq " ^ string_of_int src_offset ^ "(%rbp), %r13";
-          "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ]
-      else
-        (* The source is a field name. Look up its offset from the class_attributes,
+    (* For field assignment from a temporary *)
+
+    | TAC_Assign_Variable (dest, src) ->(
+        let dest_offset = lookup_offset context dest in
+        if String.length src >= 2 && (String.sub src 0 2) = "t$" then
+            let src_offset = lookup_offset context src in
+            (* Check if the destination is a field that needs boxing *)
+            let dest_field_type = 
+                try
+                    let field_info = List.find (fun (field_name, _, _) -> field_name = dest) context.class_attributes in
+                    let (_, field_type, _) = field_info in
+                    Some field_type
+                with Not_found -> None
+            in
+
+            match dest_field_type with
+            | Some "Int" -> 
+                [ "                        ## "^ dest ^" <- " ^ src ^ " (boxed Int)";
+                    "                        pushq %rbp";
+                    "                        pushq %r12";
+                    "                        movq $Int..new, %r14";
+                    "                        call *%r14";
+                    "                        popq %r12";
+                    "                        popq %rbp";
+                    "                        movq " ^ string_of_int src_offset ^ "(%rbp), %r14";   (* Load unboxed value *)
+                    "                        movq %r14, 24(%r13)";                                 (* Store into Int object *)
+                    "                        movq %r13, " ^ string_of_int dest_offset ^ "(%r12)" ] (* Store boxed pointer *)
+            | _ -> failwith "unmatched box case in codegen"
+
+        else 
+
+            let field_offset = lookup_field_offset context src in
+(* Check if the source field has a type that needs unboxing *)
+        let src_field_type = 
+            try
+                let field_info = List.find (fun (field_name, _, _) -> field_name = src) context.class_attributes in
+                let (_, field_type, _) = field_info in
+                Some field_type
+            with Not_found -> None
+        in
+            (* Check if we've accessed this field before *)
+        let is_first_access = 
+            try
+                not (Hashtbl.find !accessed_fields src)
+            with Not_found -> 
+                (* Field not found in hashtable, this is first access *)
+                Hashtbl.add !accessed_fields src true;
+                true
+        in
+            (* The source is a field name. Look up its offset from the class_attributes,
            then load from the self object in %r12. *)
-        let field_offset = lookup_field_offset context src in
+         match src_field_type, is_first_access with
+        | Some "Int", true ->
+            (* First time accessing this Int field - load and unbox it *)
+            [ "                        ## "^dest^" <- " ^ src ^ " (unboxed Int)";
+              "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13";
+              "                        movq 24(%r13), %r13";  (* Unbox the Int value *)
+              "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ]
+        
+        | Some "Bool", true ->
+            (* First time accessing this Bool field - load and unbox it *)
+            [ "                        ## "^dest^" <- " ^ src ^ " (unboxed Bool)";
+              "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13";
+              "                        movq 24(%r13), %r13";  (* Unbox the Bool value *)
+              "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ]
+        
+        | _ ->
+            (* Either not a type that needs unboxing, or not the first access *)
+            [ "                        ## "^dest^" <- " ^ src;
+              "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13";
+                    "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ]
 
-        [ "                        ## " ^ src;
-          "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13";
-
-          (* "                        movq " ^ string_of_int field_offset ^ "(%r13), %r13"; *)
-          "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ] 
+                )      
     | TAC_Assign_Int (dest, value) ->
-    let dest_offset = lookup_offset context dest in
-    [ "                        ## new Int"
-    ; "                        pushq %rbp"
-    ; "                        pushq %r12"
-    ; "                        movq $Int..new, %r14"
-    ; "                        call *%r14"
-    ; "                        popq %r12"
-    ; "                        popq %rbp"
-    ; "                        movq $" ^ string_of_int value ^ ", %r14"
-    ; "                        movq %r14, 24(%r13)"   (* Store the integer literal into the new Int object *)
-    ; "                        movq 24(%r13), %r13" 
-    ; "                        movq %r13," ^ string_of_int dest_offset ^ "(%rbp)"
+        let dest_offset = lookup_offset context dest in
+        [ 
+            "                        ## new Int " ^dest^ " <- " ^ string_of_int value
+            ; "                        pushq %rbp"
+            ; "                        pushq %r12"
+            ; "                        movq $Int..new, %r14"
+            ; "                        call *%r14"
+            ; "                        popq %r12"
+            ; "                        popq %rbp"
+            ; "                        movq $" ^ string_of_int value ^ ", %r14"
+            ; "                        movq %r14, 24(%r13)"   (* Store the integer literal into the new Int object *)
+            ; "                        movq 24(%r13), %r13" 
+            ; "                        movq %r13," ^ string_of_int dest_offset ^ "(%rbp)"
         ]
-| TAC_Assign_String (dest, value) ->
-    let string_label = get_string_label value in
-    (* Compute where dest should be stored using lookup_offset *)
-    let dest_offset = lookup_offset context dest in
-    [ "                         ## new String";
-      "                         pushq %rbp";
-      "                         pushq %r12";
-      "                         movq $String..new, %r14";
-      "                         call *%r14";
-      "                         popq %r12";
-      "                         popq %rbp";
-      (Printf.sprintf "                         ## %s holds \"%s\"" string_label value);
-      (Printf.sprintf "                         movq $%s, %%r14" string_label);
-      "                         movq %r14, 24(%r13)";  (* Store string pointer into String object *)
-      "                         movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" (* Store String object in destination *)
+    | TAC_Assign_String (dest, value) ->
+        let string_label = get_string_label value in
+        (* Compute where dest should be stored using lookup_offset *)
+        let dest_offset = lookup_offset context dest in
+        [ "                        ## new String " ^dest^ " <- " ^ "\""^value^"\"";
+            "                        pushq %rbp";
+            "                        pushq %r12";
+            "                        movq $String..new, %r14";
+            "                        call *%r14";
+            "                        popq %r12";
+            "                        popq %rbp";
+            (Printf.sprintf "                        ## %s holds \"%s\"" string_label value);
+            (Printf.sprintf "                        movq $%s, %%r14" string_label);
+            "                        movq %r14, 24(%r13)";  (* Store string pointer into String object *)
+            "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" (* Store String object in destination *)
 
-    ]
- (* TAC_Assign_Plus: Add two operands and store result in dest *)
+        ]
+    (* TAC_Assign_Plus: Add two operands and store result in dest *)
 | TAC_Assign_Plus (dest, e1, e2) ->
     let op1 = tac_expr_to_string e1 in
     let op2 = tac_expr_to_string e2 in
     let dest_offset = lookup_offset context dest in
         [
+            "                        ## " ^ dest ^ " <- " ^ op1 ^ " + " ^  op2;
             (* Load t$0 from stack into %r13, then unbox its int value *)
             "                        movq " ^ string_of_int (lookup_offset context op1) ^ "(%rbp), %r13";
 
@@ -1869,17 +1927,17 @@ let codegen context tac =
             "                        addq %r14, %r13";
             "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)";
 
-            "                        ## new Int";
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $Int..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            "                        movq "  ^ string_of_int dest_offset ^ "(%rbp), %r14";
-            "                        movq %r14, 24(%r13)";
-            "                        movq 24(%r13), %r13";
-            "                        movq %r13, "  ^ string_of_int dest_offset ^ "(%rbp)";
+        (*     "                        ## new Int"; *)
+        (*     "                        pushq %rbp"; *)
+        (*     "                        pushq %r12"; *)
+        (*     "                        movq $Int..new, %r14"; *)
+        (*     "                        call *%r14"; *)
+        (*     "                        popq %r12"; *)
+        (*     "                        popq %rbp"; *)
+        (*     "                        movq "  ^ string_of_int dest_offset ^ "(%rbp), %r14"; *)
+        (*     "                        movq %r14, 24(%r13)"; *)
+        (*     "                        movq 24(%r13), %r13"; *)
+        (*     "                        movq %r13, "  ^ string_of_int dest_offset ^ "(%rbp)"; *)
         ]
     | TAC_Return r ->
         [""]
@@ -1969,7 +2027,19 @@ let codegen context tac =
 
  | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
 
-let constructor_codegen tac =
+(* Helper function specifically for constructor codegen to look up field offsets *)
+let constructor_lookup_field_offset attributes field =
+  let rec find_index idx = function
+    | [] -> failwith ("constructor_lookup_field_offset: field not found: " ^ field)
+    | (attr_name, _, _) :: rest -> 
+        if attr_name = field then 
+          string_of_int (24 + (idx * 8))  (* Convert index to actual byte offset *)
+        else 
+          find_index (idx + 1) rest
+  in
+  find_index 0 attributes
+
+let constructor_codegen attributes tac =
   match tac with
   | TAC_Comment text -> [ "                        ## " ^ text ]
   | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
@@ -1986,9 +2056,19 @@ let constructor_codegen tac =
         "                        movq %r14, 24(%r13)";
       ]
   | TAC_Assign_Variable (dest, src) ->
-      (* Simply load the source value and store it into the destination. *)
-      [
-        "                        ## Copy variable " ^ src ^ " to " ^ dest;
+     (* (* Check if source is a field or a temporary *) *)
+     (*  if String.length src >= 2 && (String.sub src 0 2) = "t$" then *)
+     (*    (* Source is a temporary *) *)
+     (*    let src_offset = (* UNSURE IF necessary compute temporary offsets *) in *)
+     (*    [ *)
+     (*      "                        ## Copy temporary " ^ src ^ " to " ^ dest; *)
+     (*      "                        movq " ^ string_of_int src_offset ^ "(%rbp), %r13"; *)
+     (*    ] *)
+     (*  else *)
+        (* Source is a field *)
+        [
+          "                        ## Copy field " ^ src ^ " to " ^ dest;
+          "                        movq " ^ constructor_lookup_field_offset attributes src ^ "(%r12), %r13";
         ]
  | TAC_Assign_String (dest, value) ->
       let string_label = get_string_label value in
@@ -2304,7 +2384,7 @@ let generate_custom_constructor class_map class_name
             in
 
             (* Generate code for the initializer value *)
-            let init_code = List.concat_map constructor_codegen tac_instrs in
+            let init_code = List.concat_map (constructor_codegen attributes) tac_instrs in
 
             (* Store initialized object in the right field *)
             let store_init =

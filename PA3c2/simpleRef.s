@@ -514,7 +514,6 @@ Main.main:              ## method definition
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
                         movq 0(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, 0(%rbp)

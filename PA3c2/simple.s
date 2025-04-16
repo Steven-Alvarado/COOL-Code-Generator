@@ -502,10 +502,11 @@ Main.main:           ## method definition
                         ## self[3] holds field z (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## z
+                        ## t$0 <- z (unboxed Int)
                         movq 24(%r12), %r13
+                        movq 24(%r13), %r13
                         movq %r13, 0(%rbp)
-                        ## new Int
+                        ## new Int t$1 <- 1
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -516,11 +517,12 @@ Main.main:           ## method definition
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13,-8(%rbp)
+                        ## t$2 <- t$0 + t$1
                         movq 0(%rbp), %r13
                         movq -8(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -16(%rbp)
-                        ## new Int
+                        ## z <- t$2 (boxed Int)
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -529,14 +531,11 @@ Main.main:           ## method definition
                         popq %rbp
                         movq -16(%rbp), %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -16(%rbp)
-                        movq -16(%rbp), %r13
-                        movq %r13, 24(%rbp)
-                        ## z
+                        movq %r13, 24(%r12)
+                        ## t$0 <- z
                         movq 24(%r12), %r13
                         movq %r13, 0(%rbp)
-                        ## z
+                        ## t$3 <- z
                         movq 24(%r12), %r13
                         movq %r13, -24(%rbp)
                         ## out_int(...)
@@ -555,17 +554,17 @@ Main.main:           ## method definition
                         popq %rbp
                         popq %r12
                         movq %r13, 0(%rbp)
-                         ## new String
-                         pushq %rbp
-                         pushq %r12
-                         movq $String..new, %r14
-                         call *%r14
-                         popq %r12
-                         popq %rbp
-                         ## string8 holds "\n"
-                         movq $string8, %r14
-                         movq %r14, 24(%r13)
-                         movq %r13, -32(%rbp)
+                        ## new String t$4 <- "\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds "\n"
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -32(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
