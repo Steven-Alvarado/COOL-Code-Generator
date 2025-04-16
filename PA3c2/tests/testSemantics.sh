@@ -61,8 +61,8 @@ for test in *.cl-type; do
     # Change to the temporary directory
     pushd "$tmpdir" > /dev/null
     
-    # Run the reference compiler on base.cl
-    if ! cool --x86 "${base}.cl" --out "${base}Ref" 2>/dev/null; then
+    # Run the reference compiler on base.cl-type
+    if ! cool --x86 "${base}.cl-type" --out "${base}Ref" 2>/dev/null; then
         echo "Reference compiler failed for ${base}"
         failed=$((failed+1))
         failed_tests+=("$base (reference compiler failed)")

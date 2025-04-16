@@ -7,11 +7,12 @@ bt t$0 Main_main_1
 comment then branch
 label Main_main_1
 t$2 <- x
+t$0 <- call out_int t$2
 jmp Main_main_3
 comment else branch
 label Main_main_2
 t$3 <- string
-0
+false
 t$0 <- call out_string t$3
 t$0 <- t$0
 jmp Main_main_3

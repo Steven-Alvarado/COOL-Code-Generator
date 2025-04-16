@@ -216,6 +216,9 @@ integer
 10
 7
 Int
+divide
+7
+Int
 times
 7
 Int
@@ -232,6 +235,10 @@ integer
 Int
 integer
 5
+7
+Int
+integer
+34
 8
 Int
 assign
@@ -249,6 +256,9 @@ Int
 times
 8
 Int
+divide
+8
+Int
 times
 8
 Int
@@ -257,7 +267,11 @@ integer
 8
 Int
 integer
-38
+3
+8
+Int
+integer
+8
 8
 Int
 integer
@@ -439,6 +453,9 @@ integer
 10
 7
 Int
+divide
+7
+Int
 times
 7
 Int
@@ -455,6 +472,10 @@ integer
 Int
 integer
 5
+7
+Int
+integer
+34
 8
 Int
 assign
@@ -472,6 +493,9 @@ Int
 times
 8
 Int
+divide
+8
+Int
 times
 8
 Int
@@ -480,7 +504,11 @@ integer
 8
 Int
 integer
-38
+3
+8
+Int
+integer
+8
 8
 Int
 integer

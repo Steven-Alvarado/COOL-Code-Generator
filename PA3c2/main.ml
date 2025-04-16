@@ -101,7 +101,7 @@ type tac_instr =
     | TAC_Assign_Plus of string * tac_expr * tac_expr (* temp3 <- + temp1 temp2 *)
     | TAC_Assign_Minus of string * tac_expr * tac_expr
     | TAC_Assign_Times of string * tac_expr * tac_expr
-    | TAC_Assign_Divide of string * tac_expr * tac_expr
+    | TAC_Assign_Divide of string * tac_expr * tac_expr * string
     | TAC_Assign_Bool of string * bool (* temp1 <- bool true *)
     | TAC_Assign_String of string * string (* temp1 <- string "hi" *)
     | TAC_Assign_Lt of string * tac_expr * tac_expr
@@ -161,7 +161,7 @@ let tac_instr_to_str x =
     | TAC_Assign_Times (x, y, z) ->
         Printf.sprintf "%s <- * %s %s\n" x (tac_expr_to_string y)
             (tac_expr_to_string z)
-    | TAC_Assign_Divide (x, y, z) ->
+    | TAC_Assign_Divide (x, y, z, _(*loc*)) ->
         Printf.sprintf "%s <- / %s %s\n" x (tac_expr_to_string y)
             (tac_expr_to_string z)
     | TAC_Assign_Lt (x, y, z) ->
@@ -199,7 +199,7 @@ let tac_instr_name instr =
     | TAC_Assign_Plus (_, _, _) -> "TAC_Assign_Plus"
     | TAC_Assign_Minus (_, _, _) -> "TAC_Assign_Minus"
     | TAC_Assign_Times (_, _, _) -> "TAC_Assign_Times"
-    | TAC_Assign_Divide (_, _, _) -> "TAC_Assign_Divide"
+    | TAC_Assign_Divide (_, _, _, _) -> "TAC_Assign_Divide"
     | TAC_Assign_Lt (_, _, _) -> "TAC_Assign_Lt"
     | TAC_Assign_Le (_, _, _) -> "TAC_Assign_Le"
     | TAC_Assign_Eq (_, _, _) -> "TAC_Assign_Eq"
@@ -424,11 +424,12 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let to_output = TAC_Assign_Times (new_var, ta1, ta2) in
         (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
     | AST_Divide (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
+        let line_number = a.loc in
+        let i1, ta1, env1 =  convert current_class current_method env a1 in
         let i2, ta2, env2 = convert current_class current_method env1 a2 in
         let new_var = fresh_variable () in
-        let to_output = TAC_Assign_Divide (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        let instr = TAC_Assign_Divide (new_var, ta1, ta2, line_number) in
+        (i1 @ i2 @ [ instr ], TAC_Variable new_var, env2)
     | AST_Lt (a1, a2) ->
         let i1, ta1, env1 = convert current_class current_method env a1 in
         let i2, ta2, env2 = convert current_class current_method env1 a2 in
@@ -979,8 +980,9 @@ let collect_all_strings class_map class_order impl_map =
             List.iter (fun s -> ignore (register_string_literal s)) strings)
         impl_map;
 
-    (* Add default exception messages *)
-    ignore
+
+
+ignore
         (register_string_literal
             "ERROR: 0: Exception: String.substr out of range\\n");
 
@@ -1782,6 +1784,9 @@ let lookup_field_offset context field =
     with Not_found ->
         failwith ("lookup_field_offset: field not found: " ^ field)
 
+(* function to determin if it is a temp variable*)
+let is_temp_var name =
+  String.length name >= 2 && String.sub name 0 2 = "t$"
 
 let lookup_temp_location context var =
     try
@@ -1938,40 +1943,43 @@ let codegen context tac =
             "                        imulq %r14, %r13";
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
         ]
-    | TAC_Assign_Divide (dest, e1, e2) ->
-        let op1 = tac_expr_to_string e1 in
-        let op2 = tac_expr_to_string e2 in
-        let dest_offset = lookup_offset context dest in
-        [
-            "                        ## " ^ dest ^ " <- " ^ op1 ^ " / " ^ op2;
-            (* Load dividend from stack into %r13 *)
-            "                        movq " ^ string_of_int (lookup_offset context op1) ^ "(%rbp), %r13";
-            (* Load divisor from stack into %r14 *)
-            "                        movq " ^ string_of_int (lookup_offset context op2) ^ "(%rbp), %r14";
-            (* Check for division by zero *)
-            "                        cmpq $0, %r14";
-            "                        jne division_ok_" ^ dest;
-            (* Division by zero error handling *)
-            "                        movq $division_by_zero_error, %r13";
-            "                        ## guarantee 16-byte alignment before call";
-            "                        andq $0xFFFFFFFFFFFFFFF0, %rsp";
-            "                        movq %r13, %rdi";
-            "                        call cooloutstr";
-            "                        ## guarantee 16-byte alignment before call";
-            "                        andq $0xFFFFFFFFFFFFFFF0, %rsp";
-            "                        movl $0, %edi";
-            "                        call exit";
-            ".globl division_ok_" ^ dest;
-            "division_ok_" ^ dest ^ ":                     ## division is OK";
-            (* Perform the division *)
-            "                        movq $0, %rdx";
-            "                        movq %r13, %rax";
-            "                        cdq";
-            "                        idivl %r14d";
-            "                        movq %rax, %r13";
-            (* Store result *)
-            "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)";
-        ]
+
+    | TAC_Assign_Divide (dest, e1, e2, line_number) ->
+    let op1 = tac_expr_to_string e1 in
+    let op2 = tac_expr_to_string e2 in
+    let dest_locs = lookup_temp_location context dest in
+    let op1_locs = lookup_temp_location context op1 in
+    let op2_locs = lookup_temp_location context op2 in
+    let label_div_ok = fresh_label context.class_name context.method_name ^ "_div_ok" in
+    let error_msg = "ERROR: " ^ line_number ^": Exception: division by zero\\n" in
+    let div_err_label = get_string_label error_msg in
+    [
+        "                        ## " ^ dest ^ " <- " ^ op1 ^ " / " ^ op2;
+        Printf.sprintf "                        movq %d(%%rbp), %%r13" op2_locs.value_offset;
+        "                        cmpq $0, %r13";
+        "           jne " ^ label_div_ok;
+
+        Printf.sprintf "                        movq $%s, %%r13" div_err_label;
+        "                        ## division by zero detected";
+        "                        ## guarantee 16-byte alignment before call";
+        "           andq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "           movq %r13, %rdi";
+        "           call cooloutstr";
+        "                        ## guarantee 16-byte alignment before call";
+        "           andq $0xFFFFFFFFFFFFFFF0, %rsp";
+        "           movl $0, %edi";
+        "           call exit";
+        ".global "^ label_div_ok;
+        label_div_ok ^ ":        ## division is okay ";
+        Printf.sprintf "                        movq %d(%%rbp), %%r14" op1_locs.value_offset;
+        "           movq $0, %rdx";
+        "           movq %r14, %rax";
+        "           cdq";
+        "           idivq %r13";
+        "           movq %rax, %r13";
+        Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
+    ]
+
     | TAC_Assign_Lt (dest, op1, op2) ->
         ["              ## " ^ dest ^ " <- " ^ tac_expr_to_string op1 ^ " < "^ tac_expr_to_string  op2]
     | TAC_Assign_Le (dest, op1, op2) ->
@@ -3766,8 +3774,8 @@ let main () =
         (impl_map : impl_map) (parent_map : parent_map)
         (class_order : string list) : string list =
         (* Read the class information from your input files *)
-        collect_all_strings class_map class_order impl_map;
 
+        collect_all_strings class_map class_order impl_map;
         (* print_string_label_map (); *)
         (* print_string_literal_list (); *)
         (* Generate standard vtables first *)
@@ -3784,6 +3792,7 @@ let main () =
         let constructors = generate_constructors class_order class_map in
 
         print_explicitly_initialized_fields ();
+
         let string_literals = generate_string_literals () in
 
         let helper_functions_and_entry = generate_helper_functions_and_entry () in

@@ -1,6 +1,0 @@
-comment start
-label Main_main_0
-t$0 <- string
-hello world\n
-t$0 <- call out_string t$0
-return t$0
