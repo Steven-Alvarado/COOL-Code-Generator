@@ -4,7 +4,8 @@ class Main inherits IO{
     main () : Object{
         {
         x <- in_int();
-        y <- x + 10 - 5 / 3 * 5;
+        y <- x + 10 - 5 * 3 * 5;
+        y <- 32 - 84 * 38 * 32;
         out_int(y);
         out_string("\n");
         out_string("finally\n");
