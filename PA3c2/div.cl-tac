@@ -1,0 +1,8 @@
+comment start
+label Main_main_0
+t$0 <- x
+t$1 <- y
+t$2 <- / t$0 t$1
+x <- t$2
+t$0 <- x
+return t$0

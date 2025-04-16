@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $6, %r12
+                        movq $7, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,7 +171,7 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $6, %r14
+                        movq $7, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
@@ -205,6 +205,16 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 40(%r12)
+                        ## initialize attributes
+                        ## self[6] holds field s (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 48(%r12)
                         ## self[3] x initializer <- 1
                         ## new Int
                         pushq %rbp
@@ -227,10 +237,11 @@ Main..new:              ## constructor for Main
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 32(%r12)
-                        ## self[5] z initializer <- t$9
-                        ## Copy field x to t$9
+                        ## self[5] z initializer <- t$13
+                        ## Copy field x to t$13
                         movq 24(%r12), %r13
                         movq %r13, 40(%r12)
+                        ## self[6] s initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -530,85 +541,32 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 7
-                        movq $64, %r14
+                        ## stack room for temporaries: 11
+                        movq $96, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## self[3] holds field x (Int)
                         ## self[4] holds field y (Int)
                         ## self[5] holds field z (Int)
+                        ## self[6] holds field s (String)
                         ## method body begins
                         ## Basic block: BB0
-                        ## t$0 <- y (unboxed Int)
-                        movq 32(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## t$1 <- x (unboxed Int)
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
-                        ## t$2 <- t$0 + t$1
-                        movq 0(%rbp), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -16(%rbp)
-                        ## t$3 <- z (unboxed Int)
-                        movq 40(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -24(%rbp)
-                        ## t$4 <- t$2 + t$3
-                        movq -16(%rbp), %r13
-                        movq -24(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -32(%rbp)
-                        ## x <- t$4 (boxed Int)
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -32(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        ## t$0 <- x
-                        movq 24(%r12), %r13
-                        movq %r13, 0(%rbp)
-                        ## t$5 <- x
-                        movq 24(%r12), %r13
-                        movq %r13, -40(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$5
-                        movq -40(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq %r13, 0(%rbp)
-                        ## new String t$6 <- " :D yayy\n"
+                        ## new String t$0 <- " enter string: \n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds " :D yayy\n"
+                        ## string8 holds " enter string: \n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -48(%rbp)
+                        movq %r13, 0(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$6
-                        movq -48(%rbp), %r13
+                        ## t$0
+                        movq 0(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -619,7 +577,204 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
+                        movq %r13, 24(%r12)
+                        ## in_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up in_string() at offset 6 in vtable
+                        movq 48(%r14), %r14
+                        call *%r14
+                        addq $8, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## s <- t$0 (boxed Int)
+                        ## t$0 <- s
+                        movq 48(%r12), %r13
                         movq %r13, 0(%rbp)
+                        ## new String t$1 <- "enter int:\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string9 holds "enter int:\n"
+                        movq $string9, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$1
+                        movq -8(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## in_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up in_int() at offset 5 in vtable
+                        movq 40(%r14), %r14
+                        call *%r14
+                        addq $8, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## x <- t$0 (boxed Int)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
+                        ## t$0 <- x (unboxed Int)
+                        movq 24(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
+                        ## t$2 <- y (unboxed Int)
+                        movq 32(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        ## t$3 <- x
+                        movq 24(%r12), %r13
+                        movq %r13, -24(%rbp)
+                        ## t$4 <- t$2 + t$3
+                        movq -16(%rbp), %r13
+                        movq -24(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -32(%rbp)
+                        ## t$5 <- z (unboxed Int)
+                        movq 40(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, -40(%rbp)
+                        ## t$6 <- t$4 + t$5
+                        movq -32(%rbp), %r13
+                        movq -40(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -48(%rbp)
+                        ## x <- t$6 (boxed Int)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -48(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
+                        ## t$0 <- x
+                        movq 24(%r12), %r13
+                        movq %r13, 0(%rbp)
+                        ## t$7 <- x
+                        movq 24(%r12), %r13
+                        movq %r13, -56(%rbp)
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$7
+                        movq -56(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## new String t$8 <- " :D yayy\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds " :D yayy\n"
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -64(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$8
+                        movq -64(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## t$9 <- s
+                        movq 48(%r12), %r13
+                        movq %r13, -72(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$9
+                        movq -72(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## new String t$10 <- "\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -80(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$10
+                        movq -80(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
 
 .globl Main.main.end
 Main.main.end:       ## method body ends
@@ -734,7 +889,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string9, %r13
+                        movq $string12, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -844,7 +999,46 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # " :D yayy\n"
+string8:			  # " enter string: \n"
+.byte 32	# ' '
+.byte 101	# 'e'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 101	# 'e'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 115	# 's'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string9
+string9:			  # "enter int:\n"
+.byte 101	# 'e'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 101	# 'e'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 58	# ':'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string10
+string10:			  # " :D yayy\n"
 .byte 32	# ' '
 .byte 58	# ':'
 .byte 68	# 'D'
@@ -858,8 +1052,15 @@ string8:			  # " :D yayy\n"
 .byte 0	
 
 
-.globl string9
-string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.globl string11
+string11:			  # "\n"
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string12
+string12:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'

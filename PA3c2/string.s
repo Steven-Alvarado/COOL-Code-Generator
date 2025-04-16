@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $3, %r12
+                        movq $4, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,10 +171,21 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $3, %r14
+                        movq $4, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
+                        ## initialize attributes
+                        ## self[3] holds field y (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 24(%r12)
+                        ## self[3] y initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -478,42 +489,73 @@ Main.main:           ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
+                        ## self[3] holds field y (String)
                         ## method body begins
                         ## Basic block: BB0
-                        ## new String
+                        ## in_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up in_string() at offset 6 in vtable
+                        movq 48(%r14), %r14
+                        call *%r14
+                        addq $8, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## y <- t$0 (boxed Int)
+                        ## t$0 <- y
+                        movq 24(%r12), %r13
+                        movq %r13, 0(%rbp)
+                        ## t$0 <- y
+                        movq 24(%r12), %r13
+                        movq %r13, 0(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## t$0
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+                        ## new String t$1 <- "\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds "hi"
+                        ## string8 holds "\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
                         movq %r13, -8(%rbp)
-                        ## Copy variable t$0 to x@3
-                        movq -8(%rbp), %r13
-                        movq %r13, 24(%r12)
-                        ## Copy variable x@3 to t$1
-                        ## Load field x at offset 3
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -16(%rbp)
-                        ## pushing arg t$1
-                        movq -16(%rbp), %r13
-                        pushq %r13
-                        ## pushing self
+                        ## out_string(...)
                         pushq %r12
-                        ## get vtable for self object
+                        pushq %rbp
+                        ## t$1
+                        movq -8(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
                         movq 16(%r12), %r14
-                        ## call out_string
-                        ## look up method at appropriate offset in vtable
-                        movq 56(%r14), %r14
-                        andq $0xFFFFFFFFFFFFFFF0, %rsp
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
                         addq $16, %rsp
-                        ## store return value
-                        movq %r13, -8(%rbp)
+                        popq %rbp
+                        popq %r12
+                        movq %r13, 24(%r12)
+
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
@@ -737,9 +779,9 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "hi"
-.byte 104	# 'h'
-.byte 105	# 'i'
+string8:			  # "\n"
+.byte 92	# '\\'
+.byte 110	# 'n'
 .byte 0	
 
 

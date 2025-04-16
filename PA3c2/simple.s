@@ -553,7 +553,7 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, 0(%rbp)
+                        movq %r13, 24(%r12)
                         ## new String t$4 <- "\n"
                         pushq %rbp
                         pushq %r12
@@ -580,7 +580,7 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, 0(%rbp)
+                        movq %r13, 24(%r12)
 
 .globl Main.main.end
 Main.main.end:       ## method body ends

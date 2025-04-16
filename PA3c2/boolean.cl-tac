@@ -1,0 +1,50 @@
+comment start
+label Main_main_0
+t$0 <- int 0
+result <- t$0
+t$1 <- isTrue
+t$2 <- not t$1
+bt t$2 Main_main_2
+bt t$1 Main_main_1
+comment then branch
+label Main_main_1
+t$3 <- x
+result <- t$3
+t$0 <- result
+jmp Main_main_3
+comment else branch
+label Main_main_2
+t$4 <- int 0
+result <- t$4
+t$0 <- result
+t$0 <- t$0
+jmp Main_main_3
+comment if-join
+label Main_main_3
+t$5 <- isFalse
+t$6 <- not t$5
+bt t$6 Main_main_5
+bt t$5 Main_main_4
+comment then branch
+label Main_main_4
+t$7 <- result
+t$8 <- y
+t$9 <- - t$7 t$8
+result <- t$9
+t$0 <- result
+jmp Main_main_6
+comment else branch
+label Main_main_5
+t$10 <- result
+t$11 <- y
+t$12 <- + t$10 t$11
+result <- t$12
+t$0 <- result
+t$0 <- t$0
+jmp Main_main_6
+comment if-join
+label Main_main_6
+t$13 <- new IO
+t$14 <- result
+t$0 <- call out_int t$14
+return t$0

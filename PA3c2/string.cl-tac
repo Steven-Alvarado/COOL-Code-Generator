@@ -1,8 +1,11 @@
 comment start
 label Main_main_0
-t$0 <- string
-hi
-x@3 <- t$0
-t$1 <- x@3
+t$0 <- call in_string 
+y <- t$0
+t$0 <- y
+t$0 <- y
+t$0 <- call out_string t$0
+t$1 <- string
+\n
 t$0 <- call out_string t$1
 return t$0
