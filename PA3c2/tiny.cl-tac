@@ -1,0 +1,14 @@
+comment start
+label Main_main_0
+t$0 <- x
+t$1 <- int 10
+t$2 <- ~ t$1
+t$3 <- + t$0 t$2
+y <- t$3
+t$0 <- y
+t$4 <- y
+t$0 <- call out_int t$4
+t$5 <- string
+\n
+t$0 <- call out_string t$5
+return t$0

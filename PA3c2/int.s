@@ -157,7 +157,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -185,7 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
                         ## self[4] holds field y (Int)
                         ## new Int
                         pushq %rbp
@@ -206,7 +205,7 @@ Main..new:              ## constructor for Main
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer -- none 
+                        ## self[4] y initializer -- none
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -506,8 +505,8 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 23
-                        movq $368, %r14
+                        ## stack room for temporaries: 28
+                        movq $448, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## self[3] holds field x (Int)
@@ -549,7 +548,7 @@ Main.main:           ## method definition
                        movq %r13, -8(%rbp)
                        movq 24(%r13), %r13
                        movq %r13, -16(%rbp)
-                        ## new Int t$1 <- 10
+                        ## new int t$1 <- 10
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -566,7 +565,7 @@ Main.main:           ## method definition
                         movq -32(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -48(%rbp)
-                        ## new Int t$3 <- 5
+                        ## new int t$3 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -578,7 +577,7 @@ Main.main:           ## method definition
                         movq %r13, -56(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -64(%rbp)
-                        ## new Int t$4 <- 3
+                        ## new int t$4 <- 3
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -595,7 +594,7 @@ Main.main:           ## method definition
                         movq -80(%rbp), %r14
                         imulq %r14, %r13
                         movq %r13, -96(%rbp)
-                        ## new Int t$6 <- 5
+                        ## new int t$6 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -612,7 +611,7 @@ Main.main:           ## method definition
                         movq -112(%rbp), %r14
                         imulq %r14, %r13
                         movq %r13, -128(%rbp)
-                        ## new Int t$8 <- 34
+                        ## new int t$8 <- 34
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -628,7 +627,7 @@ Main.main:           ## method definition
                         movq -144(%rbp), %r13
                         cmpq $0, %r13
            jne Main_main_0_div_ok
-                        movq $string11, %r13
+                        movq $string12, %r13
                         ## division by zero detected
                         ## guarantee 16-byte alignment before call
            andq $0xFFFFFFFFFFFFFFF0, %rsp
@@ -667,7 +666,12 @@ Main_main_0_div_ok:        ## division is okay
                        movq %r13, -8(%rbp)
                        movq 24(%r13), %r13
                        movq %r13, -16(%rbp)
-                        ## new Int t$11 <- 32
+                       ## t$11 <- y
+                       movq 32(%r12), %r13
+                       movq %r13, -184(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -192(%rbp)
+                        ## new int t$12 <- 32
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -676,10 +680,15 @@ Main_main_0_div_ok:        ## division is okay
                         popq %rbp
                         movq $32, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -184(%rbp)
+                        movq %r13, -200(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, -192(%rbp)
-                        ## new Int t$12 <- 84
+                        movq %r13, -208(%rbp)
+                        ## t$13 <- t$11 + t$12
+                        movq -192(%rbp), %r13
+                        movq -208(%rbp), %r14
+                        subq %r14, %r13
+                        movq %r13, -224(%rbp)
+                        ## new int t$14 <- 84
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -688,10 +697,10 @@ Main_main_0_div_ok:        ## division is okay
                         popq %rbp
                         movq $84, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -200(%rbp)
+                        movq %r13, -232(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, -208(%rbp)
-                        ## new Int t$13 <- 3
+                        movq %r13, -240(%rbp)
+                        ## new int t$15 <- 3
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -700,15 +709,15 @@ Main_main_0_div_ok:        ## division is okay
                         popq %rbp
                         movq $3, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -216(%rbp)
+                        movq %r13, -248(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, -224(%rbp)
-                        ## t$14 <- t$12 * t$13
-                        movq -208(%rbp), %r13
-                        movq -224(%rbp), %r14
+                        movq %r13, -256(%rbp)
+                        ## t$16 <- t$14 * t$15
+                        movq -240(%rbp), %r13
+                        movq -256(%rbp), %r14
                         imulq %r14, %r13
-                        movq %r13, -240(%rbp)
-                        ## new Int t$15 <- 8
+                        movq %r13, -272(%rbp)
+                        ## new int t$17 <- 8
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -717,14 +726,14 @@ Main_main_0_div_ok:        ## division is okay
                         popq %rbp
                         movq $8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -248(%rbp)
+                        movq %r13, -280(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, -256(%rbp)
-                        ## t$16 <- t$14 / t$15
-                        movq -256(%rbp), %r13
+                        movq %r13, -288(%rbp)
+                        ## t$18 <- t$16 / t$17
+                        movq -288(%rbp), %r13
                         cmpq $0, %r13
            jne Main_main_1_div_ok
-                        movq $string12, %r13
+                        movq $string13, %r13
                         ## division by zero detected
                         ## guarantee 16-byte alignment before call
            andq $0xFFFFFFFFFFFFFFF0, %rsp
@@ -736,14 +745,14 @@ Main_main_0_div_ok:        ## division is okay
            call exit
 .global Main_main_1_div_ok
 Main_main_1_div_ok:        ## division is okay 
-                        movq -240(%rbp), %r14
+                        movq -272(%rbp), %r14
            movq $0, %rdx
            movq %r14, %rax
            cdq
            idivq %r13
            movq %rax, %r13
-                        movq %r13, -272(%rbp)
-                        ## new Int t$17 <- 32
+                        movq %r13, -304(%rbp)
+                        ## new int t$19 <- 32
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -752,27 +761,44 @@ Main_main_1_div_ok:        ## division is okay
                         popq %rbp
                         movq $32, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -280(%rbp)
+                        movq %r13, -312(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, -288(%rbp)
-                        ## t$18 <- t$16 * t$17
-                        movq -272(%rbp), %r13
-                        movq -288(%rbp), %r14
-                        imulq %r14, %r13
-                        movq %r13, -304(%rbp)
-                        ## t$19 <- t$11 + t$18
-                        movq -192(%rbp), %r13
-                        movq -304(%rbp), %r14
-                        subq %r14, %r13
                         movq %r13, -320(%rbp)
-                       ## new Int y <- t$19
+                        ## t$20 <- t$18 * t$19
+                        movq -304(%rbp), %r13
+                        movq -320(%rbp), %r14
+                        imulq %r14, %r13
+                        movq %r13, -336(%rbp)
+                        ## t$21 <- t$13 + t$20
+                        movq -224(%rbp), %r13
+                        movq -336(%rbp), %r14
+                        subq %r14, %r13
+                        movq %r13, -352(%rbp)
+                        ## new int t$22 <- 9000
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9000, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -360(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -368(%rbp)
+                        ## t$23 <- t$21 + t$22
+                        movq -352(%rbp), %r13
+                        movq -368(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -384(%rbp)
+                       ## new Int y <- t$23
                        pushq %rbp
                        pushq %r12
                        movq $Int..new, %r14
                        call *%r14
                        popq %r12
                        popq %rbp
-                       movq -320(%rbp), %r14
+                       movq -384(%rbp), %r14
                        movq %r14, 24(%r13)
                        movq %r13, 32(%r12)
                        ## t$0 <- y
@@ -780,45 +806,22 @@ Main_main_1_div_ok:        ## division is okay
                        movq %r13, -8(%rbp)
                        movq 24(%r13), %r13
                        movq %r13, -16(%rbp)
-                       ## t$20 <- y
-                       movq 32(%r12), %r13
-                       movq %r13, -328(%rbp)
-                       movq 24(%r13), %r13
-                       movq %r13, -336(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## arg t$20 (pointer)
-                        movq -328(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq %r13, -8(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -16(%rbp)
-                        ## new String t$21 <- "\n"
+                        ## new String t$24 <- " Enter a number\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds "\n"
+                        ## string8 holds " Enter a number\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -344(%rbp)
+                        movq %r13, -392(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$21 (pointer)
-                        movq -344(%rbp), %r13
+                        ## arg t$24 (pointer)
+                        movq -392(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -832,22 +835,74 @@ Main_main_1_div_ok:        ## division is okay
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -16(%rbp)
-                        ## new String t$22 <- "finally\n"
+                       ## t$25 <- y
+                       movq 32(%r12), %r13
+                       movq %r13, -408(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -416(%rbp)
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## arg t$25 (pointer)
+                        movq -408(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## new String t$26 <- "\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string9 holds "finally\n"
+                        ## string9 holds "\n"
                         movq $string9, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -360(%rbp)
+                        movq %r13, -424(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$22 (pointer)
-                        movq -360(%rbp), %r13
+                        ## arg t$26 (pointer)
+                        movq -424(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## new String t$27 <- "finally\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds "finally\n"
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -440(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## arg t$27 (pointer)
+                        movq -440(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -975,7 +1030,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string10, %r13
+                        movq $string11, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -1085,14 +1140,36 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "\n"
+string8:			  # " Enter a number\n"
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 101	# 'e'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 97	# 'a'
+.byte 32	# ' '
+.byte 110	# 'n'
+.byte 117	# 'u'
+.byte 109	# 'm'
+.byte 98	# 'b'
+.byte 101	# 'e'
+.byte 114	# 'r'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
 
 
 .globl string9
-string9:			  # "finally\n"
+string9:			  # "\n"
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string10
+string10:			  # "finally\n"
 .byte 102	# 'f'
 .byte 105	# 'i'
 .byte 110	# 'n'
@@ -1105,8 +1182,8 @@ string9:			  # "finally\n"
 .byte 0	
 
 
-.globl string10
-string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.globl string11
+string11:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -1159,8 +1236,8 @@ string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 0	
 
 
-.globl string11
-string11:			  # "ERROR: 7: Exception: division by zero\n"
+.globl string12
+string12:			  # "ERROR: 7: Exception: division by zero\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -1203,8 +1280,8 @@ string11:			  # "ERROR: 7: Exception: division by zero\n"
 .byte 0	
 
 
-.globl string12
-string12:			  # "ERROR: 8: Exception: division by zero\n"
+.globl string13
+string13:			  # "ERROR: 8: Exception: division by zero\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'

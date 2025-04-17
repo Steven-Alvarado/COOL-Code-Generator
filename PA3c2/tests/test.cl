@@ -1,12 +1,12 @@
-class Main {
+class Main inherits IO{
     x : Int <- 0;
+    y : Int <- 4;
     main () : Object{
         {
             x <- x - 5;
-            x <- x * 10;
-            x <- x / 15;
-            x <- x + 20; 
-            x;
+            x <- y * 4 + 5 - 4;
+            out_string("hi\n");
+            out_int(x);
         }
     };
 };

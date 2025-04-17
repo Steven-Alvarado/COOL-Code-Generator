@@ -157,7 +157,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -185,7 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
                         ## self[4] holds field y (Int)
                         ## new Int
                         pushq %rbp

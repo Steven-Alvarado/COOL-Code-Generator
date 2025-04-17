@@ -1,0 +1,11 @@
+comment start
+label Main_main_0
+t$0 <- bool true
+here <- t$0
+t$0 <- here
+t$1 <- y
+t$0 <- call out_int t$1
+t$2 <- string
+false
+t$0 <- call out_string t$2
+return t$0

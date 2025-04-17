@@ -205,7 +205,7 @@ Main..new:              ## constructor for Main
                         movq $500, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer <- 5
+                        ## self[4] y initializer <- 0
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -213,7 +213,7 @@ Main..new:              ## constructor for Main
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $5, %r14
+                        movq $0, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 32(%r12)
                         movq %r12, %r13
@@ -561,6 +561,44 @@ movq %rax, %r13
                         movq 0(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## x
+                        movq 24(%r12), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string9 holds "\n"
+                        movq $string9, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -673,7 +711,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l4
-                        movq $string9, %r13
+                        movq $string10, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -773,7 +811,7 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "ERROR: 5: Exception: division by zero\\n"
+string8:                # "ERROR: 6: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -781,7 +819,7 @@ string8:                # "ERROR: 5: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  53 # '5'
+.byte  54 # '6'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -816,7 +854,13 @@ string8:                # "ERROR: 5: Exception: division by zero\\n"
 .byte 0
 
 .globl string9
-string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
+string9:                # "\\n"
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string10
+string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

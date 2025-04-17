@@ -34,6 +34,10 @@ Main..vtable:           ## virtual function table for Main
                         .quad Object.abort
                         .quad Object.copy
                         .quad Object.type_name
+                        .quad IO.in_int
+                        .quad IO.in_string
+                        .quad IO.out_int
+                        .quad IO.out_string
                         .quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
@@ -538,7 +542,7 @@ IO.out_int:             ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (Int)
+                        ## fp[3] holds argument x (?)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -567,7 +571,7 @@ IO.out_string:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (String)
+                        ## fp[3] holds argument x (?)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -597,15 +601,21 @@ Main.main:              ## method definition
                         ## self[5] holds field y (Int)
                         ## self[6] holds field z (Int)
                         ## method body begins
-                        ## new Int
-                        pushq %rbp
+                        ## out_string(...)
                         pushq %r12
-                        movq $Int..new, %r14
+                        pushq %rbp
+                        ## str
+                        movq 24(%r12), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
-                        popq %r12
+                        addq $16, %rsp
                         popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
+                        popq %r12
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -622,7 +632,7 @@ String.concat:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument s (String)
+                        ## fp[3] holds argument s (?)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -693,8 +703,8 @@ String.substr:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[4] holds argument i (Int)
-                        ## fp[3] holds argument l (Int)
+                        ## fp[4] holds argument i (?)
+                        ## fp[3] holds argument l (?)
                         ## method body begins
                         ## new String
                         pushq %rbp

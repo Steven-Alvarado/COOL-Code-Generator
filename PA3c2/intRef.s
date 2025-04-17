@@ -679,6 +679,10 @@ movq %rax, %r13
                         movq 0(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 32(%r12)
+                        ## y
+                        movq 32(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -687,6 +691,21 @@ movq %rax, %r13
                         popq %r12
                         popq %rbp
                         movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, 0(%rbp)
@@ -815,7 +834,54 @@ movl %eax, %r13d
                         popq %rbp
                         movq 0(%rbp), %r14
                         movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9000, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
+                        movq %r14, 24(%r13)
                         movq %r13, 32(%r12)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds " Enter a number\n"
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
@@ -841,8 +907,8 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string10 holds "\n"
-                        movq $string10, %r14
+                        ## string11 holds "\n"
+                        movq $string11, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -864,8 +930,8 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string11 holds "finally\n"
-                        movq $string11, %r14
+                        ## string12 holds "finally\n"
+                        movq $string12, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -989,7 +1055,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l5
-                        movq $string12, %r13
+                        movq $string13, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -1175,13 +1241,34 @@ string9:                # "ERROR: 8: Exception: division by zero\\n"
 .byte 0
 
 .globl string10
-string10:               # "\\n"
+string10:               # " Enter a number\\n"
+.byte  32 # ' '
+.byte  69 # 'E'
+.byte 110 # 'n'
+.byte 116 # 't'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte  32 # ' '
+.byte 110 # 'n'
+.byte 117 # 'u'
+.byte 109 # 'm'
+.byte  98 # 'b'
+.byte 101 # 'e'
+.byte 114 # 'r'
 .byte  92 # '\\'
 .byte 110 # 'n'
 .byte 0
 
 .globl string11
-string11:               # "finally\\n"
+string11:               # "\\n"
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string12
+string12:               # "finally\\n"
 .byte 102 # 'f'
 .byte 105 # 'i'
 .byte 110 # 'n'
@@ -1193,8 +1280,8 @@ string11:               # "finally\\n"
 .byte 110 # 'n'
 .byte 0
 
-.globl string12
-string12:               # "ERROR: 0: Exception: String.substr out of range\\n"
+.globl string13
+string13:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

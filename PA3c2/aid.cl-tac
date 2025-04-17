@@ -1,0 +1,70 @@
+comment start
+label Main_main_0
+t$0 <- y
+t$1 <- not t$0
+bt t$1 Main_main_2
+bt t$0 Main_main_1
+comment then branch
+label Main_main_1
+t$2 <- string
+not true\n
+t$0 <- call out_string t$2
+jmp Main_main_3
+comment else branch
+label Main_main_2
+t$3 <- string
+actually true\n
+t$0 <- call out_string t$3
+t$0 <- t$0
+jmp Main_main_3
+comment if-join
+label Main_main_3
+t$4 <- new Object
+obj1 <- t$4
+t$0 <- obj1
+t$5 <- new Object
+obj2 <- t$5
+t$0 <- obj2
+t$6 <- string
+\n= comparison (Object !=): 
+t$0 <- call out_string t$6
+t$7 <- obj1
+t$8 <- obj2
+t$9 <- = t$7 t$8
+t$10 <- not t$9
+bt t$10 Main_main_5
+bt t$9 Main_main_4
+comment then branch
+label Main_main_4
+t$11 <- int 1
+jmp Main_main_6
+comment else branch
+label Main_main_5
+t$12 <- int 0
+t$0 <- t$12
+jmp Main_main_6
+comment if-join
+label Main_main_6
+t$0 <- call out_int t$0
+t$13 <- string
+\n= comparison (Object =): 
+t$0 <- call out_string t$13
+t$14 <- obj1
+t$15 <- obj1
+t$16 <- = t$14 t$15
+t$17 <- not t$16
+bt t$17 Main_main_8
+bt t$16 Main_main_7
+comment then branch
+label Main_main_7
+t$18 <- int 1
+jmp Main_main_9
+comment else branch
+label Main_main_8
+t$19 <- int 0
+t$0 <- t$19
+jmp Main_main_9
+comment if-join
+label Main_main_9
+t$0 <- call out_int t$0
+return t$0

@@ -27,12 +27,15 @@ t$17 <- - t$15 t$16
 t$18 <- z
 t$19 <- + t$17 t$18
 t$20 <- int 40
-t$21 <- - t$19 t$20
-z <- t$21
+t$21 <- int 32
+t$22 <- ~ t$21
+t$23 <- / t$20 t$22
+t$24 <- - t$19 t$23
+z <- t$24
 t$0 <- z
-t$22 <- z
-t$0 <- call out_int t$22
-t$23 <- string
+t$25 <- z
+t$0 <- call out_int t$25
+t$26 <- string
 \n
-t$0 <- call out_string t$23
+t$0 <- call out_string t$26
 return t$0

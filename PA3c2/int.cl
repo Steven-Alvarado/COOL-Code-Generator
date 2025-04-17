@@ -5,7 +5,8 @@ class Main inherits IO{
         {
         x <- in_int();
         y <- x + 10 - 5 * 3 * 5 / 34;
-        y <- 32 - 84 * 3 / 8 * 32;
+        y <- y - 32 - 84 * 3 / 8 * 32 + 9000;
+        out_string(" Enter a number\n");
         out_int(y);
         out_string("\n");
         out_string("finally\n");
