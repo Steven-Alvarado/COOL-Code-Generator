@@ -374,12 +374,27 @@ let newloc () =
 
 let reset_newloc_counter () = newloc_counter := 2
 
-let rec convert (current_class : string) (current_method : string) (env : env)
-    (a : exp) : tac_instr list * tac_expr * env =
+type temp_location = {
+    pointer_offset : int;
+    value_offset : int;
+}
+
+
+type context = {
+    class_attributes: (string * string * int) list;  (* field_name, field_type, index *)
+    temp_vars: (string * temp_location) list;                  (* pointer offset, value offset *)
+    params: (string * int) list;                     (* param_name, loc *)
+    class_name: string;
+    method_name: string;
+    local_vars : (string * temp_location) list;
+}
+
+let rec convert (current_class : string) (current_method : string) (env : env) 
+    (context : context) (a : exp) : tac_instr list * tac_expr * env * context =
     match a.exp_kind with
     | AST_Identifier var_name ->
         if snd var_name = "self" then
-            ([], TAC_Variable "self", env)
+            ([], TAC_Variable "self", env, context)
         else
             let temp = fresh_variable () in
             (* Lookup the variable in the environment; if not found, allocate a new location *)
@@ -392,100 +407,102 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             in
             ( [ TAC_Assign_Variable (temp, snd var_name) ],
                 TAC_Variable temp,
-                env )
+                env,
+                context )
     | AST_Integer i ->
         let new_var = fresh_variable () in
-        ([ TAC_Assign_Int (new_var, int_of_string i) ], TAC_Variable new_var, env)
+        ([ TAC_Assign_Int (new_var, int_of_string i) ], TAC_Variable new_var, env, context)
     | AST_String s ->
         let new_var = fresh_variable () in
-        ([ TAC_Assign_String (new_var, s) ], TAC_Variable new_var, env)
+        ([ TAC_Assign_String (new_var, s) ], TAC_Variable new_var, env, context)
     | AST_True ->
         let new_var = fresh_variable () in
-        ([ TAC_Assign_Bool (new_var, true) ], TAC_Variable new_var, env)
+        ([ TAC_Assign_Bool (new_var, true) ], TAC_Variable new_var, env, context)
     | AST_False ->
         let new_var = fresh_variable () in
-        ([ TAC_Assign_Bool (new_var, false) ], TAC_Variable new_var, env)
+        ([ TAC_Assign_Bool (new_var, false) ], TAC_Variable new_var, env, context)
     | AST_Plus (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Plus (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Minus (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Minus (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Times (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Times (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Divide (a1, a2) ->
         let line_number = a.loc in
-        let i1, ta1, env1 =  convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let instr = TAC_Assign_Divide (new_var, ta1, ta2, line_number) in
-        (i1 @ i2 @ [ instr ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ instr ], TAC_Variable new_var, env2, ctx2)
     | AST_Lt (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Lt (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Le (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Le (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Eq (a1, a2) ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
-        let i2, ta2, env2 = convert current_class current_method env1 a2 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
+        let i2, ta2, env2, ctx2 = convert current_class current_method env1 ctx1 a2 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Eq (new_var, ta1, ta2) in
-        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2)
+        (i1 @ i2 @ [ to_output ], TAC_Variable new_var, env2, ctx2)
     | AST_Not a1 ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Not (new_var, ta1) in
-        (i1 @ [ to_output ], TAC_Variable new_var, env1)
+        (i1 @ [ to_output ], TAC_Variable new_var, env1, ctx1)
     | AST_Negate a1 ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_Negate (new_var, ta1) in
-        (i1 @ [ to_output ], TAC_Variable new_var, env1)
+        (i1 @ [ to_output ], TAC_Variable new_var, env1, ctx1)
     | AST_IsVoid a1 ->
-        let i1, ta1, env1 = convert current_class current_method env a1 in
+        let i1, ta1, env1, ctx1 = convert current_class current_method env context a1 in
         let new_var = fresh_variable () in
         let to_output = TAC_Assign_IsVoid (new_var, ta1) in
-        (i1 @ [ to_output ], TAC_Variable new_var, env1)
+        (i1 @ [ to_output ], TAC_Variable new_var, env1, ctx1)
     | AST_New type_name ->
         let new_var = fresh_variable () in
         ( [ TAC_Assign_New (new_var, TAC_Variable (snd type_name)) ],
             TAC_Variable new_var,
-            env )
+            env,
+            context )  
     | AST_If (cond, then_branch, else_branch) ->
-        let cond_instrs, cond_expr, env1 =
-            convert current_class current_method env cond
+        let cond_instrs, cond_expr, env1, ctx1 =
+            convert current_class current_method env context cond
         in
         let not_temp = fresh_variable () in
         let not_instr = TAC_Assign_Not (not_temp, cond_expr) in
         let label_then = fresh_label current_class current_method in
         let label_else = fresh_label current_class current_method in
         let label_join = fresh_label current_class current_method in
-        let then_instrs, then_expr, env2 =
-            convert current_class current_method env1 then_branch
+        let then_instrs, then_expr, env2, ctx2 =
+            convert current_class current_method env1 ctx1 then_branch
         in
         let then_code =
             [ TAC_Comment "then branch"; TAC_Label label_then ]
             @ then_instrs @ [ TAC_Jump label_join ]
         in
-        let else_instrs, else_expr, env3 =
-            convert current_class current_method env2 else_branch
+        let else_instrs, else_expr, env3, ctx3 =
+            convert current_class current_method env2 ctx2 else_branch
         in
         let else_code =
             [ TAC_Comment "else branch"; TAC_Label label_else ]
@@ -505,43 +522,45 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             @ then_code @ else_code
             @ [ TAC_Comment "if-join"; TAC_Label label_join ]
         in
-        (if_instrs, TAC_Variable "t$0", env3)
-    | AST_Assign (var_name, expr) ->
-        let instrs, expr_val, env1 =
-            convert current_class current_method env expr
-        in
+        (if_instrs, TAC_Variable "t$0", env3, ctx3)
 
+    | AST_Assign (var_name, expr) ->
+        let instrs, expr_val, env1, ctx1 =
+            convert current_class current_method env context expr
+        in
         let assign_instr =
             TAC_Assign_Variable (snd var_name, tac_expr_to_string expr_val)
         in
         let final_copy = TAC_Assign_Variable ("t$0", snd var_name) in
-        (instrs @ [ assign_instr; final_copy ], TAC_Variable "t$0", env1)
+        (instrs @ [ assign_instr; final_copy ], TAC_Variable "t$0", env1, ctx1)
+
     | AST_Block exprs ->
-        let rec process_block exprs env_acc =
+        let rec process_block exprs env_acc ctx_acc =
             match exprs with
-            | [] -> ([], TAC_Variable "void", env_acc)
-            | [ last ] -> convert current_class current_method env_acc last
+            | [] -> ([], TAC_Variable "void", env_acc, ctx_acc)
+            | [ last ] -> convert current_class current_method env_acc ctx_acc last
             | first :: rest ->
-                let first_instrs, _, env_updated =
-                    convert current_class current_method env_acc first
+                let first_instrs, _, env_updated, ctx_updated =
+                    convert current_class current_method env_acc ctx_acc first
                 in
-                let rest_instrs, rest_expr, env_final =
-                    process_block rest env_updated
+                let rest_instrs, rest_expr, env_final, ctx_final =
+                    process_block rest env_updated ctx_updated
                 in
-                (first_instrs @ rest_instrs, rest_expr, env_final)
+                (first_instrs @ rest_instrs, rest_expr, env_final, ctx_final)
         in
-        process_block exprs env
+        process_block exprs env context
+
     | AST_While (cond, body) ->
         label_counter := 0;
         let while_start = fresh_label current_class current_method in
         let while_pred = fresh_label current_class current_method in
         let while_join = fresh_label current_class current_method in
         let while_body = fresh_label current_class current_method in
-        let cond_instrs, cond_expr, env1 =
-            convert current_class current_method env cond
+        let cond_instrs, cond_expr, env1, ctx1 =
+            convert current_class current_method env context cond
         in
-        let body_instrs, body_expr, env2 =
-            convert current_class current_method env1 body
+        let body_instrs, body_expr, env2, ctx2 =
+            convert current_class current_method env1 ctx1 body
         in
         let cond_var = fresh_variable () in
         let not_cond_var = fresh_variable () in
@@ -569,37 +588,55 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             @ body_instrs @ [ TAC_Jump while_pred ]
         in
         let result_var = fresh_variable () in
-        (tac_instrs, TAC_Variable result_var, env2)
+        (tac_instrs, TAC_Variable result_var, env2, ctx2) 
     | AST_DynamicDispatch (obj, method_name, args) ->
-        let obj_instrs, obj_expr, env1 =
-            convert current_class current_method env obj
+        let obj_instrs, obj_expr, env1, ctx1 =
+            convert current_class current_method env context obj
         in
-        let args_data =
-            List.map (fun arg -> convert current_class current_method env1 arg) args
+        let rec process_args remaining_args env_acc ctx_acc instrs_acc exprs_acc =
+            match remaining_args with
+            | [] -> (List.rev instrs_acc, List.rev exprs_acc, env_acc, ctx_acc)
+            | arg :: rest ->
+                let arg_instrs, arg_expr, env_updated, ctx_updated =
+                    convert current_class current_method env_acc ctx_acc arg
+                in
+                let expr_str = tac_expr_to_string arg_expr in
+                process_args rest env_updated ctx_updated 
+                    (arg_instrs :: instrs_acc) (expr_str :: exprs_acc)
         in
-        let arg_instrs = List.concat (List.map (fun (i, _, _) -> i) args_data) in
-        let arg_exprs =
-            List.map (fun (_, e, _) -> tac_expr_to_string e) args_data
+        let (arg_instrs_rev, arg_exprs, final_env, final_ctx) = 
+            process_args args env1 ctx1 [] []
         in
+        let arg_instrs = List.concat (List.rev arg_instrs_rev) in
         let call_instr = TAC_Call ("t$0", snd method_name, arg_exprs) in
-        (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable "t$0", env1)
+        (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable "t$0", final_env, final_ctx)
+
     | AST_StaticDispatch (obj, type_name, method_name, args) ->
         (* Convert the object expression *)
-        let obj_instrs, obj_expr, env1 =
-            convert current_class current_method env obj
+        let obj_instrs, obj_expr, env1, ctx1 =
+            convert current_class current_method env context obj
         in
         (* Convert each argument *)
-        let args_data =
-            List.map (fun arg -> convert current_class current_method env1 arg) args
+        let rec process_args remaining_args env_acc ctx_acc instrs_acc exprs_acc =
+            match remaining_args with
+            | [] -> (List.rev instrs_acc, List.rev exprs_acc, env_acc, ctx_acc)
+            | arg :: rest ->
+                let arg_instrs, arg_expr, env_updated, ctx_updated =
+                    convert current_class current_method env_acc ctx_acc arg
+                in
+                let expr_str = tac_expr_to_string arg_expr in
+                process_args rest env_updated ctx_updated 
+                    (arg_instrs :: instrs_acc) (expr_str :: exprs_acc)
         in
-        let arg_instrs = List.concat (List.map (fun (i, _, _) -> i) args_data) in
-        let arg_exprs =
-            List.map (fun (_, e, _) -> tac_expr_to_string e) args_data
+        let (arg_instrs_rev, arg_exprs, final_env, final_ctx) = 
+            process_args args env1 ctx1 [] []
         in
+        let arg_instrs = List.concat (List.rev arg_instrs_rev) in
         let result_var = fresh_variable () in
         let obj_var = tac_expr_to_string obj_expr in
         let call_instr = TAC_Call (result_var, snd method_name, arg_exprs) in
-        (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable result_var, env1)
+        (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable result_var, final_env, final_ctx)
+
     | AST_SelfDispatch (method_name, args) ->
         let self_exp =
             {
@@ -615,19 +652,19 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                 static_type = None;
             }
         in
-        convert current_class current_method env dispatch_exp
+        convert current_class current_method env context dispatch_exp
     | AST_Case (expr, case_elements) ->
-        let expr_instrs, expr_temp, env1 =
-            convert current_class current_method env expr
+        let expr_instrs, expr_temp, env1, ctx1 =
+            convert current_class current_method env context expr
         in
         let result_var = fresh_variable () in
-        let case_instrs, _ =
+        let case_instrs, _, final_ctx =
             List.fold_left
-                (fun (instrs, idx) (id, type_name, body) ->
+                (fun (instrs, idx, current_ctx) (id, type_name, body) ->
                     let case_label = fresh_label current_class current_method in
                     let next_label = fresh_label current_class current_method in
-                    let body_instrs, body_temp, env_updated =
-                        convert current_class current_method env1 body
+                    let body_instrs, body_temp, env_updated, ctx_updated =
+                        convert current_class current_method env1 current_ctx body
                     in
                     let branch_instrs =
                         body_instrs
@@ -635,40 +672,43 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                             TAC_Assign_Variable (result_var, tac_expr_to_string body_temp);
                         ]
                     in
-                    (instrs @ branch_instrs, idx + 1))
-                ([], 0) case_elements
+                    (instrs @ branch_instrs, idx + 1, ctx_updated))
+                ([], 0, ctx1) case_elements
         in
-        (expr_instrs @ case_instrs, TAC_Variable result_var, env1)
+        (expr_instrs @ case_instrs, TAC_Variable result_var, env1, final_ctx)
+
     | AST_Internal s ->
         let new_var = fresh_variable () in
-        ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env)
+        ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env, context)
+
     | AST_Let (bindings, body_exp) ->
         (* Process each binding in sequence, building up the environment *)
-        let rec process_bindings remaining_bindings current_env acc_instrs =
+        let rec process_bindings remaining_bindings current_env current_ctx acc_instrs =
             match remaining_bindings with
             | [] ->
                 (* No more bindings, process the body with the final environment *)
-                let body_instrs, body_expr, _ =
-                    convert current_class current_method current_env body_exp
+                let body_instrs, body_expr, final_env, final_ctx =
+                    convert current_class current_method current_env current_ctx body_exp
                 in
-                (acc_instrs @ body_instrs, body_expr, current_env)
+                (acc_instrs @ body_instrs, body_expr, final_env, final_ctx)
             | (var_id, type_id, init_opt) :: rest ->
                 (* Process the initialization expression if it exists *)
-                let init_instrs, init_expr, env_after_init =
+                let init_instrs, init_expr, env_after_init, ctx_after_init =
                     match init_opt with
-                    | Some exp -> convert current_class current_method current_env exp
+                    | Some exp -> 
+                        convert current_class current_method current_env current_ctx exp
                     | None ->
                         (* If no initialization, use default value based on type *)
                         (match snd type_id with
                             | "Int" ->
                                 let temp = fresh_variable () in
-                                ([ TAC_Assign_Int (temp, 0) ], TAC_Variable temp, current_env)
+                                ([ TAC_Assign_Int (temp, 0) ], TAC_Variable temp, current_env, current_ctx)
                             | "Bool" ->
                                 let temp = fresh_variable () in
-                                ([ TAC_Assign_Bool (temp, false) ], TAC_Variable temp, current_env)
+                                ([ TAC_Assign_Bool (temp, false) ], TAC_Variable temp, current_env, current_ctx)
                             | "String" ->
                                 let temp = fresh_variable () in
-                                ([ TAC_Assign_String (temp, "") ], TAC_Variable temp, current_env)
+                                ([ TAC_Assign_String (temp, "") ], TAC_Variable temp, current_env, current_ctx)
                             | _ ->
                                 (* For other types, create a new object *)
                                 let temp = fresh_variable () in
@@ -678,28 +718,43 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                                 in
                                 ( class_name_instrs @ [ TAC_Assign_New (temp, TAC_Variable class_name_var) ],
                                     TAC_Variable temp,
-                                    current_env))
+                                    current_env,
+                                    current_ctx))
                 in
 
-                (* Allocate a new location for the let-bound variable *)
+                (* Allocate a new location for the local variable 
+             * to maintain compatibility with your existing environment *)
                 let var_loc = newloc () in
+
+                (* Update environment with the integer location *)
                 let updated_env = Hashtbl.copy env_after_init in
                 Hashtbl.add updated_env (snd var_id) var_loc;
 
-                (* Create TAC instruction to store the initializer value in the let-bound variable.*)
-                let store_instr =
+                (* Calculate the temp_location for the context 
+             * This maps the variable to its memory offset for codegen *)
+                let temp_count = get_temp_var_count () in
+                let pointer_offset = (-8) * (2 * temp_count + 1) in
+                let value_offset = pointer_offset - 8 in
+                let var_temp_loc = { pointer_offset; value_offset } in
+
+                (* Update context with the local variable's memory location *)
+                let updated_ctx = { 
+                    ctx_after_init with 
+                    local_vars = (snd var_id, var_temp_loc) :: ctx_after_init.local_vars 
+                } in
+
+                (* Create TAC instruction for assignment *)
+                let assign_instr =
                     match init_expr with
                     | TAC_Variable var_name ->
-                        [ TAC_Assign_Variable (snd var_id, var_name) ]
+                        [TAC_Assign_Variable (snd var_id, var_name)]
                     | _ -> []
                 in
 
-                (* Process the remaining bindings with the updated environment *)
-                process_bindings rest updated_env (acc_instrs @ init_instrs @ store_instr)
+                (* Process remaining bindings *)
+                process_bindings rest updated_env updated_ctx (acc_instrs @ init_instrs @ assign_instr)
         in
-        process_bindings bindings env []
-
-(* identify leaders for cfg *)
+        process_bindings bindings env context [](* identify leaders for cfg *)
 let identify_leaders (instructions : tac_instr list) : int list =
     let rec find_leaders acc index instrs =
         match instrs with
@@ -707,17 +762,17 @@ let identify_leaders (instructions : tac_instr list) : int list =
         | first_instr :: rest ->
             let acc' =
                 if index = 0 then
-                    index :: acc  (* First instruction is always a leader *)
+                    index :: acc  
                 else match first_instr with
                     | TAC_Label _ ->
-                        index :: acc  (* Instructions following labels probably leaders *)
+                        index :: acc  
                     | _ -> (
                         match List.nth_opt instructions (index - 1) with
                         | Some (TAC_Jump _) | Some (TAC_ConditionalJump _) | Some (TAC_Return _) ->
                             index :: acc  (* Instructions following jumps are leaders *)
                         | _ -> acc)
             in
-            (* Mark instruction after conditional jump as a leader *)
+            (* mark instruction after conditional jump as a leader *)
             let acc'' = 
                 match first_instr with
                 | TAC_ConditionalJump _ -> 
@@ -729,7 +784,6 @@ let identify_leaders (instructions : tac_instr list) : int list =
             in
             find_leaders acc'' (index + 1) rest
     in
-    (* Make sure we have a unique, sorted list of leaders *)
     let all_leaders = find_leaders [] 0 instructions in
     List.sort_uniq compare all_leaders
 
@@ -750,7 +804,7 @@ let create_basic_blocks (instructions : tac_instr list) (leaders : int list) :
         extract [] start_idx
     in
 
-    (* Create blocks from each leader to the next leader (or end) *)
+    (* Create blocks from each leader to the next leader *)
     let rec create_blocks acc = function
         | [] -> List.rev acc
         | [ leader_idx ] ->
@@ -800,8 +854,7 @@ let create_label_to_block_map (blocks : basic_block list) :
 
     label_map
 
-(* function to handle consecutive conditionals *)
-(* Modified build_cfg function to handle consecutive conditionals *)
+(* build the control flow graph  *)
 let build_cfg (blocks : basic_block list) : cfg =
     let cfg_map = Hashtbl.create (List.length blocks) in
     let label_to_block = create_label_to_block_map blocks in
@@ -983,7 +1036,7 @@ let collect_all_strings class_map class_order impl_map =
 
 
 
-ignore
+    ignore
         (register_string_literal
             "ERROR: 0: Exception: String.substr out of range\\n");
 
@@ -1749,18 +1802,6 @@ let generate_internal_constructor class_name =
 while rax, rdi, rsi, rdx, rcx, r8, r9, r10, r11 are scratch registers. 
 The return value is stored in the rax register*)
 
-type temp_location = {
-    pointer_offset : int;
-    value_offset : int;
-}
-
-type codegen_context = {
-    class_attributes: (string * string * int) list;  (* field_name, field_type, index *)
-    temp_vars: (string * temp_location) list;                  (* pointer offset, value offset *)
-    params: (string * int) list;                     (* param_name, loc *)
-    class_name: string;
-    method_name: string;
-}
 (* lookup_offset: For variables that are temporaries (names starting with "t$"),
    compute their stack slot offset relative to %rbp.
    else look up the variable in the context.params list. *)
@@ -1787,7 +1828,7 @@ let lookup_field_offset context field =
 
 (* function to determin if it is a temp variable*)
 let is_temp name =
-  String.length name >= 2 && String.sub name 0 2 = "t$"
+    String.length name >= 2 && String.sub name 0 2 = "t$"
 
 let lookup_temp_location context var =
     try
@@ -1795,12 +1836,32 @@ let lookup_temp_location context var =
     with Not_found ->
         failwith ("lookup_temp_location: temp not found: " ^ var)
 
-(* main codegen function *)
+
+(* Look up a variable location (local, parameter, or field) *)
+let lookup_variable_location context var =
+  (* if it's a temporary *)
+  if is_temp var then 
+    `Temp (lookup_temp_location context var)
+  (* else check if it's a local variable *)
+  else 
+    match List.find_opt (fun (name, _) -> name = var) context.local_vars with
+    | Some (_, loc) -> `Local loc
+    | None -> 
+        (* check if it's a parameter *)
+        match List.find_opt (fun (name, _) -> name = var) context.params with
+        | Some (_, loc) -> `Param loc
+        | None -> 
+            (* check if it's a field *)
+            try 
+              let (_, _, index) = List.find (fun (fname, _, _) -> fname = var) context.class_attributes in 
+              `Field (index * 8)
+            with Not_found -> 
+                failwith ( "no variable foun %s" ^ var)
 let codegen context tac =
     let class_name = context.class_name in
     let method_name = context.method_name in
     let class_attrs = context.class_attributes in
-
+    let temp_vars = context.temp_vars in
 
     match tac with
     | TAC_Comment text -> [ "                        ## " ^ text ]
@@ -1817,60 +1878,95 @@ let codegen context tac =
                 Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.value_offset;
                 Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.value_offset;
             ]
-        (* Case 2: t$n <- x *)
+        (* Case 2: t$n <- x (where x can be field, local, or param) *)
         else if is_temp dest then
-            let field_offset = lookup_field_offset context src in
-            let field_type =
-                match List.find_opt (fun (f, _, _) -> f = src) context.class_attributes with
-                | Some (_, typ, _) -> typ
-                | None -> failwith ("unknown field: " ^ src)
-            in
-
             let dest_locs = lookup_temp_location context dest in
-            match field_type with
-            | "Int" | "Bool" -> [
-
-                "                       ## "^dest ^" <- " ^ src;
-                "                       movq " ^ string_of_int field_offset ^ "(%r12), %r13";(* load pointer *)
-                "                       movq %r13, " ^ string_of_int dest_locs.pointer_offset ^ "(%rbp)";(* save pointer *)
-                "                       movq 24(%r13), %r13"; (* load value *)
-                "                       movq %r13, " ^ string_of_int  dest_locs.value_offset ^ "(%rbp)";(* save value *)
-            ]
-            | _ -> [
-                "                       ## "^dest ^" <- " ^ src;
-                "                       movq " ^ string_of_int field_offset ^ "(%r12), %r13" ;
-                "                       movq %r13, " ^ string_of_int dest_locs.pointer_offset ^ "(%rbp)";
-            ]
-        (* Case 3: x <- t$n *)
+            match lookup_variable_location context src with
+            | `Temp src_locs ->
+                [
+                    "                       ## " ^ dest ^ " <- " ^ src ^ " (temp <- temp)";
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.pointer_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.value_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.value_offset;
+                ]
+            | `Local src_locs ->
+                [
+                    "                       ## " ^ dest ^ " <- " ^ src ^ " (temp <- local)";
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.pointer_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.value_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.value_offset;
+                ]
+            | `Param param_loc ->
+                [
+                    "                       ## " ^ dest ^ " <- " ^ src ^ " (temp <- param)";
+                    (* You'll need to adapt this based on how parameters are stored *)
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" (16 + (param_loc * 8));
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    (* Handle value offset if needed *)
+                ]
+            | `Field field_offset ->
+                let field_type =
+                    match List.find_opt (fun (f, _, _) -> f = src) context.class_attributes with
+                    | Some (_, typ, _) -> typ
+                    | None -> failwith ("unknown field: " ^ src)
+                in
+                let label_null_check = fresh_label context.class_name context.method_name ^ "is_null" in
+                match field_type with
+(*                 | "Int" | "Bool" -> [ *)
+(*     "                       ## " ^ dest ^ " <- " ^ src ^ " (temp <- field)"; *)
+(*     "                       movq " ^ string_of_int field_offset ^ "(%r12), %r13"; *)
+(*     "                       movq %r13, " ^ string_of_int dest_locs.pointer_offset ^ "(%rbp)"; *)
+(*     "                       testq %r13, %r13";  (* Check if %r13 is null *) *)
+(*     "                       jz "^ label_null_check;  (* Skip dereference if null *) *)
+(*     "                       movq 24(%r13), %r14";  (* Use %r14 instead of overwriting %r13 *) *)
+(*     "                       movq %r14, " ^ string_of_int dest_locs.value_offset ^ "(%rbp)"; *)
+(*     label_null_check ^ ":"; *)
+(* ] *)
+                | _ -> [
+                    "                       ## " ^ dest ^ " <- " ^ src ^ " (temp <- field)";
+                    "                       movq " ^ string_of_int field_offset ^ "(%r12), %r13";
+                    "                       movq %r13, " ^ string_of_int dest_locs.pointer_offset ^ "(%rbp)";
+                ]
+        (* Case 3: x <- t$n (where x can be field, local, or param) *)
         else if is_temp src then
             let src_locs = lookup_temp_location context src in
-            let field_offset = lookup_field_offset context dest in
-            let dest_field_type =
-                match List.find_opt (fun (f, _, _) -> f = dest) context.class_attributes with
-                | Some (_, typ, _) -> typ
-                | None -> failwith ("unknown field: " ^ dest)
-            in
-            [
-                Printf.sprintf "                        ## new %s %s <- %s" dest_field_type dest src;
-                "                        pushq %rbp";
-                "                        pushq %r12";
-                Printf.sprintf "                        movq $%s..new, %%r14" dest_field_type;
-                "                        call *%r14";
-                "                        popq %r12";
-                "                        popq %rbp";
-                Printf.sprintf "                        movq %d(%%rbp), %%r14" src_locs.value_offset;
-                "                        movq %r14, 24(%r13)";
-                Printf.sprintf "                        movq %%r13, %d(%%r12)" field_offset;
-            ]
-        (* Else fallback case *)
+            match lookup_variable_location context dest with
+            | `Local dest_locs ->
+                [
+                    "                       ## " ^ dest ^ " <- " ^ src ^ " (local <- temp)";
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.pointer_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    Printf.sprintf "                       movq %d(%%rbp), %%r13" src_locs.value_offset;
+                    Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.value_offset;
+                ]
+            | `Param _ ->
+                (* Parameters are typically read-only, but handle if needed *)
+                failwith "Cannot assign to parameter"
+            | `Field field_offset ->
+                let dest_field_type =
+                    match List.find_opt (fun (f, _, _) -> f = dest) context.class_attributes with
+                    | Some (_, typ, _) -> typ
+                    | None -> failwith ("unknown field: " ^ dest)
+                in
+                [
+                    Printf.sprintf "                        ## %s <- %s (field <- temp)" dest src;
+                    "                        pushq %rbp";
+                    "                        pushq %r12";
+                    Printf.sprintf "                        movq $%s..new, %%r14" dest_field_type;
+                    "                        call *%r14";
+                    "                        popq %r12";
+                    "                        popq %rbp";
+                    Printf.sprintf "                        movq %d(%%rbp), %%r14" src_locs.value_offset;
+                    "                        movq %r14, 24(%r13)";
+                    Printf.sprintf "                        movq %%r13, %d(%%r12)" field_offset;
+                ]
+            | `Temp _ -> failwith "Unexpected case: dest should not be a temp variable here"
+
+        (* Else handle other variable combinations as needed *)
         else
-            let dest_offset = lookup_offset context dest in
-            let field_offset = lookup_field_offset context src in
-            [
-                "                       ## fallback "^dest ^" <- " ^ src ;
-                "                        movq " ^ string_of_int field_offset ^ "(%r12), %r13" ;
-                "                        movq %r13, " ^ string_of_int dest_offset ^ "(%rbp)" ;
-            ]
+            failwith ("Unsupported assignment: " ^ dest ^ " <- " ^ src)    
     | TAC_Assign_Int (dest, value) ->
         let loc = lookup_temp_location context dest in
 
@@ -1943,55 +2039,6 @@ let codegen context tac =
             "                        addq %r14, %r13";
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
         ]
-    | TAC_Assign_Not (dest, value) ->
-        let value_str = tac_expr_to_string value in
-        let value_locs = lookup_temp_location context value_str in
-        let dest_locs = lookup_temp_location context dest in
-
-        let true_label = fresh_label context.class_name context.method_name ^ "_true" in
-        let false_label = fresh_label context.class_name context.method_name ^ "_false" in
-        let end_label = fresh_label context.class_name context.method_name ^ "_end" in
-
-        [
-            Printf.sprintf "                        ## %s <- not %s" dest value_str;
-            (* Load boxed Bool pointer from temp slot *)
-            Printf.sprintf "                        movq %d(%%rbp), %%r13" value_locs.pointer_offset;
-            "                        movq 24(%r13), %r13";  (* Load actual Bool value (0 or 1) *)
-
-            "                        cmpq $0, %r13";  (* Check if value is false (0) *)
-            Printf.sprintf "            jne %s" true_label;  (* If 0 (false), jump to true_branch *)
-
-            Printf.sprintf ".globl %s" false_label;
-            false_label ^ ":";
-            "                        ## false branch";
-            "                        ## new Bool";
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $Bool..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            "                        movq $1, %r14"; 
-            "                        movq %r14, 24(%r13)";
-
-
-            Printf.sprintf "                        jmp %s" end_label;
-
-            Printf.sprintf ".globl %s" true_label;
-            true_label ^ ":";
-            "                        ## true branch";
-            "                        ## new Bool";
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $Bool..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            Printf.sprintf ".globl %s" end_label;
-            end_label ^ ":                ## end of if conditional";                                
-            Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
-
-        ]
     | TAC_Assign_Minus (dest, e1, e2) ->
         let op1 = tac_expr_to_string e1 in
         let op2 = tac_expr_to_string e2 in
@@ -2016,10 +2063,16 @@ let codegen context tac =
             "                        ## " ^ dest ^ " <- " ^ op1 ^ " * " ^  op2;
             Printf.sprintf "                        movq %d(%%rbp), %%r13" op1_locs.value_offset;
             Printf.sprintf "                        movq %d(%%rbp), %%r14" op2_locs.value_offset;
-            "            imulq %r14, %r13";
+
+            "movq %r14, %rax";
+            "imull %r13d, %eax";
+            "shlq $32, %rax   ";
+            "shrq $32, %rax   ";
+            "movl %eax, %r13d ";
+ 
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
         ]
-
+         
     | TAC_Assign_Divide (dest, e1, e2, line_number) ->
         let op1 = tac_expr_to_string e1 in
         let op2 = tac_expr_to_string e2 in
@@ -2048,11 +2101,11 @@ let codegen context tac =
             ".global "^ label_div_ok;
             label_div_ok ^ ":        ## division is okay ";
             Printf.sprintf "                        movq %d(%%rbp), %%r14" op1_locs.value_offset;
-            "           movq $0, %rdx";
-            "           movq %r14, %rax";
-            "           cdq";
-            "           idivq %r13";
-            "           movq %rax, %r13";
+            "movq $0, %rdx";
+            "movq %r14, %rax";
+            "cdq";
+            "idivl %r13d";
+            "movq %rax, %r13";
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
         ]
     | TAC_Assign_Negate (dest, value) ->
@@ -2216,16 +2269,60 @@ let codegen context tac =
         (*        []*)
         (*in*)
         (**)
-        call_setup @ arg_pushes @ call_and_cleanup @ store_result    
-   | TAC_ConditionalJump (cond, label) ->
-    let cond_locs = lookup_temp_location context cond in
-    [
-        "                        ## if " ^ cond ^ " jump to " ^ label;
-        Printf.sprintf "                        movq %d(%%rbp), %%r13" cond_locs.pointer_offset;
-        "                        cmpq $0, %r13";
-        "                        jne " ^ label
-    ]
-    | TAC_Jump label -> [
+        call_setup @ arg_pushes @ call_and_cleanup @ store_result 
+    | TAC_Assign_Not (dest, value) ->
+        let value_str = tac_expr_to_string value in
+        let value_locs = lookup_temp_location context value_str in
+        let dest_locs = lookup_temp_location context dest in
+        let true_label = fresh_label context.class_name context.method_name ^ "_true" in
+        let false_label = fresh_label context.class_name context.method_name ^ "_false" in
+        let end_label = fresh_label context.class_name context.method_name ^ "_end" in
+        [
+            Printf.sprintf "                        ## %s <- not %s" dest value_str;
+            (* Load boxed Bool pointer from temp slot *)
+            Printf.sprintf "                        movq %d(%%rbp), %%r13" value_locs.pointer_offset;
+            "                        movq 24(%r13), %r13";  (* Load actual Bool value (0 or 1) *)
+            "                        cmpq $0, %r13";  (* Check if value is false (0) *)
+            Printf.sprintf "            jne %s" true_label;  (* If 0 (false), jump to true_branch *)
+            Printf.sprintf ".globl %s" false_label;
+            false_label ^ ":";
+            "                        ## false branch";
+            "                        ## new Bool";
+            "                        pushq %rbp";
+            "                        pushq %r12";
+            "                        movq $Bool..new, %r14";
+            "                        call *%r14";
+            "                        popq %r12";
+            "                        popq %rbp";
+            "                        movq $1, %r14"; 
+            "                        movq %r14, 24(%r13)";
+            Printf.sprintf "                        jmp %s" end_label;
+            Printf.sprintf ".globl %s" true_label;
+            true_label ^ ":";
+            "                        ## true branch";
+            "                        ## new Bool";
+            "                        pushq %rbp";
+            "                        pushq %r12";
+            "                        movq $Bool..new, %r14";
+            "                        call *%r14";
+            "                        popq %r12";
+            "                        popq %rbp";
+            Printf.sprintf ".globl %s" end_label;
+            end_label ^ ":            ## end of if conditional";                                
+            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+            "                        movq 24(%r13), %r14";
+            Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset
+
+        ]
+    | TAC_ConditionalJump (cond, label) ->
+        let cond_locs = lookup_temp_location context cond in
+        [
+            "                        ## if " ^ cond ^ " jump to " ^ label;
+            Printf.sprintf "                        movq %d(%%rbp), %%r13" cond_locs.pointer_offset;
+            "                        movq 24(%r13), %r13";
+            "                        cmpq $0, %r13";
+            "                        jne " ^ label
+        ]    | TAC_Jump label -> [
         "                        ## unconditional jump to " ^ label;
         "                        jmp " ^ label
     ]
@@ -2233,38 +2330,185 @@ let codegen context tac =
 
     | TAC_Assign_New (dest, class_name) ->
         let dest_locs = lookup_temp_location context dest in
-        [
-            "                        ## " ^ dest ^ " <- new " ^ tac_expr_to_string class_name;
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $" ^ tac_expr_to_string class_name ^ "..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
+        let class_name_str = tac_expr_to_string class_name in
 
-            (* Store object pointer into temp variable’s pointer slot *)
-            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+        if class_name_str = "SELF_TYPE" then
+            [
+                "                        ## " ^ dest ^ " <- new SELF_TYPE";
+                "                        pushq %rbp";
+                "                        pushq %r12";
+                "                        ## obtain vtable for self object";
+                "                        movq 16(%r12), %r14";
+                "                        ## look up constructor at offset 1 in vtable";
+                "                        movq 8(%r14), %r14";
+                "                        call *%r14";
+                "                        popq %r12";
+                "                        popq %rbp";
+                (* Store object pointer into temp variable's pointer slot *)
+                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                (* Load value field (offset 24) from newly allocated object if needed *)
+                "                        movq 24(%r13), %r14";
+                (* Store value into temp variable's value slot *)
+                Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
+            ]
+        else
+            [
+                "                        ## " ^ dest ^ " <- new " ^ class_name_str;
+                "                        pushq %rbp";
+                "                        pushq %r12";
+                "                        movq $" ^ class_name_str ^ "..new, %r14";
+                "                        call *%r14";
+                "                        popq %r12";
+                "                        popq %rbp";
+                (* Store object pointer into temp variable's pointer slot *)
+                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                (* Load value field (offset 24) from newly allocated object *)
+                "                        movq 24(%r13), %r14";
+                (* Store value into temp variable's value slot *)
+                Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
 
-            (* Load value field (offset 24) from newly allocated object *)
-            "                        movq 24(%r13), %r14";
+            ]     
+    | TAC_Assign (dest, expr) ->(
+        let info = ["                      ##  Assign " ^dest^ " <- " ^ tac_expr_to_string expr ;] in
+        info @
+        let dest_locs = lookup_temp_location context dest in
+        match expr with
+        | TAC_Variable src ->(
+            if is_temp src then
+                let src_locs = lookup_temp_location context src in
+                [
+                    Printf.sprintf "movq %d(%%rbp), %%r13" src_locs.pointer_offset;
+                    Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    Printf.sprintf "movq %d(%%rbp), %%r13" src_locs.value_offset;
+                    Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.value_offset;
+                ]
+            else
+                match lookup_variable_location context src with
+                | `Local src_locs ->
+                    [
+                        Printf.sprintf "movq %d(%%rbp), %%r13" src_locs.pointer_offset;
+                        Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                        Printf.sprintf "movq %d(%%rbp), %%r13" src_locs.value_offset;
+                        Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.value_offset;
+                    ]
+                | `Param idx ->
+                    let arg_off = 16 + (idx * 8) in
+                    [
+                        Printf.sprintf "movq %d(%%rbp), %%r13" arg_off;
+                        Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    ]
+                | `Field field_off ->
+                    [
+                        Printf.sprintf "movq %d(%%r12), %%r13" field_off;
+                        Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                    ]
+                | `Temp _ ->
+                    failwith "internal error: unexpected temp")
+        | TAC_Int value ->
+            [
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $Int..new, %r14";
+                "call *%r14";
+                "movq %rax, %r13";
+                Printf.sprintf "movq $%d, 24(%%r13)" value;
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                Printf.sprintf "movq $%d, %d(%%rbp)" value dest_locs.value_offset;
+            ]
+        | TAC_Bool b ->
+            let v = if b then 1 else 0 in
+            [
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $Bool..new, %r14";
+                "call *%r14";
+                "movq %rax, %r13";
+                Printf.sprintf "movq $%d, 24(%%r13)" v;
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+                Printf.sprintf "movq $%d, %d(%%rbp)" v dest_locs.value_offset;
+            ]
+        | TAC_String lit ->
+            let str_lbl = get_string_label lit in
+            [
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $String..new, %r14";
+                "call *%r14";
+                "movq %rax, %r13";
+                Printf.sprintf "movq $%s, %%r14" str_lbl;
+                "movq %r14, 24(%r13)";
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+            ]
+        | other ->
+            failwith ("TAC_Assign not implemented for: " ^ tac_expr_to_string other)
+    )
 
-            (* Store value into temp variable’s value slot *)
-            Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
-        ]
+  | TAC_Assign_Default (dest, type_name) ->
+    let dest_locs = lookup_temp_location context dest in
+    [
+        "                       ## " ^ dest ^ " <- default value for " ^ type_name;
+        
+        (* Different handling based on the type *)
+        match type_name with
+        | "Int" ->
+            "                       pushq %rbp";
+            "                       pushq %r12";
+            "                       movq $Int..new, %r14";
+            "                       call *%r14";
+            "                       popq %r12";
+            "                       popq %rbp";
+            "                       movq $0, %r14";          (* Default value 0 for Int *)
+            "                       movq %r14, 24(%r13)";
+            Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+            Printf.sprintf "                       movq $0, %d(%%rbp)" dest_locs.value_offset
+            
+        | "Bool" ->
+            "                       pushq %rbp";
+            "                       pushq %r12";
+            "                       movq $Bool..new, %r14";
+            "                       call *%r14";
+            "                       popq %r12";
+            "                       popq %rbp";
+            "                       movq $0, %r14";          (* Default value false (0) for Bool *)
+            "                       movq %r14, 24(%r13)";
+            Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+            Printf.sprintf "                       movq $0, %d(%%rbp)" dest_locs.value_offset
+            
+        | "String" ->
+            "                       pushq %rbp";
+            "                       pushq %r12";
+            "                       movq $String..new, %r14";
+            "                       call *%r14";
+            "                       popq %r12";
+            "                       popq %rbp";
+            (* Empty string is the default *)
+            Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset
+            
+        | "Object" | "IO" ->
+            (* For Object and IO, null is the default *)
+            Printf.sprintf "                       movq $0, %d(%%rbp)" dest_locs.pointer_offset;
+            Printf.sprintf "                       movq $0, %d(%%rbp)" dest_locs.value_offset
+            
+        | _ ->
+            (* For user-defined classes, create a new default object *)
+            "                       pushq %rbp";
+            "                       pushq %r12";
+            Printf.sprintf "                       movq $%s..new, %%r14" type_name;
+            "                       call *%r14";
+            "                       popq %r12";
+            "                       popq %rbp";
+            Printf.sprintf "                       movq %%r13, %d(%%rbp)" dest_locs.pointer_offset
+    ]
 
-    (* | TAC_Assign_IsVoid of string * tac_expr *)
-    (* | TAC_StaticCall of string * string * string * string list *)
-    (* | TAC_New of string * string *)
-    (* | TAC_IsVoid of string * string *)
-    (* | TAC_Compare of string * string * string * string *)
-    (* | TAC_Negate of string * string *)
-    (* | TAC_Assign_Default of string * string *)
-    (**)
 
-    | x -> failwith ("no asm for tac instr: " ^ tac_instr_to_str tac ^ "\n")
+    | x -> failwith ("no asm for instrution %s" ^tac_instr_to_str x)
 
-(* Helper function specifically for constructor codegen to look up field offsets *)
+
+(* (TAC_Assign_IsVoid (_, _)|TAC_Assign_Call (_, _)| *)
+(* TAC_StaticCall (_, _, _, _)|TAC_New (_, _)|TAC_IsVoid (_, _)| *)
+(* TAC_Compare (_, _, _, _)|TAC_Not (_, _)|TAC_Negate (_, _)| *)
 (**)
+
 (*let constructor_lookup_field_offset context field =*)
 (*  match List.find_opt (fun (name, _, _) -> name = field) context.class_attributes with*)
 (*  | Some (_, _, index) -> 8 * index*)
@@ -2293,8 +2537,8 @@ let codegen context tac =
 (*    List.mapi (fun idx (name, typ, _) -> (name, typ, idx + 3)) attributes*)
 (*  in*)
 
-    
-   let constructor_codegen context tac =
+
+let constructor_codegen context tac =
     let class_name = context.class_name in
     let method_name = context.method_name in
     let class_attrs = context.class_attributes in
@@ -2417,7 +2661,6 @@ let codegen context tac =
             Printf.sprintf "                        movq $%s, %%r14" string_label;
             "                        movq %r14, 24(%r13)";  (* store string data inside object *)
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" loc.pointer_offset;
-            (* optional: store string_label again as 'value' in second slot if needed *)
         ]
     | TAC_Assign_Plus (dest, e1, e2) ->
         let op1 = tac_expr_to_string e1 in
@@ -2433,8 +2676,8 @@ let codegen context tac =
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.value_offset
         ]
     | TAC_Assign_Not (dest, value)->
-            []  
-   | TAC_Assign_Minus (dest, e1, e2) ->
+        []  
+    | TAC_Assign_Minus (dest, e1, e2) ->
         let op1 = tac_expr_to_string e1 in
         let op2 = tac_expr_to_string e2 in
         let dest_locs = lookup_temp_location context dest in
@@ -2523,31 +2766,31 @@ let codegen context tac =
             (* Save pointer to boxed Int object *)
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
         ]
-| TAC_Assign_Lt (dest, op1, op2) ->
-    let op1_str = tac_expr_to_string op1 in
-    let op2_str = tac_expr_to_string op2 in
-    let op1_locs = lookup_temp_location context op1_str in
-    let op2_locs = lookup_temp_location context op2_str in
-    let dest_locs = lookup_temp_location context dest in
-    [
-        Printf.sprintf "                        ## %s <- %s < %s" dest op1_str op2_str;
-        (* Move operands into registers *)
-        Printf.sprintf "                        movq %d(%%rbp), %%r13" op1_locs.value_offset;
-        Printf.sprintf "                        movq %d(%%rbp), %%r14" op2_locs.value_offset;
+    | TAC_Assign_Lt (dest, op1, op2) ->
+        let op1_str = tac_expr_to_string op1 in
+        let op2_str = tac_expr_to_string op2 in
+        let op1_locs = lookup_temp_location context op1_str in
+        let op2_locs = lookup_temp_location context op2_str in
+        let dest_locs = lookup_temp_location context dest in
+        [
+            Printf.sprintf "                        ## %s <- %s < %s" dest op1_str op2_str;
+            (* Move operands into registers *)
+            Printf.sprintf "                        movq %d(%%rbp), %%r13" op1_locs.value_offset;
+            Printf.sprintf "                        movq %d(%%rbp), %%r14" op2_locs.value_offset;
 
-        (* Call lt_handler with r13 and r14 as arguments *)
-        "                        pushq %r14";  (* second argument *)
-        "                        pushq %r13";  (* first argument *)
-        "                        pushq %r12";  (* self pointer if needed by handler *)
-        "                        call lt_handler";
-        "                        addq $24, %rsp";  (* clean up 3 pushes *)
+            (* Call lt_handler with r13 and r14 as arguments *)
+            "                        pushq %r14";  (* second argument *)
+            "                        pushq %r13";  (* first argument *)
+            "                        pushq %r12";  (* self pointer if needed by handler *)
+            "                        call lt_handler";
+            "                        addq $24, %rsp";  (* clean up 3 pushes *)
 
-        (* Save result pointer (r13 points to Bool object) *)
-        Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
-        "                        movq 24(%r13), %r14";  (* Load actual boolean value from object *)
-        Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
-    ]
-   | TAC_Assign_Le (dest, op1, op2) ->
+            (* Save result pointer (r13 points to Bool object) *)
+            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.pointer_offset;
+            "                        movq 24(%r13), %r14";  (* Load actual boolean value from object *)
+            Printf.sprintf "                        movq %%r14, %d(%%rbp)" dest_locs.value_offset;
+        ]
+    | TAC_Assign_Le (dest, op1, op2) ->
         let op1_str = tac_expr_to_string op1 in
         let op2_str = tac_expr_to_string op2 in
         let op1_locs = lookup_temp_location context op1_str in
@@ -2715,7 +2958,6 @@ let print_explicitly_initialized_fields () =
             []
     in
 
-    (* Sort class names for consistent output *)
     let sorted_class_names = List.sort String.compare class_names in
 
     if List.length sorted_class_names = 0 then
@@ -2748,31 +2990,31 @@ let print_explicitly_initialized_fields () =
 
 (* print crazy initializers*)
 let rec pretty_print_expr (e : exp) : string =
-  match e.exp_kind with
-  | AST_Integer i -> i
-  | AST_String s -> "\"" ^ s ^ "\""
-  | AST_True -> "true"
-  | AST_False -> "false"
-  | AST_Identifier (_, name) -> name
-  | AST_Plus (e1, e2) ->
-      pretty_print_expr e1 ^ " + " ^ pretty_print_expr e2
-  | AST_Minus (e1, e2) ->
-      pretty_print_expr e1 ^ " - " ^ pretty_print_expr e2
-  | AST_Times (e1, e2) ->
-      pretty_print_expr e1 ^ " * " ^ pretty_print_expr e2
-  | AST_Divide (e1, e2) ->
-      pretty_print_expr e1 ^ " / " ^ pretty_print_expr e2
-  | AST_Lt (e1, e2) ->
-      pretty_print_expr e1 ^ " < " ^ pretty_print_expr e2
-  | AST_Le (e1, e2) ->
-      pretty_print_expr e1 ^ " <= " ^ pretty_print_expr e2
-  | AST_Eq (e1, e2) ->
-      pretty_print_expr e1 ^ " = " ^ pretty_print_expr e2
-  | AST_Negate e1 ->
-      " ~ " ^ pretty_print_expr e1
-  | AST_Not e1 ->
-      "not " ^ pretty_print_expr e1
-  | _ -> "complex_expr"  (* fallback for blocks, lets, etc. *)
+    match e.exp_kind with
+    | AST_Integer i -> i
+    | AST_String s -> "\"" ^ s ^ "\""
+    | AST_True -> "true"
+    | AST_False -> "false"
+    | AST_Identifier (_, name) -> name
+    | AST_Plus (e1, e2) ->
+        pretty_print_expr e1 ^ " + " ^ pretty_print_expr e2
+    | AST_Minus (e1, e2) ->
+        pretty_print_expr e1 ^ " - " ^ pretty_print_expr e2
+    | AST_Times (e1, e2) ->
+        pretty_print_expr e1 ^ " * " ^ pretty_print_expr e2
+    | AST_Divide (e1, e2) ->
+        pretty_print_expr e1 ^ " / " ^ pretty_print_expr e2
+    | AST_Lt (e1, e2) ->
+        pretty_print_expr e1 ^ " < " ^ pretty_print_expr e2
+    | AST_Le (e1, e2) ->
+        pretty_print_expr e1 ^ " <= " ^ pretty_print_expr e2
+    | AST_Eq (e1, e2) ->
+        pretty_print_expr e1 ^ " = " ^ pretty_print_expr e2
+    | AST_Negate e1 ->
+        " ~ " ^ pretty_print_expr e1
+    | AST_Not e1 ->
+        "not " ^ pretty_print_expr e1
+    | _ -> "complex_expr"  (* fallback for blocks, lets, etc. *)
 
 (* Generate constructor for user-defined classes *)
 let generate_custom_constructor class_map class_name
@@ -2785,10 +3027,10 @@ let generate_custom_constructor class_map class_name
 
 
 
-  (* Convert attributes to include index *)
-  let attributes_with_index =
-    List.mapi (fun idx (name, typ, _) -> (name, typ, idx + 3)) attributes
-  in
+    (* Convert attributes to include index *)
+    let attributes_with_index =
+        List.mapi (fun idx (name, typ, _) -> (name, typ, idx + 3)) attributes
+    in
 
     (* Record explicitly initialized fields *)
     List.iter 
@@ -2841,22 +3083,30 @@ let generate_custom_constructor class_map class_name
 
     reset_temp_var_counter ();
 
-let tac_for_initializers =
-  List.mapi
-    (fun idx (attr_name, attr_type, init_opt) ->
-      match init_opt with
-      | None -> (idx, [], TAC_Variable "dummy", 0)
-      | Some expr ->
-          let initial_env = Hashtbl.create 10 in
-          reset_temp_var_counter ();
-                    (* insure aoout reseting label counters*)
-          let tac_instrs, tac_result, _ = convert class_name "init" initial_env expr in
-          let temp_count = get_temp_var_count () in
-          (idx, tac_instrs, tac_result, temp_count))
-    attributes
-in
-
-(* Get max stack space needed from all initializers *)
+    let tac_for_initializers =
+        List.mapi
+            (fun idx (attr_name, attr_type, init_opt) ->
+                match init_opt with
+                | None -> (idx, [], TAC_Variable "dummy", 0)
+                | Some expr ->
+                    let initial_env = Hashtbl.create 10 in
+                    reset_temp_var_counter ();
+                    (* Initialize an empty context *)
+                    let initial_context = {
+                        class_attributes = attributes_with_index;
+                        temp_vars = [];
+                        params = [];
+                        class_name = class_name;
+                        method_name = "init";
+                        local_vars = [];
+                    } in
+                    let tac_instrs, tac_result, _, final_context = 
+                        convert class_name "init" initial_env initial_context expr in
+                    let temp_count = get_temp_var_count () in
+                    (idx, tac_instrs, tac_result, temp_count))
+            attributes
+    in
+    (* Get max stack space needed from all initializers *)
     let max_temp_count =
         List.fold_left (fun acc (_, _, _, tc) -> max acc tc) 0 tac_for_initializers
     in
@@ -2884,6 +3134,7 @@ in
                         params = [];
                         class_name = class_name;
                         method_name = "init";
+                        local_vars = [];
                     } in
 
                     let init_header = [
@@ -2902,7 +3153,7 @@ in
                         | TAC_Variable name -> name
                         | _ -> failwith "Expected TAC_Variable as final result in initializer"
                     in
-let result_locs = lookup_temp_location context result_temp in
+                    let result_locs = lookup_temp_location context result_temp in
                     let store_code =
                         if List.length tac_instrs = 1 then
                             [
@@ -3023,62 +3274,63 @@ let rec get_class_attributes
         with Not_found -> []
     in
     inherited @ direct
+
 let topological_sort (cfg : cfg) : string list =
-  (* Create a dependency count map (in-degree for each block) *)
-  let dependency_count = Hashtbl.create (Hashtbl.length cfg) in
-  
-  (* Initialize all blocks with zero dependencies *)
-  Hashtbl.iter (fun id _ -> 
-    Hashtbl.add dependency_count id 0
-  ) cfg;
-  
-  (* Count dependencies (incoming edges) for each block *)
-  Hashtbl.iter (fun _ block ->
-    List.iter (fun succ_id ->
-      if Hashtbl.mem cfg succ_id then
-        let count = 
-          if Hashtbl.mem dependency_count succ_id then
-            Hashtbl.find dependency_count succ_id + 1
-          else 1
-        in
-        Hashtbl.replace dependency_count succ_id count
-    ) block.successors
-  ) cfg;
-  
-  (* Initialize queue with blocks that have no dependencies *)
-  let queue = ref [] in
-  Hashtbl.iter (fun id count ->
-    if count = 0 then queue := id :: !queue
-  ) dependency_count;
-  
-  (* Process queue in order (no need to sort for CFG) *)
-  let sorted_blocks = ref [] in
-  
-  while !queue <> [] do
-    (* Get next block from queue *)
-    let block_id = List.hd !queue in
-    queue := List.tl !queue;
-    
-    (* Add to sorted result *)
-    sorted_blocks := block_id :: !sorted_blocks;
-    
-    (* Process successors *)
-    if Hashtbl.mem cfg block_id then
-      let block = Hashtbl.find cfg block_id in
-      List.iter (fun succ_id ->
-        if Hashtbl.mem dependency_count succ_id then
-          let count = Hashtbl.find dependency_count succ_id - 1 in
-          Hashtbl.replace dependency_count succ_id count;
-          if count = 0 then
-            queue := succ_id :: !queue
-      ) block.successors
-  done;
-  
-  (* Check for cycles *)
-  if List.length !sorted_blocks <> Hashtbl.length cfg then
-    failwith "Topological sort error: the CFG has at least one cycle"
-  else
-    List.rev !sorted_blocks
+    (* Create a dependency count map (in-degree for each block) *)
+    let dependency_count = Hashtbl.create (Hashtbl.length cfg) in
+
+    (* Initialize all blocks with zero dependencies *)
+    Hashtbl.iter (fun id _ -> 
+        Hashtbl.add dependency_count id 0
+    ) cfg;
+
+    (* Count dependencies (incoming edges) for each block *)
+    Hashtbl.iter (fun _ block ->
+        List.iter (fun succ_id ->
+            if Hashtbl.mem cfg succ_id then
+                let count = 
+                    if Hashtbl.mem dependency_count succ_id then
+                        Hashtbl.find dependency_count succ_id + 1
+                    else 1
+                in
+                Hashtbl.replace dependency_count succ_id count
+        ) block.successors
+    ) cfg;
+
+    (* Initialize queue with blocks that have no dependencies *)
+    let queue = ref [] in
+    Hashtbl.iter (fun id count ->
+        if count = 0 then queue := id :: !queue
+    ) dependency_count;
+
+    (* Process queue in order (no need to sort for CFG) *)
+    let sorted_blocks = ref [] in
+
+    while !queue <> [] do
+        (* Get next block from queue *)
+        let block_id = List.hd !queue in
+        queue := List.tl !queue;
+
+        (* Add to sorted result *)
+        sorted_blocks := block_id :: !sorted_blocks;
+
+        (* Process successors *)
+        if Hashtbl.mem cfg block_id then
+            let block = Hashtbl.find cfg block_id in
+            List.iter (fun succ_id ->
+                if Hashtbl.mem dependency_count succ_id then
+                    let count = Hashtbl.find dependency_count succ_id - 1 in
+                    Hashtbl.replace dependency_count succ_id count;
+                    if count = 0 then
+                        queue := succ_id :: !queue
+            ) block.successors
+    done;
+
+    (* Check for cycles *)
+    if List.length !sorted_blocks <> Hashtbl.length cfg then
+        failwith "Topological sort error: the CFG has at least one cycle"
+    else
+        List.rev !sorted_blocks
 
 (* Generate method definition assembly code *)
 let generate_method_definition class_name method_name params return_type body
@@ -3112,10 +3364,22 @@ let generate_method_definition class_name method_name params return_type body
             (param, loc))
         params
     in  (*Convert method body to TAC instructions*)
-    let tac_instrs, final_expr, _ =
-        convert class_name method_name initial_env body
+
+    (* Create initial context for the method *)
+    let initial_context = {
+        class_attributes = attributes;
+        temp_vars = [];  (* Will be populated after conversion *)
+        params = param_locs;
+        class_name = class_name;
+        method_name = method_name;
+        local_vars = [];  (* Start with empty local variables *)
+    } in
+    (* Convert method body to TAC instructions *)
+    let tac_instrs, final_expr, _, final_context =
+        convert class_name method_name initial_env initial_context body
     in
     let temp_count = get_temp_var_count () in
+
     (* Calculate the stack space needed (8 bytes per temporary) 
      Ensure it's 16-byte aligned by rounding up to the next multiple of 16 *)
 
@@ -3162,12 +3426,14 @@ let generate_method_definition class_name method_name params return_type body
     print_cfg cfg;
 
     (* Create codegen context with all necessary information *)
+    (* Create final codegen context with all necessary information *)
     let context = {
         class_attributes = attributes;
-        temp_vars = temp_vars;  (* This would/should/maybe? be populated based on variable tracking *)
+        temp_vars = temp_vars;
         params = param_locs;
         class_name = class_name;
         method_name = method_name;
+        local_vars = final_context.local_vars;  (* Use local vars from conversion *)
     } in
     let debug_print_context context =
         Printf.printf "=== DEBUG CONTEXT ===\n";
@@ -3190,15 +3456,15 @@ let generate_method_definition class_name method_name params return_type body
     (* Generate assembly for each basic block in topological_sort order*)
     let sorted_blocks = topological_sort cfg in
 
-let label_to_block = create_label_to_block_map basic_blocks in
-Printf.printf "\n=== Label -> Block Mapping ===\n";
-Hashtbl.iter (fun lbl blk -> Printf.printf "  %s -> %s\n" lbl blk) label_to_block;
-flush stdout;
+    let label_to_block = create_label_to_block_map basic_blocks in
+    Printf.printf "\n=== Label -> Block Mapping ===\n";
+    Hashtbl.iter (fun lbl blk -> Printf.printf "  %s -> %s\n" lbl blk) label_to_block;
+    flush stdout;
 
-Printf.printf "=== Sorted Basic Blocks ===\n";
-List.iter (fun block_id -> Printf.printf "  %s\n" block_id) sorted_blocks;
-Printf.printf "===========================\n";
-flush stdout;
+    Printf.printf "=== Sorted Basic Blocks ===\n";
+    List.iter (fun block_id -> Printf.printf "  %s\n" block_id) sorted_blocks;
+    Printf.printf "===========================\n";
+    flush stdout;
     let body_asm =
         List.concat_map (fun block_id ->
             let block = Hashtbl.find cfg block_id in
@@ -3207,7 +3473,7 @@ flush stdout;
             block_comment @ block_code
         ) sorted_blocks
 
-        in 
+    in 
     (* Method epilogue *)
     let epilogue =
         [
@@ -4372,18 +4638,34 @@ let main () =
             (* (**) *)
             let class_name = snd class_id in
             let method_name = snd method_id in
+
             (* Create an initial environment; maybe pre-populate it with formal parameters *)
             let initial_env = Hashtbl.create 10 in
-            (*
-              List.iter (fun (param, _) ->
-                let loc = newloc () in
-                Hashtbl.add initial_env param loc
-              ) formals;
-         *)
 
-            let tac_instrs, result_expr, _final_env =
-                convert class_name method_name initial_env body
+            (* Create parameter locations list *)
+            let param_locs = List.map
+                (fun (param_id, _) ->
+                    let param_name = snd param_id in
+                    let loc = newloc () in
+                    Hashtbl.add initial_env param_name loc;
+                    (param_name, loc))
+                formals
             in
+
+            (* Create initial context *)
+            let initial_context = {
+                class_attributes = [];  (* Will be filled by the class attributes later *)
+                temp_vars = [];        (* Will be populated after conversion *)
+                params = param_locs;   (* Parameter locations *)
+                class_name = class_name;
+                method_name = method_name;
+                local_vars = [];       (* Start with empty local variables *)
+            } in
+
+            let tac_instrs, result_expr, final_env, final_context =
+                convert class_name method_name initial_env initial_context body
+            in
+
             (* Create preamble *)
             let preamble =
                 [
@@ -4407,7 +4689,6 @@ let main () =
                         tac_instrs
                         @ [ TAC_Assign_Variable ("t$0", result_var); TAC_Return "t$0" ]
             in
-
             preamble @ final_instrs
         | _ -> []
     in

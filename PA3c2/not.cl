@@ -1,10 +1,14 @@
 class Main inherits IO{
-    iscool : Bool <- not (not ( 40 <= 40)) ;
+    iscool : Bool; 
     main () : Object {
+        {
+        iscool <- not false;
+
         if iscool then 
-            out_string("cool\n")
+            out_string("correct\n")
         else 
-            out_string(":</\n")
-        fi
+            out_string("wrong\n")
+        fi;
+        }
     };
 };

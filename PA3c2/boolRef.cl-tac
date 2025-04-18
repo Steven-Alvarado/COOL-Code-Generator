@@ -1,26 +1,29 @@
 comment start
 label Main_main_0
+here <- bool false
 t$1 <- here
-t$4 <- not t$1
-bt t$4 Main_main_2
-bt t$1 Main_main_1
+t$2 <- here
+t$5 <- not t$2
+bt t$5 Main_main_2
+bt t$2 Main_main_1
 comment then branch
 label Main_main_1
-t$2 <- y
+t$3 <- string
+wrong\n
 jmp Main_main_4
 comment else branch
 label Main_main_2
-t$3 <- string
-false
+t$4 <- string
+correct\n
 jmp Main_main_6
 comment if-join
 label Main_main_3
 return t$0
-comment fcall-pre to out_int
+comment fcall-pre to out_string
 label Main_main_4
-t$0 <- call out_int t$2
+t$0 <- call out_string t$3
 jmp Main_main_3
 comment fcall-pre to out_string
 label Main_main_6
-t$0 <- call out_string t$3
+t$0 <- call out_string t$4
 jmp Main_main_3

@@ -255,7 +255,9 @@ init_l18_true:
                         popq %r12
                         popq %rbp
 .globl init_l20_end
-init_l20_end:                ## end of if conditional
+init_l20_end:            ## end of if conditional
+                        movq %r13, -24(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -32(%rbp)
                         ## Boxing result from t$1 and storing to self[4]
                         movq -32(%rbp), %r14
@@ -580,7 +582,7 @@ Main.main:           ## method definition
                         ## self[6] holds field obj2 (Object)
                         ## method body begins
                         ## Basic block: BB0
-                       ## t$0 <- y
+                       ## t$0 <- y (temp <- field)
                        movq 32(%r12), %r13
                        movq %r13, -8(%rbp)
                        movq 24(%r13), %r13
@@ -614,15 +616,19 @@ main_l9_true:
                         popq %r12
                         popq %rbp
 .globl main_l11_end
-main_l11_end:                ## end of if conditional
+main_l11_end:            ## end of if conditional
+                        movq %r13, -24(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -32(%rbp)
                         ## if t$1 jump to main_l1
                         movq -24(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l1
                         ## Basic block: BB1
                         ## if t$0 jump to main_l0
                         movq -8(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l0
                         ## Basic block: BB2
@@ -719,7 +725,7 @@ main_l2:
                         movq %r13, -72(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -80(%rbp)
-                        ## new Object obj1 <- t$4
+                        ## obj1 <- t$4 (field <- temp)
                         pushq %rbp
                         pushq %r12
                         movq $Object..new, %r14
@@ -729,7 +735,7 @@ main_l2:
                         movq -80(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 40(%r12)
-                       ## t$0 <- obj1
+                       ## t$0 <- obj1 (temp <- field)
                        movq 40(%r12), %r13
                        movq %r13, -8(%rbp)
                         ## t$5 <- new Object
@@ -742,7 +748,7 @@ main_l2:
                         movq %r13, -88(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -96(%rbp)
-                        ## new Object obj2 <- t$5
+                        ## obj2 <- t$5 (field <- temp)
                         pushq %rbp
                         pushq %r12
                         movq $Object..new, %r14
@@ -752,7 +758,7 @@ main_l2:
                         movq -96(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 48(%r12)
-                       ## t$0 <- obj2
+                       ## t$0 <- obj2 (temp <- field)
                        movq 48(%r12), %r13
                        movq %r13, -8(%rbp)
                         ## new String t$6 <- "\n= comparison (Object !=): "
@@ -784,19 +790,23 @@ main_l2:
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -16(%rbp)
-                       ## t$7 <- obj1
+                       ## t$7 <- obj1 (temp <- field)
                        movq 40(%r12), %r13
                        movq %r13, -120(%rbp)
-                       ## t$8 <- obj2
+                       ## t$8 <- obj2 (temp <- field)
                        movq 48(%r12), %r13
                        movq %r13, -136(%rbp)
                         ## t$9 <- t$7 == t$8
-                        movq -128(%rbp), %r13
-                        movq -144(%rbp), %r14
-                        cmpq %r14, %r13
-                        sete %r15b
-                        movzbq %r15b, %r15
-                        movq %r15, -160(%rbp)
+                        movq -120(%rbp), %r13
+                        pushq %r13
+                        movq -136(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        movq %r13, -152(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -160(%rbp)
                         ## t$10 <- not t$9
                         movq -152(%rbp), %r13
                         movq 24(%r13), %r13
@@ -826,15 +836,19 @@ main_l12_true:
                         popq %r12
                         popq %rbp
 .globl main_l14_end
-main_l14_end:                ## end of if conditional
+main_l14_end:            ## end of if conditional
+                        movq %r13, -168(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -176(%rbp)
                         ## if t$10 jump to main_l4
                         movq -168(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l4
                         ## Basic block: BB8
                         ## if t$9 jump to main_l3
                         movq -152(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l3
                         ## Basic block: BB9
@@ -934,19 +948,23 @@ main_l5:
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -16(%rbp)
-                       ## t$14 <- obj1
+                       ## t$14 <- obj1 (temp <- field)
                        movq 40(%r12), %r13
                        movq %r13, -232(%rbp)
-                       ## t$15 <- obj1
+                       ## t$15 <- obj1 (temp <- field)
                        movq 40(%r12), %r13
                        movq %r13, -248(%rbp)
                         ## t$16 <- t$14 == t$15
-                        movq -240(%rbp), %r13
-                        movq -256(%rbp), %r14
-                        cmpq %r14, %r13
-                        sete %r15b
-                        movzbq %r15b, %r15
-                        movq %r15, -272(%rbp)
+                        movq -232(%rbp), %r13
+                        pushq %r13
+                        movq -248(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        movq %r13, -264(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -272(%rbp)
                         ## t$17 <- not t$16
                         movq -264(%rbp), %r13
                         movq 24(%r13), %r13
@@ -976,10 +994,13 @@ main_l15_true:
                         popq %r12
                         popq %rbp
 .globl main_l17_end
-main_l17_end:                ## end of if conditional
+main_l17_end:            ## end of if conditional
+                        movq %r13, -280(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -288(%rbp)
                         ## if t$17 jump to main_l7
                         movq -280(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l7
                         ## Basic block: BB19
@@ -1007,6 +1028,7 @@ main_l7:
                         ## Basic block: BB15
                         ## if t$16 jump to main_l6
                         movq -264(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l6
                         ## Basic block: BB16

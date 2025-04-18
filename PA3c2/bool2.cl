@@ -6,7 +6,7 @@ class Main inherits IO{
     y : Int <- x + z -1;
     main () : Object{
     {
-        here <- true;
+        here <- ( not false);
            if here then 
            out_int(y)
            else

@@ -1,4 +1,6 @@
 ast -> tac -> cfg with basic blocks -> basic blocks to asssembly
 
-implement the enviornment and store to generate semantically correct asm
-
+known bugs:
+    out_string fails to emit string under strict conditionals but correct branch is
+    taken : testcase bool.cl
+    

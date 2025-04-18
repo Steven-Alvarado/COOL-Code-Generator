@@ -1,8 +1,0 @@
-comment start
-label Foo_foo_0
-t$2 <- y
-t$1 <- call out_int t$2
-t$3 <- string
-foo\n
-t$0 <- call out_string t$3
-return t$0

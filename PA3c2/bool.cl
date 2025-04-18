@@ -1,14 +1,16 @@
 class Main inherits IO{
-    istrue : Bool <- (( 4 < 6) = (4 < 90));
-    here : Bool <- ( (4 <= 5)) = ( istrue);
+    istrue : Bool <- not false = ((( 4< 7) = (5 <= 5)) = not true);
+    here : Bool <- not(not true);
     x : Int <- 4;
     y : Int <- x + 43;
     main () : Object{
     {
-       if here then 
-           out_int(y)
+       here <- ( not (not false));
+       if here then {
+           out_string("wrong\n");
+       }
            else 
-           out_string("false")
+           out_string("correct\n")
         fi;
     }
     };

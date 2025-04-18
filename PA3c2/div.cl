@@ -3,7 +3,7 @@ class Main Inherits IO{
     y : Int <- 0;
     main () : Object {
         {
-       x <- x / y ;
+       x <- x / 4 /5  ;
        out_int(x);
        out_string("\n");
         }
