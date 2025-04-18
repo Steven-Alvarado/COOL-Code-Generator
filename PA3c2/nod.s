@@ -157,8 +157,8 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 0
+                        movq $0, %r14
                         subq %r14, %rsp
                         ## return address handling
                         movq $4, %r12
@@ -185,7 +185,7 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[3] x initializer -- none 
+                        ## self[3] x initializer -- none
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -486,13 +486,13 @@ Main.main:           ## method definition
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
                         ## stack room for temporaries: 5
-                        movq $48, %r14
+                        movq $80, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## self[3] holds field x (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -501,9 +501,10 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13,0(%rbp)
-                        ## new Int
+                        movq %r13, -16(%rbp)
+                        ## new int t$1 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -512,25 +513,39 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $4, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13,-8(%rbp)
-                        movq 0(%rbp), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -16(%rbp)
-                        movq -16(%rbp), %r13
-                        movq %r13, 24(%rbp)
-                        ## x
-                        movq 24(%r12), %r13
-                        movq %r13, 0(%rbp)
-                        ## x
-                        movq 24(%r12), %r13
                         movq %r13, -24(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -32(%rbp)
+                        ## t$2 <- t$0 + t$1
+                        movq -16(%rbp), %r13
+                        movq -32(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -48(%rbp)
+                        ## new Int x <- t$2
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -48(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                       ## t$3 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -56(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -64(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$3
-                        movq -24(%rbp), %r13
+                        ## arg t$3 (pointer)
+                        movq -56(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -541,8 +556,10 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, 0(%rbp)
-                        ## new String
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## new String t$4 <- " heloo\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
@@ -552,12 +569,12 @@ Main.main:           ## method definition
                         ## string8 holds " heloo\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -32(%rbp)
+                        movq %r13, -72(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$4
-                        movq -32(%rbp), %r13
+                        ## arg t$4 (pointer)
+                        movq -72(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -568,7 +585,9 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, 0(%rbp)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
 
 .globl Main.main.end
 Main.main.end:       ## method body ends

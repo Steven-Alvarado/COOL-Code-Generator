@@ -7,8 +7,11 @@ class Main inherits IO{
     main () : Object{
     {
         here <- true;
-           out_int(y);
-           out_string("false");
+           if here then 
+           out_int(y)
+           else
+           out_string("false")
+           fi;
     }
     };
 };

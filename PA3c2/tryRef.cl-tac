@@ -1,14 +1,29 @@
 comment start
 label Main_main_0
-t$4 <- y
-t$5 <- x
-t$2 <- + t$4 t$5
-t$3 <- z
-x <- + t$2 t$3
-t$1 <- x
+t$2 <- string
+ enter string: \n
+t$1 <- call out_string t$2
+s <- call in_string
+t$3 <- s
+t$5 <- string
+enter int:\n
+t$4 <- call out_string t$5
+x <- call in_int
+t$6 <- x
+t$10 <- y
+t$11 <- x
+t$8 <- + t$10 t$11
+t$9 <- z
+x <- + t$8 t$9
 t$7 <- x
-t$6 <- call out_int t$7
-t$8 <- string
+t$13 <- x
+t$12 <- call out_int t$13
+t$15 <- string
  :D yayy\n
-t$0 <- call out_string t$8
+t$14 <- call out_string t$15
+t$17 <- s
+t$16 <- call out_string t$17
+t$18 <- string
+\n
+t$0 <- call out_string t$18
 return t$0

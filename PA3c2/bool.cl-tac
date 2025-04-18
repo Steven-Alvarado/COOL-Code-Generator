@@ -2,20 +2,20 @@ comment start
 label Main_main_0
 t$0 <- here
 t$1 <- not t$0
-bt t$1 Main_main_2
-bt t$0 Main_main_1
+bt t$1 main_l2
+bt t$0 main_l1
 comment then branch
-label Main_main_1
+label main_l1
 t$2 <- y
 t$0 <- call out_int t$2
-jmp Main_main_3
+jmp main_l3
 comment else branch
-label Main_main_2
+label main_l2
 t$3 <- string
 false
 t$0 <- call out_string t$3
 t$0 <- t$0
-jmp Main_main_3
+jmp main_l3
 comment if-join
-label Main_main_3
+label main_l3
 return t$0

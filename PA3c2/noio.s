@@ -7,22 +7,9 @@ Bool..vtable:			## virtual function table for Bool
 						.quad Object.copy
 						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Foo..vtable
-Foo..vtable:			## virtual function table for Foo
-						.quad string2
-						.quad Foo..new
-						.quad Object.abort
-						.quad Object.copy
-						.quad Object.type_name
-						.quad IO.in_int
-						.quad IO.in_string
-						.quad IO.out_int
-						.quad IO.out_string
-						.quad Foo.foo
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO..vtable
 IO..vtable:			## virtual function table for IO
-						.quad string3
+						.quad string2
 						.quad IO..new
 						.quad Object.abort
 						.quad Object.copy
@@ -34,7 +21,7 @@ IO..vtable:			## virtual function table for IO
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Int..vtable
 Int..vtable:			## virtual function table for Int
-						.quad string4
+						.quad string3
 						.quad Int..new
 						.quad Object.abort
 						.quad Object.copy
@@ -42,20 +29,16 @@ Int..vtable:			## virtual function table for Int
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main..vtable
 Main..vtable:			## virtual function table for Main
-						.quad string5
+						.quad string4
 						.quad Main..new
 						.quad Object.abort
 						.quad Object.copy
 						.quad Object.type_name
-						.quad IO.in_int
-						.quad IO.in_string
-						.quad IO.out_int
-						.quad IO.out_string
 						.quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
 Object..vtable:			## virtual function table for Object
-						.quad string6
+						.quad string5
 						.quad Object..new
 						.quad Object.abort
 						.quad Object.copy
@@ -63,7 +46,7 @@ Object..vtable:			## virtual function table for Object
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String..vtable
 String..vtable:			## virtual function table for String
-						.quad string7
+						.quad string6
 						.quad String..new
 						.quad Object.abort
 						.quad Object.copy
@@ -71,6 +54,7 @@ String..vtable:			## virtual function table for String
 						.quad String.concat
 						.quad String.length
 						.quad String.substr
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..new
 Bool..new:              ## constructor for Bool
                         pushq %rbp
@@ -98,77 +82,6 @@ Bool..new:              ## constructor for Bool
                         movq $0, %r13
                         movq %r13, 24(%r12)
                         ## self[3] (raw content) initializer -- none 
-                        movq %r12, %r13
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Foo..new
-Foo..new:              ## constructor for Foo
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        movq $5, %r12
-			## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq $8, %rsi
-			movq %r12, %rdi
-			call calloc
-			movq %rax, %r12
-			## store class tag, object size and vtable pointer
-                        movq $99, %r14
-                        movq %r14, 0(%r12)
-                        movq $5, %r14
-                        movq %r14, 8(%r12)
-                        movq $Foo..vtable, %r14
-                        movq %r14, 16(%r12)
-                        movq %r12, %r13
-                        ## self[3] holds field x (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 24(%r12)
-                        ## self[3] x initializer <- 4
-                         ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        movq %r12, %r13
-                        ## self[4] holds field y (String)
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 32(%r12)
-                        ## self[4] y initializer <- third
-                         ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string0 holds 'third'
-                        movq $string0, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -240,8 +153,8 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 0
+                        movq $0, %r14
                         subq %r14, %rsp
                         ## return address handling
                         movq $3, %r12
@@ -258,6 +171,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
+                        ## initialize attributes
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -325,9 +239,8 @@ String..new:            ## constructor for String
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Foo.foo
-Foo.foo:           ## method definition
+.globl Object.abort
+Object.abort:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
@@ -336,29 +249,89 @@ Foo.foo:           ## method definition
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
-                        movq [TODO: named var x], -48(%rbp)
-                        pushq %rbp
-                        pushq %r12
-                        movq $out_int, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, %r13
-                        movq [TODO: named var y], -56(%rbp)
-                        pushq %rbp
-                        pushq %r12
-                        movq $out_string, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, %r13
-.globl Foo.foo.end
-Foo.foo.end:       ## method body ends
+                        movq $string7, %r13
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movq %r13, %rdi
+			call cooloutstr
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movl $0, %edi
+			call exit
+.globl Object.abort.end
+Object.abort.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object.copy
+Object.copy:            ## method definition
+                        pushq %rbp
+                        movq %rsp, %rbp
+                        movq 16(%rbp), %r12
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
+                        subq %r14, %rsp
+                        ## return address handling
+                        ## method body begins
+                        movq 8(%r12), %r14
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movq $8, %rsi
+			movq %r14, %rdi
+			call calloc
+			movq %rax, %r13
+                        pushq %r13
+.globl l1
+l1:                     cmpq $0, %r14
+			je l2
+                        movq 0(%r12), %r15
+                        movq %r15, 0(%r13)
+                        movq $8, %r15
+                        addq %r15, %r12
+                        addq %r15, %r13
+                        movq $1, %r15
+                        subq %r15, %r14
+                        jmp l1
+.globl l2
+l2:                     ## done with Object.copy loop
+                        popq %r13
+.globl Object.copy.end
+Object.copy.end:        ## method body ends
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
+                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+.globl Object.type_name
+Object.type_name:       ## method definition
+                        pushq %rbp
+                        movq %rsp, %rbp
+                        movq 16(%rbp), %r12
+                        ## stack room for temporaries: 2
+                        movq $16, %r14
+                        subq %r14, %rsp
+                        ## return address handling
+                        ## method body begins
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## obtain vtable for self object
+                        movq 16(%r12), %r14
+                        ## look up type name at offset 0 in vtable
+                        movq 0(%r14), %r14
+                        movq %r14, 24(%r13)
+.globl Object.type_name.end
+Object.type_name.end:   ## method body ends
+                        ## return address handling
+                        movq %rbp, %rsp
+                        popq %rbp
+                        ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO.in_int
 IO.in_int:              ## method definition
@@ -498,27 +471,25 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
-                        movq $hi\n, -64(%rbp)
+                        ## Basic block: BB0
+                        ## new int t$0 <- 3
                         pushq %rbp
                         pushq %r12
-                        movq $out_string, %r14
+                        movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq %r13, %r13
-                        movq $bye\n, -72(%rbp)
-                        pushq %rbp
-                        pushq %r12
-                        movq $out_string, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, %r13
+                        movq $3, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
@@ -526,100 +497,6 @@ Main.main.end:       ## method body ends
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.abort
-Object.abort:           ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        movq $string7, %r13
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq %r13, %rdi
-			call cooloutstr
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
-			call exit
-.globl Object.abort.end
-Object.abort.end:       ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.copy
-Object.copy:            ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        movq 8(%r12), %r14
-                        ## guarantee 16-byte alignment before call
-			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movq $8, %rsi
-			movq %r14, %rdi
-			call calloc
-			movq %rax, %r13
-                        pushq %r13
-.globl l1
-l1:                     cmpq $0, %r14
-			je l2
-                        movq 0(%r12), %r15
-                        movq %r15, 0(%r13)
-                        movq $8, %r15
-                        addq %r15, %r12
-                        addq %r15, %r13
-                        movq $1, %r15
-                        subq %r15, %r14
-                        jmp l1
-.globl l2
-l2:                     ## done with Object.copy loop
-                        popq %r13
-.globl Object.copy.end
-Object.copy.end:        ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-.globl Object.type_name
-Object.type_name:       ## method definition
-                        pushq %rbp
-                        movq %rsp, %rbp
-                        movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
-                        subq %r14, %rsp
-                        ## return address handling
-                        ## method body begins
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## obtain vtable for self object
-                        movq 16(%r12), %r14
-                        ## look up type name at offset 0 in vtable
-                        movq 0(%r14), %r14
-                        movq %r14, 24(%r13)
-.globl Object.type_name.end
-Object.type_name.end:   ## method body ends
-                        ## return address handling
-                        movq %rbp, %rsp
-                        popq %rbp
-                        ret
                          ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
@@ -726,7 +603,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string9, %r13
+                        movq $string8, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -744,9 +621,8 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
-
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
 the.empty.string:			  # ""
 .byte 0	
@@ -779,30 +655,22 @@ string1:			  # "Bool"
 
 
 .globl string2
-string2:			  # "Foo"
-.byte 70	# 'F'
-.byte 111	# 'o'
-.byte 111	# 'o'
-.byte 0	
-
-
-.globl string3
-string3:			  # "IO"
+string2:			  # "IO"
 .byte 73	# 'I'
 .byte 79	# 'O'
 .byte 0	
 
 
-.globl string4
-string4:			  # "Int"
+.globl string3
+string3:			  # "Int"
 .byte 73	# 'I'
 .byte 110	# 'n'
 .byte 116	# 't'
 .byte 0	
 
 
-.globl string5
-string5:			  # "Main"
+.globl string4
+string4:			  # "Main"
 .byte 77	# 'M'
 .byte 97	# 'a'
 .byte 105	# 'i'
@@ -810,8 +678,8 @@ string5:			  # "Main"
 .byte 0	
 
 
-.globl string6
-string6:			  # "Object"
+.globl string5
+string5:			  # "Object"
 .byte 79	# 'O'
 .byte 98	# 'b'
 .byte 106	# 'j'
@@ -821,8 +689,8 @@ string6:			  # "Object"
 .byte 0	
 
 
-.globl string7
-string7:			  # "String"
+.globl string6
+string6:			  # "String"
 .byte 83	# 'S'
 .byte 116	# 't'
 .byte 114	# 'r'
@@ -832,8 +700,8 @@ string7:			  # "String"
 .byte 0	
 
 
-.globl string8
-string8:			  # "abort\n"
+.globl string7
+string7:			  # "abort\n"
 .byte 97	# 'a'
 .byte 98	# 'b'
 .byte 111	# 'o'
@@ -844,27 +712,8 @@ string8:			  # "abort\n"
 .byte 0	
 
 
-.globl string9
-string9:			  # "hi\n"
-.byte 104	# 'h'
-.byte 105	# 'i'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string10
-string10:			  # "bye\n"
-.byte 98	# 'b'
-.byte 121	# 'y'
-.byte 101	# 'e'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string10
-string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.globl string8
+string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -917,7 +766,6 @@ string10:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 0	
 
 
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
 eq_handler:             ## helper function for =

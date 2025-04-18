@@ -20,6 +20,9 @@ y
 Int
 3
 Int
+negate
+3
+Int
 integer
 10
 Object
@@ -401,6 +404,9 @@ attribute_init
 y
 3
 Int
+3
+Int
+negate
 3
 Int
 integer

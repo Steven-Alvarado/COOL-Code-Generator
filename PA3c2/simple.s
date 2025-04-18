@@ -196,7 +196,7 @@ Main..new:              ## constructor for Main
                         movq %r13, 32(%r12)
                         ## self[3] x initializer -- none
                         ## self[4] z initializer <- 5
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -205,6 +205,10 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -525,16 +529,16 @@ Main.main:           ## method definition
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -16(%rbp)
-                       ## new Int x <- t$0
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -16(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 24(%r12)
+                        ## new Int x <- t$0
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
                        ## t$0 <- x
                        movq 24(%r12), %r13
                        movq %r13, -8(%rbp)
@@ -555,16 +559,16 @@ Main.main:           ## method definition
                         movq -48(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -64(%rbp)
-                       ## new Int z <- t$3
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -64(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 32(%r12)
+                        ## new Int z <- t$3
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -64(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 32(%r12)
                        ## t$0 <- z
                        movq 32(%r12), %r13
                        movq %r13, -8(%rbp)
@@ -660,16 +664,16 @@ Main.main:           ## method definition
                         movq -224(%rbp), %r14
                         subq %r14, %r13
                         movq %r13, -240(%rbp)
-                       ## new Int z <- t$14
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -240(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 32(%r12)
+                        ## new Int z <- t$14
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -240(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 32(%r12)
                        ## t$0 <- z
                        movq 32(%r12), %r13
                        movq %r13, -8(%rbp)
@@ -748,7 +752,7 @@ Main.main:           ## method definition
                         ## t$23 <- t$20 / t$22
                         movq -368(%rbp), %r13
                         cmpq $0, %r13
-           jne Main_main_0_div_ok
+           jne main_l0_div_ok
                         movq $string10, %r13
                         ## division by zero detected
                         ## guarantee 16-byte alignment before call
@@ -759,8 +763,8 @@ Main.main:           ## method definition
            andq $0xFFFFFFFFFFFFFFF0, %rsp
            movl $0, %edi
            call exit
-.global Main_main_0_div_ok
-Main_main_0_div_ok:        ## division is okay 
+.global main_l0_div_ok
+main_l0_div_ok:        ## division is okay 
                         movq -336(%rbp), %r14
            movq $0, %rdx
            movq %r14, %rax
@@ -773,16 +777,16 @@ Main_main_0_div_ok:        ## division is okay
                         movq -384(%rbp), %r14
                         subq %r14, %r13
                         movq %r13, -400(%rbp)
-                       ## new Int z <- t$24
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -400(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 32(%r12)
+                        ## new Int z <- t$24
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -400(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 32(%r12)
                        ## t$0 <- z
                        movq 32(%r12), %r13
                        movq %r13, -8(%rbp)

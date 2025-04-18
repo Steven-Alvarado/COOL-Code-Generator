@@ -267,6 +267,9 @@ identifier
 x
 8
 Int
+negate
+8
+Int
 integer
 4
 8
@@ -279,6 +282,9 @@ identifier
 y
 8
 Int
+negate
+8
+Int
 identifier
 8
 x
@@ -288,6 +294,9 @@ self_dispatch
 9
 out_int
 1
+9
+Int
+negate
 9
 Int
 identifier
@@ -502,6 +511,9 @@ identifier
 x
 8
 Int
+negate
+8
+Int
 integer
 4
 8
@@ -514,6 +526,9 @@ identifier
 y
 8
 Int
+negate
+8
+Int
 identifier
 8
 x
@@ -523,6 +538,9 @@ self_dispatch
 9
 out_int
 1
+9
+Int
+negate
 9
 Int
 identifier

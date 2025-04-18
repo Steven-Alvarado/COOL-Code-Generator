@@ -1,14 +1,14 @@
 comment start
 label Main_main_0
-t$1 <- int 5
-z <- t$1
+t$0 <- int 5
+z <- t$0
 t$0 <- z
-t$2 <- string
+t$1 <- string
  World\n
-t$0 <- call out_string t$2
-t$3 <- string
+t$0 <- call out_string t$1
+t$2 <- string
  after
-t$0 <- call out_string t$3
-t$4 <- z
-t$0 <- call out_int t$4
+t$0 <- call out_string t$2
+t$3 <- z
+t$0 <- call out_int t$3
 return t$0

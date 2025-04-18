@@ -4,64 +4,64 @@ t$0 <- x
 t$1 <- y
 t$2 <- < t$0 t$1
 t$3 <- not t$2
-bt t$3 Main_main_2
-bt t$2 Main_main_1
+bt t$3 main_l2
+bt t$2 main_l1
 comment then branch
-label Main_main_1
+label main_l1
 t$4 <- string
 <\n
 t$0 <- call out_string t$4
-jmp Main_main_3
+jmp main_l3
 comment else branch
-label Main_main_2
+label main_l2
 t$5 <- string
 not <\n
 t$0 <- call out_string t$5
 t$0 <- t$0
-jmp Main_main_3
+jmp main_l3
 comment if-join
-label Main_main_3
+label main_l3
 t$6 <- x
 t$7 <- y
 t$8 <- <= t$6 t$7
 t$9 <- not t$8
-bt t$9 Main_main_5
-bt t$8 Main_main_4
+bt t$9 main_l5
+bt t$8 main_l4
 comment then branch
-label Main_main_4
+label main_l4
 t$10 <- string
 <=\n
 t$0 <- call out_string t$10
-jmp Main_main_6
+jmp main_l6
 comment else branch
-label Main_main_5
+label main_l5
 t$11 <- string
 not <=\n
 t$0 <- call out_string t$11
 t$0 <- t$0
-jmp Main_main_6
+jmp main_l6
 comment if-join
-label Main_main_6
+label main_l6
 t$12 <- x
 t$13 <- y
 t$14 <- <= t$12 t$13
 t$15 <- not t$14
 t$16 <- not t$15
-bt t$16 Main_main_8
-bt t$15 Main_main_7
+bt t$16 main_l8
+bt t$15 main_l7
 comment then branch
-label Main_main_7
+label main_l7
 t$17 <- string
 >\n
 t$0 <- call out_string t$17
-jmp Main_main_9
+jmp main_l9
 comment else branch
-label Main_main_8
+label main_l8
 t$18 <- string
 not >\n
 t$0 <- call out_string t$18
 t$0 <- t$0
-jmp Main_main_9
+jmp main_l9
 comment if-join
-label Main_main_9
+label main_l9
 return t$0

@@ -153,7 +153,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -171,7 +171,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        movq %r12, %r13
+                        ## initialize attributes
                         ## self[3] holds field x (Int)
                         ## new Int
                         pushq %rbp
@@ -190,9 +190,9 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 32(%r12)
+                        ## self[3] x initializer -- none
                         ## self[4] y initializer <- 5
-                         ## new Int
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -201,6 +201,10 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -501,15 +505,15 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 7
+                        movq $112, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## self[3] holds field x (Int)
                         ## self[4] holds field y (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## new Int
+                        ## new int t$0 <- 1
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -518,8 +522,10 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
-                        ## new Int
+                        movq %r13, -16(%rbp)
+                        ## new int t$1 <- 3
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -528,12 +534,15 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $3, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -24(%rbp)
                         movq 24(%r13), %r13
-                        ## PLUS     ============================
-                        movq 0(%rbp), %r14
+                        movq %r13, -32(%rbp)
+                        ## t$2 <- t$0 + t$1
+                        movq -16(%rbp), %r13
+                        movq -32(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
+                        movq %r13, -48(%rbp)
+                        ## new int t$3 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -542,36 +551,40 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -56(%rbp)
                         movq 24(%r13), %r13
-                        ## PLUS     ============================
-                        movq 0(%rbp), %r14
+                        movq %r13, -64(%rbp)
+                        ## t$4 <- t$2 + t$3
+                        movq -48(%rbp), %r13
+                        movq -64(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## y@3
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        ## storing to t$6
-                        movq %r13, 0(%rbp)
-                        ## MINUS      ============================
-                        movq %r13, 0(%rbp)
-                        movq %r14, %rax
-			subq %r13, %rax
-			movq %rax, %r13
-                        movq %r13, 0(%rbp)
-                        movq %r13, 0(%rbp)
-                        ## t$7
-                        movq 0(%rbp), %r13
-                        ## storing to x
-                        movq %r13, x
-                        ## x
-                        movq x, %r13
-                        ## storing to t$0
-                        movq %r13, %r13
-                        movq %r13, %r13
-                        ## return address handling
-                        movq %rbp, %rsp
+                        movq %r13, -80(%rbp)
+                       ## t$5 <- y
+                       movq 32(%r12), %r13
+                       movq %r13, -88(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -96(%rbp)
+                        ## t$6 <- t$4 + t$5
+                        movq -80(%rbp), %r13
+                        movq -96(%rbp), %r14
+                        subq %r14, %r13
+                        movq %r13, -112(%rbp)
+                        ## new Int x <- t$6
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
                         popq %rbp
-                        ret
+                        movq -112(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
@@ -685,7 +698,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string9, %r13
+                        movq $string8, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -789,6 +802,60 @@ string7:			  # "abort\n"
 .byte 111	# 'o'
 .byte 114	# 'r'
 .byte 116	# 't'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string8
+string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.byte 69	# 'E'
+.byte 82	# 'R'
+.byte 82	# 'R'
+.byte 79	# 'O'
+.byte 82	# 'R'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 48	# '0'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 120	# 'x'
+.byte 99	# 'c'
+.byte 101	# 'e'
+.byte 112	# 'p'
+.byte 116	# 't'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 46	# '.'
+.byte 115	# 's'
+.byte 117	# 'u'
+.byte 98	# 'b'
+.byte 115	# 's'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 117	# 'u'
+.byte 116	# 't'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 102	# 'f'
+.byte 32	# ' '
+.byte 114	# 'r'
+.byte 97	# 'a'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 101	# 'e'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	

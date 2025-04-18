@@ -195,7 +195,7 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq %r13, 32(%r12)
                         ## self[3] x initializer <- 5
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -204,10 +204,18 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 24(%r12)
                         ## self[4] y initializer <- x + 4 - 3 * 4 / 3
-                        ## Copy field x to t$0
-                        ## new Int
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                        ## new int t$1 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -216,12 +224,15 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -24(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -32(%rbp)
                         ## t$2 <- t$0 + t$1
                         movq -16(%rbp), %r13
                         movq -32(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -48(%rbp)
-                        ## new Int
+                        ## new int t$3 <- 3
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -230,7 +241,10 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $3, %r14
                         movq %r14, 24(%r13)
-                        ## new Int
+                        movq %r13, -56(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -64(%rbp)
+                        ## new int t$4 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -239,12 +253,15 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -72(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -80(%rbp)
                         ## t$5 <- t$3 * t$4
                         movq -64(%rbp), %r13
                         movq -80(%rbp), %r14
-                        imulq %r14, %r13
+            imulq %r14, %r13
                         movq %r13, -96(%rbp)
-                        ## new Int
+                        ## new int t$6 <- 3
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -253,32 +270,48 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $3, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -104(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -112(%rbp)
                         ## t$7 <- t$5 / t$6
                         movq -112(%rbp), %r13
                         cmpq $0, %r13
-                        jne Main_init_0_div_ok
-                        ## division by zero
+           jne init_l0_div_ok
                         movq $string9, %r13
-                        andq $0xFFFFFFFFFFFFFFF0, %rsp
-                        movq %r13, %rdi
-                        call cooloutstr
-                        andq $0xFFFFFFFFFFFFFFF0, %rsp
-                        movl $0, %edi
-                        call exit
-.globl Main_init_0_div_ok
-Main_init_0_div_ok:
+                        ## division by zero detected
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq %r13, %rdi
+           call cooloutstr
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movl $0, %edi
+           call exit
+.global init_l0_div_ok
+init_l0_div_ok:        ## division is okay 
                         movq -96(%rbp), %r14
-                        movq $0, %rdx
-                        movq %r14, %rax
-                        cdq
-                        idivq %r13
-                        movq %rax, %r13
+           movq $0, %rdx
+           movq %r14, %rax
+           cdq
+           idivq %r13
+           movq %rax, %r13
                         movq %r13, -128(%rbp)
-                        ## t$8 <- t$2 - t$7
+                        ## t$8 <- t$2 + t$7
                         movq -48(%rbp), %r13
                         movq -128(%rbp), %r14
                         subq %r14, %r13
                         movq %r13, -144(%rbp)
+                        ## Boxing result from t$8 and storing to self[4]
+                        movq -144(%rbp), %r14
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -144(%rbp), %r14
+                        movq %r14, 24(%r13)
                         movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling

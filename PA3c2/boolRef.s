@@ -277,7 +277,7 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         popq %r12
                         movq %r13, 24(%r12)
-                        ## self[4] here initializer <- not 4 <= 5 = false
+                        ## self[4] here initializer <- 4 <= 5 = istrue
                         pushq %r12
                         pushq %rbp
                         pushq %r12
@@ -307,40 +307,9 @@ Main..new:              ## constructor for Main
                         addq $24, %rsp
                         popq %rbp
                         popq %r12
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-			jne l1
-.globl l2
-l2:                     ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp l3
-.globl l1
-l1:                     ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl l3
-l3:                     ## end of if conditional
                         pushq %r13
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
+                        ## istrue
+                        movq 24(%r12), %r13
                         pushq %r13
                         pushq %r12
                         call eq_handler
@@ -498,9 +467,9 @@ Object.copy:            ## method definition
 			call calloc
 			movq %rax, %r13
                         pushq %r13
-.globl l4
-l4:                     cmpq $0, %r14
-			je l5
+.globl l1
+l1:                     cmpq $0, %r14
+			je l2
                         movq 0(%r12), %r15
                         movq %r15, 0(%r13)
                         movq $8, %r15
@@ -508,9 +477,9 @@ l4:                     cmpq $0, %r14
                         addq %r15, %r13
                         movq $1, %r15
                         subq %r15, %r14
-                        jmp l4
-.globl l5
-l5:                     ## done with Object.copy loop
+                        jmp l1
+.globl l2
+l2:                     ## done with Object.copy loop
                         popq %r13
 .globl Object.copy.end
 Object.copy.end:        ## method body ends
@@ -699,9 +668,9 @@ Main.main:              ## method definition
                         movq 32(%r12), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l6
-.globl l7
-l7:                     ## false branch
+			jne l3
+.globl l4
+l4:                     ## false branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -725,9 +694,9 @@ l7:                     ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l8
-.globl l6
-l6:                     ## true branch
+                        jmp l5
+.globl l3
+l3:                     ## true branch
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
@@ -743,8 +712,8 @@ l6:                     ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l8
-l8:                     ## end of if conditional
+.globl l5
+l5:                     ## end of if conditional
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -856,7 +825,7 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l9
+			jne l6
                         movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
@@ -866,8 +835,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l9
-l9:                     movq %r13, 24(%r15)
+.globl l6
+l6:                     movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends

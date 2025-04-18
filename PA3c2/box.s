@@ -283,7 +283,7 @@ Main..new:              ## constructor for Main
                         ## t$4 <- t$2 / t$3
                         movq -64(%rbp), %r13
                         cmpq $0, %r13
-           jne Main_init_0_div_ok
+           jne init_l0_div_ok
                         movq $string9, %r13
                         ## division by zero detected
                         ## guarantee 16-byte alignment before call
@@ -294,8 +294,8 @@ Main..new:              ## constructor for Main
            andq $0xFFFFFFFFFFFFFFF0, %rsp
            movl $0, %edi
            call exit
-.global Main_init_0_div_ok
-Main_init_0_div_ok:        ## division is okay 
+.global init_l0_div_ok
+init_l0_div_ok:        ## division is okay 
                         movq -48(%rbp), %r14
            movq $0, %rdx
            movq %r14, %rax

@@ -1,0 +1,10 @@
+comment start
+label Main_main_0
+y <- call in_string
+t$1 <- y
+t$3 <- y
+t$2 <- call out_string t$3
+t$4 <- string
+\n
+t$0 <- call out_string t$4
+return t$0

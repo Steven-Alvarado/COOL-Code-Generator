@@ -1,7 +1,12 @@
 comment start
 label Main_main_0
+t$2 <- x
+t$3 <- y
+x <- / t$2 t$3
 t$1 <- x
-t$2 <- y
-x <- / t$1 t$2
-t$0 <- x
+t$5 <- x
+t$4 <- call out_int t$5
+t$6 <- string
+\n
+t$0 <- call out_string t$6
 return t$0

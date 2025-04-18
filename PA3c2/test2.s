@@ -157,7 +157,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -175,7 +175,7 @@ Main..new:              ## constructor for Main
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        movq %r12, %r13
+                        ## initialize attributes
                         ## self[3] holds field x (String)
                         ## new String
                         pushq %rbp
@@ -185,20 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[3] x initializer <- Hello\n
-                         ## new String
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## load address of literal Hello\n
-                        movq $Hello\n, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        movq %r12, %r13
                         ## self[4] holds field y (String)
                         ## new String
                         pushq %rbp
@@ -208,20 +194,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 32(%r12)
-                        ## self[4] y initializer <- inbetween\n
-                         ## new String
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## load address of literal inbetween\n
-                        movq $inbetween\n, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%r12)
-                        movq %r12, %r13
                         ## self[5] holds field z (Int)
                         ## new Int
                         pushq %rbp
@@ -231,6 +203,36 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 40(%r12)
+                        ## self[3] x initializer <- "Hello\n"
+                        ## new String t$0 <- "Hello\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string7 holds "Hello\n"
+                        movq $string7, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq -8(%rbp), %r13
+                        movq %r13, 24(%r12)
+                        ## self[4] y initializer <- "inbetween\n"
+                        ## new String t$0 <- "inbetween\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds "inbetween\n"
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq -8(%rbp), %r13
+                        movq %r13, 32(%r12)
+                        ## self[5] z initializer -- none
+                        movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
@@ -307,7 +309,7 @@ Object.abort:           ## method definition
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
-                        movq $string7, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -529,12 +531,16 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 4
+                        movq $64, %r14
                         subq %r14, %rsp
+                        ## return address handling
+                        ## self[3] holds field x (String)
+                        ## self[4] holds field y (String)
+                        ## self[5] holds field z (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -543,59 +549,106 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
-                        ## t$5(accessing field)
-                        movq 24(%r12), %r13
+                        movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13, z
-                        ## z(accessing field)
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, %r13
-                        ## new String
+                        movq %r13, -16(%rbp)
+                        ## new Int z <- t$0
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 40(%r12)
+                       ## t$0 <- z
+                       movq 40(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                        ## new String t$1 <- " World\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## load address of literal  World\n
-                        movq $ World\n, %r14
+                        ## string10 holds " World\n"
+                        movq $string10, %r14
                         movq %r14, 24(%r13)
-                        pushq %rbp
+                        movq %r13, -24(%rbp)
+                        ## out_string(...)
                         pushq %r12
-                        movq $out_string, %r14
+                        pushq %rbp
+                        ## arg t$1 (pointer)
+                        movq -24(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
-                        popq %r12
+                        addq $16, %rsp
                         popq %rbp
-                        movq %r13, %r13
-                        ## new String
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## new String t$2 <- " after"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## load address of literal  after
-                        movq $ after, %r14
+                        ## string11 holds " after"
+                        movq $string11, %r14
                         movq %r14, 24(%r13)
-                        pushq %rbp
+                        movq %r13, -40(%rbp)
+                        ## out_string(...)
                         pushq %r12
-                        movq $out_string, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, %r13
-                        ## z(accessing field)
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 64(%rbp)
                         pushq %rbp
+                        ## arg t$2 (pointer)
+                        movq -40(%rbp), %r13
+                        pushq %r13
                         pushq %r12
-                        movq $out_int, %r14
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
-                        popq %r12
+                        addq $16, %rsp
                         popq %rbp
-                        movq %r13, %r13
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                       ## t$3 <- z
+                       movq 40(%r12), %r13
+                       movq %r13, -56(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -64(%rbp)
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## arg t$3 (pointer)
+                        movq -56(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+
 .globl Main.main.end
 Main.main.end:       ## method body ends
                         ## return address handling
@@ -709,7 +762,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string9, %r13
+                        movq $string12, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -867,6 +920,60 @@ string11:			  # " after"
 .byte 116	# 't'
 .byte 101	# 'e'
 .byte 114	# 'r'
+.byte 0	
+
+
+.globl string12
+string12:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.byte 69	# 'E'
+.byte 82	# 'R'
+.byte 82	# 'R'
+.byte 79	# 'O'
+.byte 82	# 'R'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 48	# '0'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 120	# 'x'
+.byte 99	# 'c'
+.byte 101	# 'e'
+.byte 112	# 'p'
+.byte 116	# 't'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 46	# '.'
+.byte 115	# 's'
+.byte 117	# 'u'
+.byte 98	# 'b'
+.byte 115	# 's'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 117	# 'u'
+.byte 116	# 't'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 102	# 'f'
+.byte 32	# ' '
+.byte 114	# 'r'
+.byte 97	# 'a'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 101	# 'e'
+.byte 92	# '\\'
+.byte 110	# 'n'
 .byte 0	
 
 

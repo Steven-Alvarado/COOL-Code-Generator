@@ -1,6 +1,6 @@
 class Main inherits IO{
     istrue : Bool <- (( 4 < 6) = (4 < 90));
-    here : Bool <- ((not (4 <= 5)) = false);
+    here : Bool <- ( (4 <= 5)) = ( istrue);
     x : Int <- 4;
     y : Int <- x + 43;
     main () : Object{

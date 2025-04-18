@@ -5,8 +5,8 @@ class Main inherits IO{
     main () : Object{
         {
         x <- x * y;
-        y <- x * 4 - y / x;
-        out_int(y);
+        y <- x * ~4 - y / ~x;
+        out_int(~y);
         out_string("\n");
         }
     };

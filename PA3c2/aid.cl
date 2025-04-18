@@ -1,6 +1,6 @@
 class Main inherits IO{
 x : Int <- 4;
-y : Bool <- not false ;
+y : Bool <- not false;
 obj1 : Object;
 obj2 : Object;
        main () : Object{

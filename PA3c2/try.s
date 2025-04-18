@@ -157,7 +157,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -185,7 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
                         ## self[4] holds field y (Int)
                         ## new Int
                         pushq %rbp
@@ -195,7 +194,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 32(%r12)
-                        ## initialize attributes
                         ## self[5] holds field z (Int)
                         ## new Int
                         pushq %rbp
@@ -205,7 +203,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 40(%r12)
-                        ## initialize attributes
                         ## self[6] holds field s (String)
                         ## new String
                         pushq %rbp
@@ -216,7 +213,7 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq %r13, 48(%r12)
                         ## self[3] x initializer <- 1
-                        ## new Int
+                        ## new int t$0 <- 1
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -225,9 +222,13 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 24(%r12)
                         ## self[4] y initializer <- 5
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -236,12 +237,20 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 32(%r12)
-                        ## self[5] z initializer <- t$13
-                        ## Copy field x to t$13
-                        movq 24(%r12), %r13
+                        ## self[5] z initializer <- x
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 40(%r12)
-                        ## self[6] s initializer -- none 
+                        ## self[6] s initializer -- none
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -595,9 +604,16 @@ Main.main:           ## method definition
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -16(%rbp)
-                       ## new _ s <- t$0
-                       movq -8(%rbp), %r13
-                       movq %r13, 48(%r12)
+                        ## new String s <- t$0
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 48(%r12)
                        ## t$0 <- s
                        movq 48(%r12), %r13
                        movq %r13, -8(%rbp)
@@ -645,16 +661,16 @@ Main.main:           ## method definition
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r14
                         movq %r14, -16(%rbp)
-                       ## new Int x <- t$0
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -16(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 24(%r12)
+                        ## new Int x <- t$0
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
                        ## t$0 <- x
                        movq 24(%r12), %r13
                        movq %r13, -8(%rbp)
@@ -685,16 +701,16 @@ Main.main:           ## method definition
                         movq -96(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -112(%rbp)
-                       ## new Int x <- t$6
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -112(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 24(%r12)
+                        ## new Int x <- t$6
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -112(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
                        ## t$0 <- x
                        movq 24(%r12), %r13
                        movq %r13, -8(%rbp)

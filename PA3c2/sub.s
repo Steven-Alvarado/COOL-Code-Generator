@@ -157,7 +157,7 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
+                        ## stack room for temporaries: 1
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
@@ -185,7 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
                         ## self[4] holds field y (Int)
                         ## new Int
                         pushq %rbp
@@ -196,7 +195,7 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq %r13, 32(%r12)
                         ## self[3] x initializer <- 5
-                        ## new Int
+                        ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -205,9 +204,13 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $5, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 24(%r12)
                         ## self[4] y initializer <- 4
-                        ## new Int
+                        ## new int t$0 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -216,6 +219,10 @@ Main..new:              ## constructor for Main
                         popq %rbp
                         movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
                         movq %r13, 32(%r12)
                         movq %r12, %r13
                         ## return address handling
@@ -516,19 +523,20 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 4
-                        movq $32, %r14
+                        ## stack room for temporaries: 5
+                        movq $80, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## self[3] holds field x (Int)
                         ## self[4] holds field y (Int)
                         ## method body begins
                         ## Basic block: BB0
-                        ## t$0 <- x (unboxed Int)
-                        movq 24(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int t$1 <- 4
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                        ## new int t$1 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -537,34 +545,39 @@ Main.main:           ## method definition
                         popq %rbp
                         movq $4, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, -24(%rbp)
                         movq 24(%r13), %r13
-                        movq %r13,-8(%rbp)
+                        movq %r13, -32(%rbp)
                         ## t$2 <- t$0 + t$1
-                        movq 0(%rbp), %r13
-                        movq -8(%rbp), %r14
+                        movq -16(%rbp), %r13
+                        movq -32(%rbp), %r14
                         subq %r14, %r13
-                        movq %r13, -16(%rbp)
-                        ## x <- t$2 (boxed Int)
+                        movq %r13, -48(%rbp)
+                        ## new Int x <- t$2
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -16(%rbp), %r14
+                        movq -48(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## t$0 <- x
-                        movq 24(%r12), %r13
-                        movq %r13, 0(%rbp)
-                        ## t$3 <- x
-                        movq 24(%r12), %r13
-                        movq %r13, -24(%rbp)
+                       ## t$0 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                       ## t$3 <- x
+                       movq 24(%r12), %r13
+                       movq %r13, -56(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -64(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$3
-                        movq -24(%rbp), %r13
+                        ## arg t$3 (pointer)
+                        movq -56(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -575,7 +588,38 @@ Main.main:           ## method definition
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, 24(%r12)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## new String t$4 <- "\n"
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds "\n"
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -72(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## arg t$4 (pointer)
+                        movq -72(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
 
 .globl Main.main.end
 Main.main.end:       ## method body ends
@@ -690,7 +734,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string8, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -800,7 +844,14 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "ERROR: 0: Exception: String.substr out of range\n"
+string8:			  # "\n"
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string9
+string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'

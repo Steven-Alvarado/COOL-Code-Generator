@@ -185,7 +185,6 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## initialize attributes
                         ## self[4] holds field y (Int)
                         ## new Int
                         pushq %rbp
@@ -222,6 +221,17 @@ Main..new:              ## constructor for Main
                         movq -32(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -24(%rbp)
+                        ## Boxing result from t$1 and storing to self[3]
+                        movq -32(%rbp), %r14
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -32(%rbp), %r14
+                        movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
                         ## self[4] y initializer -- none
                         movq %r12, %r13
@@ -567,16 +577,16 @@ Main.main:           ## method definition
                         movq -48(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -64(%rbp)
-                       ## new Int y <- t$3
-                       pushq %rbp
-                       pushq %r12
-                       movq $Int..new, %r14
-                       call *%r14
-                       popq %r12
-                       popq %rbp
-                       movq -64(%rbp), %r14
-                       movq %r14, 24(%r13)
-                       movq %r13, 32(%r12)
+                        ## new Int y <- t$3
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -64(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 32(%r12)
                        ## t$0 <- y
                        movq 32(%r12), %r13
                        movq %r13, -8(%rbp)

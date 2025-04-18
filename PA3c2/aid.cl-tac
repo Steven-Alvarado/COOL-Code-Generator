@@ -2,23 +2,23 @@ comment start
 label Main_main_0
 t$0 <- y
 t$1 <- not t$0
-bt t$1 Main_main_2
-bt t$0 Main_main_1
+bt t$1 main_l2
+bt t$0 main_l1
 comment then branch
-label Main_main_1
+label main_l1
 t$2 <- string
 not true\n
 t$0 <- call out_string t$2
-jmp Main_main_3
+jmp main_l3
 comment else branch
-label Main_main_2
+label main_l2
 t$3 <- string
 actually true\n
 t$0 <- call out_string t$3
 t$0 <- t$0
-jmp Main_main_3
+jmp main_l3
 comment if-join
-label Main_main_3
+label main_l3
 t$4 <- new Object
 obj1 <- t$4
 t$0 <- obj1
@@ -32,19 +32,19 @@ t$7 <- obj1
 t$8 <- obj2
 t$9 <- = t$7 t$8
 t$10 <- not t$9
-bt t$10 Main_main_5
-bt t$9 Main_main_4
+bt t$10 main_l5
+bt t$9 main_l4
 comment then branch
-label Main_main_4
+label main_l4
 t$11 <- int 1
-jmp Main_main_6
+jmp main_l6
 comment else branch
-label Main_main_5
+label main_l5
 t$12 <- int 0
 t$0 <- t$12
-jmp Main_main_6
+jmp main_l6
 comment if-join
-label Main_main_6
+label main_l6
 t$0 <- call out_int t$0
 t$13 <- string
 \n= comparison (Object =): 
@@ -53,18 +53,18 @@ t$14 <- obj1
 t$15 <- obj1
 t$16 <- = t$14 t$15
 t$17 <- not t$16
-bt t$17 Main_main_8
-bt t$16 Main_main_7
+bt t$17 main_l8
+bt t$16 main_l7
 comment then branch
-label Main_main_7
+label main_l7
 t$18 <- int 1
-jmp Main_main_9
+jmp main_l9
 comment else branch
-label Main_main_8
+label main_l8
 t$19 <- int 0
 t$0 <- t$19
-jmp Main_main_9
+jmp main_l9
 comment if-join
-label Main_main_9
+label main_l9
 t$0 <- call out_int t$0
 return t$0
