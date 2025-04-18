@@ -211,7 +211,7 @@ Main..new:              ## constructor for Main
                         movq $4, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer <- not true
+                        ## self[4] y initializer <- not false
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -219,8 +219,6 @@ Main..new:              ## constructor for Main
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l1

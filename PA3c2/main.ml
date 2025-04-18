@@ -1954,9 +1954,9 @@ let codegen context tac =
         let value_locs = lookup_temp_location context value_str in
         let dest_locs = lookup_temp_location context dest in
 
-        let label_true = fresh_label context.class_name context.method_name ^ "_not_true" in
-        let label_end  = fresh_label context.class_name context.method_name ^ "_not_end" in
-
+        let true_branch = fresh_label context.class_name context.method_name ^ "_true" in
+        let false_branch  = fresh_label context.class_name context.method_name ^ "_false" in
+        let label_end = fresh_label context.class_name context.method_name ^ "_end" in
         [
             Printf.sprintf "                        ## %s <- not %s" dest value_str;
 
@@ -1966,25 +1966,13 @@ let codegen context tac =
 
             (* Compare and branch *)
             "                        cmpq $0, %r13";
-            Printf.sprintf "                        je %s" label_true;
+            Printf.sprintf "         jne %s" true_branch;
 
             (* False branch: value was true, so box false *)
-            "                        ## box false";
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $Bool..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            "                        movq $0, %r14";
-            "                        movq %r14, 24(%r13)";
-            Printf.sprintf "                        jmp %s" label_end;
-
-            Printf.sprintf ".globl %s" label_true;
-            Printf.sprintf "%s:" label_true;
-
-            (* True branch: value was false, so box true *)
-            "                        ## box true";
+            Printf.sprintf".globl %s" false_branch;
+            Printf.sprintf"%s:" false_branch;
+            "                        ## false branch";
+            "                        ## new Bool";
             "                        pushq %rbp";
             "                        pushq %r12";
             "                        movq $Bool..new, %r14";
@@ -1993,6 +1981,20 @@ let codegen context tac =
             "                        popq %rbp";
             "                        movq $1, %r14";
             "                        movq %r14, 24(%r13)";
+            Printf.sprintf "                        jmp %s" label_end;
+
+            Printf.sprintf ".globl %s" true_branch;
+            Printf.sprintf "%s:" true_branch;
+
+            (* True branch: value was false, so box true *)
+            "                        ## true branch";
+            "                        ## new Bool";
+            "                        pushq %rbp";
+            "                        pushq %r12";
+            "                        movq $Bool..new, %r14";
+            "                        call *%r14";
+            "                        popq %r12";
+            "                        popq %rbp";
 
             Printf.sprintf ".globl %s" label_end;
             Printf.sprintf "%s:" label_end;

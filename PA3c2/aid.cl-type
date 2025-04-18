@@ -23,7 +23,7 @@ Bool
 not
 3
 Bool
-true
+false
 no_initializer
 obj1
 Object
@@ -431,7 +431,7 @@ Bool
 not
 3
 Bool
-true
+false
 attribute_no_init
 4
 obj1

@@ -215,33 +215,47 @@ Main..new:              ## constructor for Main
                         movq %r13, -16(%rbp)
                         movq -8(%rbp), %r13
                         movq %r13, 24(%r12)
-                        ## self[4] y initializer <- not true
-                        ## new Bool t$0 <- true
+                        ## self[4] y initializer <- not false
+                        ## new Bool t$0 <- false
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -16(%rbp)
                         ## t$1 <- not t$0
-                        movq -16(%rbp), %r13
-                        movq $1, %r14
-                        subq %r13, %r14
-                        movq %r14, -32(%rbp)
-                        ## new Bool for result
+                        movq -8(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+         jne Main_init_18_true
+.globl Main_init_19_false
+Main_init_19_false:
+                        ## false branch
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -32(%rbp), %r14
+                        movq $1, %r14
                         movq %r14, 24(%r13)
+                        jmp Main_init_20_end
+.globl Main_init_18_true
+Main_init_18_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl Main_init_20_end
+Main_init_20_end:
                         movq %r13, -24(%rbp)
                         ## Boxing result from t$1 and storing to self[4]
                         movq -32(%rbp), %r14
@@ -633,19 +647,35 @@ Main_main_5:
                         movzbq %r15b, %r15
                         movq %r15, -272(%rbp)
                         ## t$17 <- not t$16
-                        movq -272(%rbp), %r13
-                        movq $1, %r14
-                        subq %r13, %r14
-                        movq %r14, -288(%rbp)
-                        ## new Bool for result
+                        movq -264(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+         jne Main_main_9_true
+.globl Main_main_10_false
+Main_main_10_false:
+                        ## false branch
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -288(%rbp), %r14
+                        movq $1, %r14
                         movq %r14, 24(%r13)
+                        jmp Main_main_11_end
+.globl Main_main_9_true
+Main_main_9_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl Main_main_11_end
+Main_main_11_end:
                         movq %r13, -280(%rbp)
                    ## t$17 x Main_main_7
                         ## Basic block: BB16
@@ -746,19 +776,35 @@ Main_main_2:
                         movzbq %r15b, %r15
                         movq %r15, -160(%rbp)
                         ## t$10 <- not t$9
-                        movq -160(%rbp), %r13
-                        movq $1, %r14
-                        subq %r13, %r14
-                        movq %r14, -176(%rbp)
-                        ## new Bool for result
+                        movq -152(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+         jne Main_main_12_true
+.globl Main_main_13_false
+Main_main_13_false:
+                        ## false branch
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -176(%rbp), %r14
+                        movq $1, %r14
                         movq %r14, 24(%r13)
+                        jmp Main_main_14_end
+.globl Main_main_12_true
+Main_main_12_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl Main_main_14_end
+Main_main_14_end:
                         movq %r13, -168(%rbp)
                    ## t$10 x Main_main_4
                         ## Basic block: BB5
@@ -935,19 +981,35 @@ Main_main_8:
                        movq 24(%r13), %r13
                        movq %r13, -16(%rbp)
                         ## t$1 <- not t$0
-                        movq -16(%rbp), %r13
-                        movq $1, %r14
-                        subq %r13, %r14
-                        movq %r14, -32(%rbp)
-                        ## new Bool for result
+                        movq -8(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+         jne Main_main_15_true
+.globl Main_main_16_false
+Main_main_16_false:
+                        ## false branch
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -32(%rbp), %r14
+                        movq $1, %r14
                         movq %r14, 24(%r13)
+                        jmp Main_main_17_end
+.globl Main_main_15_true
+Main_main_15_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl Main_main_17_end
+Main_main_17_end:
                         movq %r13, -24(%rbp)
                    ## t$1 x Main_main_1
 .globl Main.main.end
