@@ -157,11 +157,11 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 13
-                        movq $208, %r14
+                        ## stack room for temporaries: 1
+                        movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $7, %r12
+                        movq $4, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,12 +171,12 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $7, %r14
+                        movq $4, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
                         ## initialize attributes
-                        ## self[3] holds field istrue (Bool)
+                        ## self[3] holds field isfalse (Bool)
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -185,34 +185,7 @@ Main..new:              ## constructor for Main
                         popq %r12
                         popq %rbp
                         movq %r13, 24(%r12)
-                        ## self[4] holds field here (Bool)
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field x (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field y (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 48(%r12)
-                        ## self[3] istrue initializer <- not false = 4 < 7 = 5 <= 5 = not true
+                        ## self[3] isfalse initializer <- false
                         ## new Bool t$0 <- false
                         pushq %rbp
                         pushq %r12
@@ -223,340 +196,8 @@ Main..new:              ## constructor for Main
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -16(%rbp)
-                        ## new int t$1 <- 4
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -24(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -32(%rbp)
-                        ## new int t$2 <- 7
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $7, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -40(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -48(%rbp)
-                        ## t$3 <- t$1 < t$2 
-                        movq -24(%rbp), %r13
-                        pushq %r13
-                        movq -40(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        call lt_handler
-                        addq $24, %rsp
-                        movq %r13, -56(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -64(%rbp)
-                        ## new int t$4 <- 5
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -72(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -80(%rbp)
-                        ## new int t$5 <- 5
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -88(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
-                        ## t$6 <- t$4 <= t$5 
-                        movq -72(%rbp), %r13
-                        pushq %r13
-                        movq -88(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        call le_handler
-                        addq $24, %rsp
-                        movq %r13, -104(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -112(%rbp)
-                        ## t$7 <- t$3 == t$6
-                        movq -56(%rbp), %r13
-                        pushq %r13
-                        movq -104(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        movq %r13, -120(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -128(%rbp)
-                        ## new Bool t$8 <- true
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -136(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -144(%rbp)
-                        ## t$9 <- not t$8
-                        movq -136(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-            jne init_l12_true
-.globl init_l13_false
-init_l13_false:
-                        ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp init_l14_end
-.globl init_l12_true
-init_l12_true:
-                        ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl init_l14_end
-init_l14_end:            ## end of if conditional
-                        movq %r13, -152(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -160(%rbp)
-                        ## t$10 <- t$7 == t$9
-                        movq -120(%rbp), %r13
-                        pushq %r13
-                        movq -152(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        movq %r13, -168(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -176(%rbp)
-                        ## t$11 <- t$0 == t$10
                         movq -8(%rbp), %r13
-                        pushq %r13
-                        movq -168(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        movq %r13, -184(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -192(%rbp)
-                        ## t$12 <- not t$11
-                        movq -184(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-            jne init_l15_true
-.globl init_l16_false
-init_l16_false:
-                        ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp init_l17_end
-.globl init_l15_true
-init_l15_true:
-                        ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl init_l17_end
-init_l17_end:            ## end of if conditional
-                        movq %r13, -200(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -208(%rbp)
-                        ## Boxing result from t$12 and storing to self[3]
-                        movq -208(%rbp), %r14
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -208(%rbp), %r14
-                        movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] here initializer <- not not true
-                        ## new Bool t$0 <- true
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -8(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -16(%rbp)
-                        ## t$1 <- not t$0
-                        movq -8(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-            jne init_l18_true
-.globl init_l19_false
-init_l19_false:
-                        ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp init_l20_end
-.globl init_l18_true
-init_l18_true:
-                        ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl init_l20_end
-init_l20_end:            ## end of if conditional
-                        movq %r13, -24(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -32(%rbp)
-                        ## t$2 <- not t$1
-                        movq -24(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-            jne init_l21_true
-.globl init_l22_false
-init_l22_false:
-                        ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp init_l23_end
-.globl init_l21_true
-init_l21_true:
-                        ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl init_l23_end
-init_l23_end:            ## end of if conditional
-                        movq %r13, -40(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -48(%rbp)
-                        ## Boxing result from t$2 and storing to self[4]
-                        movq -48(%rbp), %r14
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -48(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%r12)
-                        ## self[5] x initializer <- 4
-                        ## new int t$0 <- 4
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -8(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -16(%rbp)
-                        movq -8(%rbp), %r13
-                        movq %r13, 40(%r12)
-                        ## self[6] y initializer <- x + 43
-                       ## t$0 <- x (temp <- field)
-                       movq 40(%r12), %r13
-                       movq %r13, -8(%rbp)
-                       movq 24(%r13), %r13
-                       movq %r13, -16(%rbp)
-                        ## new int t$1 <- 43
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -24(%rbp)
-                        movq 24(%r13), %r13
-                        movq %r13, -32(%rbp)
-                        ## t$2 <- t$0 + t$1
-                        movq -16(%rbp), %r13
-                        movq -32(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -48(%rbp)
-                        ## Boxing result from t$2 and storing to self[6]
-                        movq -48(%rbp), %r14
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -48(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 48(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -856,14 +497,11 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 7
-                        movq $112, %r14
+                        ## stack room for temporaries: 6
+                        movq $96, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field istrue (Bool)
-                        ## self[4] holds field here (Bool)
-                        ## self[5] holds field x (Int)
-                        ## self[6] holds field y (Int)
+                        ## self[3] holds field isfalse (Bool)
                         ## method body begins
                         ## Basic block: BB0
                         ## new Bool t$0 <- false
@@ -876,8 +514,28 @@ Main.main:           ## method definition
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -16(%rbp)
-                        ## t$1 <- not t$0
-                        movq -8(%rbp), %r13
+                        ## new Bool isfalse <- t$0
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
+                       ## t$0 <- isfalse
+                       movq 24(%r12), %r13
+                       movq %r13, -8(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -16(%rbp)
+                       ## t$1 <- isfalse
+                       movq 24(%r12), %r13
+                       movq %r13, -24(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -32(%rbp)
+                        ## t$2 <- not t$1
+                        movq -24(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
             jne main_l3_true
@@ -905,12 +563,10 @@ main_l3_true:
                         popq %r12
                         popq %rbp
 .globl main_l5_end
-main_l5_end:            ## end of if conditional
-                        movq %r13, -24(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -32(%rbp)
-                        ## t$2 <- not t$1
-                        movq -24(%rbp), %r13
+main_l5_end:                ## end of if conditional
+                        movq %r14, -48(%rbp)
+                        ## t$3 <- not t$2
+                        movq -40(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
             jne main_l6_true
@@ -938,72 +594,15 @@ main_l6_true:
                         popq %r12
                         popq %rbp
 .globl main_l8_end
-main_l8_end:            ## end of if conditional
-                        movq %r13, -40(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -48(%rbp)
-                        ## here <- t$2 (field <- temp)
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -48(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 32(%r12)
-                       ## t$0 <- here (temp <- field)
-                       movq 32(%r12), %r13
-                       movq %r13, -8(%rbp)
-                       movq 24(%r13), %r13
-                       movq %r13, -16(%rbp)
-                       ## t$3 <- here (temp <- field)
-                       movq 32(%r12), %r13
-                       movq %r13, -56(%rbp)
-                       movq 24(%r13), %r13
-                       movq %r13, -64(%rbp)
-                        ## t$4 <- not t$3
+main_l8_end:                ## end of if conditional
+                        movq %r14, -64(%rbp)
+                        ## if t$3 jump to main_l1
                         movq -56(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-            jne main_l9_true
-.globl main_l10_false
-main_l10_false:
-                        ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp main_l11_end
-.globl main_l9_true
-main_l9_true:
-                        ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl main_l11_end
-main_l11_end:            ## end of if conditional
-                        movq %r13, -72(%rbp)
-                        movq 24(%r13), %r14
-                        movq %r14, -80(%rbp)
-                        ## if t$4 jump to main_l1
-                        movq -72(%rbp), %r13
-                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l1
                         ## Basic block: BB1
-                        ## if t$3 jump to main_l0
-                        movq -56(%rbp), %r13
-                        movq 24(%r13), %r13
+                        ## if t$2 jump to main_l0
+                        movq -40(%rbp), %r13
                         cmpq $0, %r13
                         jne main_l0
                         ## Basic block: BB2
@@ -1011,22 +610,22 @@ main_l11_end:            ## end of if conditional
                         ## Basic block: BB3
 .globl main_l0
 main_l0:
-                        ## new String t$5 <- "wrong\n"
+                        ## new String t$4 <- "correct\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds "wrong\n"
+                        ## string8 holds "correct\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -88(%rbp)
+                        movq %r13, -72(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$5 (pointer)
-                        movq -88(%rbp), %r13
+                        ## arg t$4 (pointer)
+                        movq -72(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -1047,22 +646,22 @@ main_l0:
                         ## Basic block: BB5
 .globl main_l1
 main_l1:
-                        ## new String t$6 <- "correct\n"
+                        ## new String t$5 <- "wrong\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string9 holds "correct\n"
+                        ## string9 holds "wrong\n"
                         movq $string9, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -104(%rbp)
+                        movq %r13, -88(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$6 (pointer)
-                        movq -104(%rbp), %r13
+                        ## arg t$5 (pointer)
+                        movq -88(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -1312,19 +911,7 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "wrong\n"
-.byte 119	# 'w'
-.byte 114	# 'r'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 103	# 'g'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string9
-string9:			  # "correct\n"
+string8:			  # "correct\n"
 .byte 99	# 'c'
 .byte 111	# 'o'
 .byte 114	# 'r'
@@ -1332,6 +919,18 @@ string9:			  # "correct\n"
 .byte 101	# 'e'
 .byte 99	# 'c'
 .byte 116	# 't'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
+
+.globl string9
+string9:			  # "wrong\n"
+.byte 119	# 'w'
+.byte 114	# 'r'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 103	# 'g'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	

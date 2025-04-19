@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $7, %r12
+                        movq $3, %r12
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,51 +171,10 @@ Main..new:              ## constructor for Main
                         ## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $7, %r14
+                        movq $3, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
-                        ## initialize attributes
-                        ## self[3] holds field x (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 24(%r12)
-                        ## self[4] holds field y (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 32(%r12)
-                        ## self[5] holds field z (Int)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 40(%r12)
-                        ## self[6] holds field t (Bool)
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 48(%r12)
-                        ## self[3] x initializer -- none 
-                        ## self[4] y initializer -- none 
-                        ## self[5] z initializer -- none 
-                        ## self[6] t initializer -- none 
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -515,15 +474,12 @@ Main.main:              ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 4
-                        movq $32, %r14
+                        ## stack room for temporaries: 6
+                        movq $48, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field x (Int)
-                        ## self[4] holds field y (Int)
-                        ## self[5] holds field z (Int)
-                        ## self[6] holds field t (Bool)
                         ## method body begins
+                        ## fp[0] holds local x (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -531,10 +487,8 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $49, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
                         movq %r13, 0(%rbp)
+                        ## fp[-1] holds local y (Int)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -542,178 +496,23 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $235, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        movq %r14, %rax
-			subq %r13, %rax
-			movq %rax, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 40(%r12)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## y
-                        movq 32(%r12), %r13
-                        movq 24(%r13), %r13
                         movq %r13, -8(%rbp)
-                        ## z
-                        movq 40(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax
-shrq $32, %rax
-movl %eax, %r13d
-                        movq %r13, -8(%rbp)
-                        ## new Int
+                        ## fp[-2] holds local z (Bool)
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -8(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
+                        movq %r13, -16(%rbp)
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $2, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax
-shrq $32, %rax
-movl %eax, %r13d
-                        movq %r13, -8(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -8(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, 24(%r12)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## z
-                        movq 40(%r12), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, 0(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq 0(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r12
-                        pushq %rbp
-                        ## z
-                        movq 40(%r12), %r13
-                        pushq %r13
-                        ## x
-                        movq 24(%r12), %r13
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l3
@@ -740,26 +539,110 @@ l3:                     ## true branch
                         popq %rbp
 .globl l5
 l5:                     ## end of if conditional
-                        movq %r13, 48(%r12)
-                        ## t
-                        movq 48(%r12), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l6
 .globl l7
 l7:                     ## false branch
-                        ## out_int(...)
-                        pushq %r12
+                        ## new Bool
                         pushq %rbp
-                        ## z
-                        movq 40(%r12), %r13
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l8
+.globl l6
+l6:                     ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l8
+l8:                     ## end of if conditional
                         movq 24(%r13), %r13
-                        movq %r13, 0(%rbp)
-                        ## x
-                        movq 24(%r12), %r13
+                        cmpq $0, %r13
+			jne l9
+.globl l10
+l10:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l11
+.globl l9
+l9:                     ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l11
+l11:                    ## end of if conditional
+                        movq %r13, -16(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -24(%rbp)
+                        ## y
+                        movq -8(%rbp), %r13
+                        movq 24(%r13), %r13
+                        movq -24(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -24(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -24(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -24(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -32(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $23, %r14
+                        movq %r14, 24(%r13)
                         movq 24(%r13), %r14
                         cmpq $0, %r14
-			jne l9
+			jne l12
                         movq $string8, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
@@ -769,17 +652,17 @@ l7:                     ## false branch
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l9
-l9:                     ## division is OK
+.globl l12
+l12:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq 0(%rbp), %r14
+                        movq -32(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, 0(%rbp)
+                        movq %r13, -32(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -787,26 +670,112 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq 0(%rbp), %r14
+                        movq -32(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq -24(%rbp), %r14
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, -24(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -24(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -24(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -32(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq -32(%rbp), %r14
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, -32(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -32(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq -24(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -24(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -24(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 0(%rbp)
+                        ## z
+                        movq -16(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l13
+.globl l14
+l14:                    ## false branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string9 holds "wrong\n"
+                        movq $string9, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
                         movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l8
-.globl l6
-l6:                     ## true branch
+                        jmp l15
+.globl l13
+l13:                    ## true branch
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
                         ## x
-                        movq 24(%r12), %r13
+                        movq 0(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -817,8 +786,8 @@ l6:                     ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l8
-l8:                     ## end of if conditional
+.globl l15
+l15:                    ## end of if conditional
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -930,8 +899,8 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l10
-                        movq $string9, %r13
+			jne l16
+                        movq $string10, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -940,8 +909,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l10
-l10:                    movq %r13, 24(%r15)
+.globl l16
+l16:                    movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -1031,7 +1000,7 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "ERROR: 15: Exception: division by zero\\n"
+string8:                # "ERROR: 6: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -1039,8 +1008,7 @@ string8:                # "ERROR: 15: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  49 # '1'
-.byte  53 # '5'
+.byte  54 # '6'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -1075,7 +1043,18 @@ string8:                # "ERROR: 15: Exception: division by zero\\n"
 .byte 0
 
 .globl string9
-string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
+string9:                # "wrong\\n"
+.byte 119 # 'w'
+.byte 114 # 'r'
+.byte 111 # 'o'
+.byte 110 # 'n'
+.byte 103 # 'g'
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string10
+string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

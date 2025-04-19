@@ -2,7 +2,7 @@ class Main inherits IO{
     istrue : Bool <- true;
     here : Bool <- false;
     x : Int <- 4;
-    z : Int<- x + 4 * 2;
+    z : Int<- x + 2 * 5;
     y : Int <- x + z -1;
     main () : Object{
     {

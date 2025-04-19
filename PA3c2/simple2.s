@@ -1,63 +1,63 @@
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..vtable
-Bool..vtable:           ## virtual function table for Bool
-                        .quad string1
-                        .quad Bool..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Bool..vtable:			## virtual function table for Bool
+						.quad string1
+						.quad Bool..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl IO..vtable
-IO..vtable:             ## virtual function table for IO
-                        .quad string2
-                        .quad IO..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
+IO..vtable:			## virtual function table for IO
+						.quad string2
+						.quad IO..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Int..vtable
-Int..vtable:            ## virtual function table for Int
-                        .quad string3
-                        .quad Int..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Int..vtable:			## virtual function table for Int
+						.quad string3
+						.quad Int..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main..vtable
-Main..vtable:           ## virtual function table for Main
-                        .quad string4
-                        .quad Main..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad IO.in_int
-                        .quad IO.in_string
-                        .quad IO.out_int
-                        .quad IO.out_string
-                        .quad Main.main
+Main..vtable:			## virtual function table for Main
+						.quad string4
+						.quad Main..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad IO.in_int
+						.quad IO.in_string
+						.quad IO.out_int
+						.quad IO.out_string
+						.quad Main.main
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Object..vtable
-Object..vtable:         ## virtual function table for Object
-                        .quad string5
-                        .quad Object..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
+Object..vtable:			## virtual function table for Object
+						.quad string5
+						.quad Object..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String..vtable
-String..vtable:         ## virtual function table for String
-                        .quad string6
-                        .quad String..new
-                        .quad Object.abort
-                        .quad Object.copy
-                        .quad Object.type_name
-                        .quad String.concat
-                        .quad String.length
-                        .quad String.substr
+String..vtable:			## virtual function table for String
+						.quad string6
+						.quad String..new
+						.quad Object.abort
+						.quad Object.copy
+						.quad Object.type_name
+						.quad String.concat
+						.quad String.length
+						.quad String.substr
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Bool..new
 Bool..new:              ## constructor for Bool
@@ -157,43 +157,25 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 0
+                        movq $0, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $4, %r12
-                        ## guarantee 16-byte alignment before call
+                        movq $3, %r12
+			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
 			movq %r12, %rdi
 			call calloc
 			movq %rax, %r12
-                        ## store class tag, object size and vtable pointer
+			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $4, %r14
+                        movq $3, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
                         ## initialize attributes
-                        ## self[3] holds field isfalse (Bool)
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 24(%r12)
-                        ## self[3] isfalse initializer <- false
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 24(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -443,7 +425,7 @@ IO.out_int:             ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (?)
+                        ## fp[3] holds argument x (Int)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -472,7 +454,7 @@ IO.out_string:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument x (?)
+                        ## fp[3] holds argument x (String)
                         ## method body begins
                         movq 24(%rbp), %r14
                         movq 24(%r14), %r13
@@ -489,31 +471,88 @@ IO.out_string.end:      ## method body ends
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
-Main.main:              ## method definition
+Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 21
+                        movq $336, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## self[3] holds field isfalse (Bool)
                         ## method body begins
-                        ## new Bool
+                        ## Basic block: BB0
+                        ##t$0 <- Default Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -8(%rbp)
+                        ## new Int x <- t$0 (local <- temp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -16(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -1000(%rbp)
+                        ##t$1 <- Default Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -24(%rbp)
+                        ## new Int y <- t$1 (local <- temp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -32(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -1016(%rbp)
+                        ##t$2 <- Default Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq %r13, 24(%r12)
-                        ## isfalse
-                        movq 24(%r12), %r13
+                        movq %r13, -40(%rbp)
+                        ## new Bool z <- t$2 (local <- temp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -48(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -1032(%rbp)
+                        ## new Bool t$3 <- false
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -56(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -64(%rbp)
+                        ## t$4 <- not t$3
+                        movq -56(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l3
-.globl l4
-l4:                     ## false branch
+            jne main_l3_true
+.globl main_l4_false
+main_l4_false:
+                        ## false branch
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -523,9 +562,10 @@ l4:                     ## false branch
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        jmp l5
-.globl l3
-l3:                     ## true branch
+                        jmp main_l5_end
+.globl main_l3_true
+main_l3_true:
+                        ## true branch
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -533,17 +573,297 @@ l3:                     ## true branch
                         call *%r14
                         popq %r12
                         popq %rbp
-.globl l5
-l5:                     ## end of if conditional
+.globl main_l5_end
+main_l5_end:            ## end of if conditional
+                        movq %r13, -72(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -80(%rbp)
+                        ## t$5 <- not t$4
+                        movq -72(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l6
-.globl l7
-l7:                     ## false branch
-                        ## out_string(...)
+            jne main_l6_true
+.globl main_l7_false
+main_l7_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l8_end
+.globl main_l6_true
+main_l6_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl main_l8_end
+main_l8_end:            ## end of if conditional
+                        movq %r13, -88(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -96(%rbp)
+                        ## t$6 <- not t$5
+                        movq -88(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+            jne main_l9_true
+.globl main_l10_false
+main_l10_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l11_end
+.globl main_l9_true
+main_l9_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl main_l11_end
+main_l11_end:            ## end of if conditional
+                        movq %r13, -104(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -112(%rbp)
+                        ## new Bool z <- t$6 (local <- temp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -112(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -1032(%rbp)
+                       ## t$0 <- z (temp <- local)
+                       movq -1032(%rbp), %r13
+                       movq %r13, -8(%rbp)
+                       movq -1040(%rbp), %r13
+                       movq %r13, -16(%rbp)
+                        ## new int t$7 <- 9
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -120(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -128(%rbp)
+                       ## t$8 <- y (temp <- local)
+                       movq -1016(%rbp), %r13
+                       movq %r13, -136(%rbp)
+                       movq -1024(%rbp), %r13
+                       movq %r13, -144(%rbp)
+                        ## t$9 <- t$7 + t$8
+                        movq -128(%rbp), %r13
+                        movq -144(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -160(%rbp)
+                        ## new int t$10 <- 32
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -168(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -176(%rbp)
+                        ## new int t$11 <- 23
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $23, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -184(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -192(%rbp)
+                        ## t$12 <- t$10 / t$11
+                        movq -192(%rbp), %r13
+                        cmpq $0, %r13
+           jne main_l12_div_ok
+                        movq $string10, %r13
+                        ## division by zero detected
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq %r13, %rdi
+           call cooloutstr
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movl $0, %edi
+           call exit
+.global main_l12_div_ok
+main_l12_div_ok:        ## division is okay 
+                        movq -176(%rbp), %r14
+movq $0, %rdx
+movq %r14, %rax
+cdq
+idivl %r13d
+movq %rax, %r13
+                        movq %r13, -208(%rbp)
+                        ## t$13 <- t$9 - t$12
+                        movq -160(%rbp), %r13
+                        movq -208(%rbp), %r14
+                        subq %r14, %r13
+                        movq %r13, -224(%rbp)
+                        ## new int t$14 <- 32
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -232(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -240(%rbp)
+                        ## t$15 <- -t$14
+                        movq -240(%rbp), %r13
+                        negq %r13
+                        movq %r13, -256(%rbp)
+                        ## new Int for negated result
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -256(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -248(%rbp)
+                        ## t$16 <- t$13 + t$15
+                        movq -224(%rbp), %r13
+                        movq -256(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -272(%rbp)
+                        ## new Int x <- t$16 (local <- temp)
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -272(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -1000(%rbp)
+                       ## t$0 <- x (temp <- local)
+                       movq -1000(%rbp), %r13
+                       movq %r13, -8(%rbp)
+                       movq -1008(%rbp), %r13
+                       movq %r13, -16(%rbp)
+                       ## t$17 <- z (temp <- local)
+                       movq -1032(%rbp), %r13
+                       movq %r13, -280(%rbp)
+                       movq -1040(%rbp), %r13
+                       movq %r13, -288(%rbp)
+                        ## t$18 <- not t$17
+                        movq -280(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+            jne main_l13_true
+.globl main_l14_false
+main_l14_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l15_end
+.globl main_l13_true
+main_l13_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl main_l15_end
+main_l15_end:            ## end of if conditional
+                        movq %r13, -296(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -304(%rbp)
+                        ## if t$18 jump to main_l1
+                        movq -296(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l1
+                        ## Basic block: BB1
+                        ## if t$17 jump to main_l0
+                        movq -280(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l0
+                        ## Basic block: BB2
+                        ## then branch
+                        ## Basic block: BB3
+.globl main_l0
+main_l0:
+                       ## t$19 <- x (temp <- local)
+                       movq -1000(%rbp), %r13
+                       movq %r13, -312(%rbp)
+                       movq -1008(%rbp), %r13
+                       movq %r13, -320(%rbp)
+                        ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## new String
+                        ## arg t$19 (pointer)
+                        movq -312(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                        ## unconditional jump to main_l2
+                        jmp main_l2
+                        ## Basic block: BB4
+                        ## else branch
+                        ## Basic block: BB5
+.globl main_l1
+main_l1:
+                        ## new String t$20 <- "wrong\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
@@ -553,32 +873,12 @@ l7:                     ## false branch
                         ## string8 holds "wrong\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        jmp l8
-.globl l6
-l6:                     ## true branch
+                        movq %r13, -328(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## new String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string9 holds "correct\n"
-                        movq $string9, %r14
-                        movq %r14, 24(%r13)
+                        ## arg t$20 (pointer)
+                        movq -328(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -589,15 +889,30 @@ l6:                     ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l8
-l8:                     ## end of if conditional
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r14
+                        movq %r14, -16(%rbp)
+                       ## t$0 <- t$0 (temp <- temp)
+                       movq -8(%rbp), %r13
+                       movq %r13, -8(%rbp)
+                       movq -16(%rbp), %r13
+                       movq %r13, -16(%rbp)
+                        ## unconditional jump to main_l2
+                        jmp main_l2
+                        ## Basic block: BB6
+                        ## if-join
+                        ## Basic block: BB7
+.globl main_l2
+main_l2:
+
 .globl Main.main.end
-Main.main.end:          ## method body ends
+Main.main.end:       ## method body ends
                         ## return address handling
                         movq %rbp, %rsp
                         popq %rbp
                         ret
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.concat
 String.concat:          ## method definition
                         pushq %rbp
@@ -607,7 +922,7 @@ String.concat:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[3] holds argument s (?)
+                        ## fp[3] holds argument s (String)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -634,7 +949,7 @@ String.concat.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.length
 String.length:          ## method definition
                         pushq %rbp
@@ -668,7 +983,7 @@ String.length.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl String.substr
 String.substr:          ## method definition
                         pushq %rbp
@@ -678,8 +993,8 @@ String.substr:          ## method definition
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        ## fp[4] holds argument i (?)
-                        ## fp[3] holds argument l (?)
+                        ## fp[4] holds argument i (Int)
+                        ## fp[3] holds argument l (Int)
                         ## method body begins
                         ## new String
                         pushq %rbp
@@ -702,18 +1017,18 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l9
-                        movq $string10, %r13
+			jne l3
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
 			call cooloutstr
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
-			movl $0, %edi
+			movl $0,  %edi
 			call exit
-.globl l9
-l9:                     movq %r13, 24(%r15)
+.globl l3
+l3:                     movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -721,163 +1036,206 @@ String.substr.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-                        ## global string constants
+                       ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                       ## global string constants
 .globl the.empty.string
-the.empty.string:       # ""
-.byte 0
+the.empty.string:			  # ""
+.byte 0	
+
 
 .globl percent.d
-percent.d:              # "%ld"
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.d:			  # "%ld"
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl percent.ld
-percent.ld:             # " %ld"
-.byte  32 # ' '
-.byte  37 # '%'
-.byte 108 # 'l'
-.byte 100 # 'd'
-.byte 0
+percent.ld:			  # " %ld"
+.byte 32	# ' '
+.byte 37	# '%'
+.byte 108	# 'l'
+.byte 100	# 'd'
+.byte 0	
+
 
 .globl string1
-string1:                # "Bool"
-.byte  66 # 'B'
-.byte 111 # 'o'
-.byte 111 # 'o'
-.byte 108 # 'l'
-.byte 0
+string1:			  # "Bool"
+.byte 66	# 'B'
+.byte 111	# 'o'
+.byte 111	# 'o'
+.byte 108	# 'l'
+.byte 0	
+
 
 .globl string2
-string2:                # "IO"
-.byte  73 # 'I'
-.byte  79 # 'O'
-.byte 0
+string2:			  # "IO"
+.byte 73	# 'I'
+.byte 79	# 'O'
+.byte 0	
+
 
 .globl string3
-string3:                # "Int"
-.byte  73 # 'I'
-.byte 110 # 'n'
-.byte 116 # 't'
-.byte 0
+string3:			  # "Int"
+.byte 73	# 'I'
+.byte 110	# 'n'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string4
-string4:                # "Main"
-.byte  77 # 'M'
-.byte  97 # 'a'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 0
+string4:			  # "Main"
+.byte 77	# 'M'
+.byte 97	# 'a'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string5
-string5:                # "Object"
-.byte  79 # 'O'
-.byte  98 # 'b'
-.byte 106 # 'j'
-.byte 101 # 'e'
-.byte  99 # 'c'
-.byte 116 # 't'
-.byte 0
+string5:			  # "Object"
+.byte 79	# 'O'
+.byte 98	# 'b'
+.byte 106	# 'j'
+.byte 101	# 'e'
+.byte 99	# 'c'
+.byte 116	# 't'
+.byte 0	
+
 
 .globl string6
-string6:                # "String"
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 0
+string6:			  # "String"
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 0	
+
 
 .globl string7
-string7:                # "abort\\n"
-.byte  97 # 'a'
-.byte  98 # 'b'
-.byte 111 # 'o'
-.byte 114 # 'r'
-.byte 116 # 't'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string7:			  # "abort\n"
+.byte 97	# 'a'
+.byte 98	# 'b'
+.byte 111	# 'o'
+.byte 114	# 'r'
+.byte 116	# 't'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string8
-string8:                # "wrong\\n"
-.byte 119 # 'w'
-.byte 114 # 'r'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string8:			  # "wrong\n"
+.byte 119	# 'w'
+.byte 114	# 'r'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string9
-string9:                # "correct\\n"
-.byte  99 # 'c'
-.byte 111 # 'o'
-.byte 114 # 'r'
-.byte 114 # 'r'
-.byte 101 # 'e'
-.byte  99 # 'c'
-.byte 116 # 't'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
+.byte 69	# 'E'
+.byte 82	# 'R'
+.byte 82	# 'R'
+.byte 79	# 'O'
+.byte 82	# 'R'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 48	# '0'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 120	# 'x'
+.byte 99	# 'c'
+.byte 101	# 'e'
+.byte 112	# 'p'
+.byte 116	# 't'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 83	# 'S'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 105	# 'i'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 46	# '.'
+.byte 115	# 's'
+.byte 117	# 'u'
+.byte 98	# 'b'
+.byte 115	# 's'
+.byte 116	# 't'
+.byte 114	# 'r'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 117	# 'u'
+.byte 116	# 't'
+.byte 32	# ' '
+.byte 111	# 'o'
+.byte 102	# 'f'
+.byte 32	# ' '
+.byte 114	# 'r'
+.byte 97	# 'a'
+.byte 110	# 'n'
+.byte 103	# 'g'
+.byte 101	# 'e'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
 .globl string10
-string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
-.byte  69 # 'E'
-.byte  82 # 'R'
-.byte  82 # 'R'
-.byte  79 # 'O'
-.byte  82 # 'R'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  48 # '0'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  69 # 'E'
-.byte 120 # 'x'
-.byte  99 # 'c'
-.byte 101 # 'e'
-.byte 112 # 'p'
-.byte 116 # 't'
-.byte 105 # 'i'
-.byte 111 # 'o'
-.byte 110 # 'n'
-.byte  58 # ':'
-.byte  32 # ' '
-.byte  83 # 'S'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte 105 # 'i'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte  46 # '.'
-.byte 115 # 's'
-.byte 117 # 'u'
-.byte  98 # 'b'
-.byte 115 # 's'
-.byte 116 # 't'
-.byte 114 # 'r'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 117 # 'u'
-.byte 116 # 't'
-.byte  32 # ' '
-.byte 111 # 'o'
-.byte 102 # 'f'
-.byte  32 # ' '
-.byte 114 # 'r'
-.byte  97 # 'a'
-.byte 110 # 'n'
-.byte 103 # 'g'
-.byte 101 # 'e'
-.byte  92 # '\\'
-.byte 110 # 'n'
-.byte 0
+string10:			  # "ERROR: 6: Exception: division by zero\n"
+.byte 69	# 'E'
+.byte 82	# 'R'
+.byte 82	# 'R'
+.byte 79	# 'O'
+.byte 82	# 'R'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 54	# '6'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 69	# 'E'
+.byte 120	# 'x'
+.byte 99	# 'c'
+.byte 101	# 'e'
+.byte 112	# 'p'
+.byte 116	# 't'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 58	# ':'
+.byte 32	# ' '
+.byte 100	# 'd'
+.byte 105	# 'i'
+.byte 118	# 'v'
+.byte 105	# 'i'
+.byte 115	# 's'
+.byte 105	# 'i'
+.byte 111	# 'o'
+.byte 110	# 'n'
+.byte 32	# ' '
+.byte 98	# 'b'
+.byte 121	# 'y'
+.byte 32	# ' '
+.byte 122	# 'z'
+.byte 101	# 'e'
+.byte 114	# 'r'
+.byte 111	# 'o'
+.byte 92	# '\\'
+.byte 110	# 'n'
+.byte 0	
+
 
                         ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl eq_handler
@@ -1445,4 +1803,3 @@ coolsubstr:
 	.cfi_endproc
 .LFE10:
 	.size	coolsubstr, .-coolsubstr
-

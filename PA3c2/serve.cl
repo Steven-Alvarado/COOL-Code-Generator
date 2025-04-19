@@ -7,12 +7,16 @@ class Main inherits IO{
         {
             z <- 49 - 235 + 43;
             x <- 4 +  y * z *2;
-            out_int(z + 43);
-            t <- not ( z = x);
-                if t then 
-                    out_int( x)
-                else
-                    out_int(z /x)
+            out_int(z);
+            t <-  (z<x);
+                if t then {
+                    out_string(" t\n");
+                    out_int(x);
+                }
+                else{
+                    out_string("o\n");
+                    out_int(z);
+                }
                         fi;
         }
     };

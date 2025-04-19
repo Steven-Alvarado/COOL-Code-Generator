@@ -1,0 +1,51 @@
+comment start
+label Main_main_0
+t$0 <- default Int
+x <- t$0
+t$1 <- default Bool
+y <- t$1
+t$2 <- default Int
+z <- t$2
+t$3 <- y
+t$4 <- not t$3
+bt t$4 main_l2
+bt t$3 main_l1
+comment then branch
+label main_l1
+t$5 <- string
+wrong\n
+t$0 <- call out_string t$5
+jmp main_l3
+comment else branch
+label main_l2
+t$6 <- b
+t$0 <- call out_int t$6
+t$0 <- t$0
+jmp main_l3
+comment if-join
+label main_l3
+t$7 <- int 4
+z <- t$7
+t$0 <- z
+t$8 <- z
+t$9 <- int 4
+t$10 <- int 4
+t$11 <- / t$9 t$10
+t$12 <- + t$8 t$11
+t$13 <- int 10
+t$14 <- ~ t$13
+t$15 <- int 43
+t$16 <- * t$14 t$15
+t$17 <- int 89234
+t$18 <- / t$16 t$17
+t$19 <- - t$12 t$18
+t$20 <- int 4
+t$21 <- + t$19 t$20
+x <- t$21
+t$0 <- x
+t$22 <- string
+\n
+t$0 <- call out_string t$22
+t$23 <- x
+t$0 <- call out_int t$23
+return t$0
