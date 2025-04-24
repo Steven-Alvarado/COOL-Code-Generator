@@ -1,24 +1,12 @@
 comment start
 label Main_main_0
 t$0 <- default Int
-x <- t$0
-t$1 <- default Int
-y <- t$1
-t$0 <- call in_int 
-x <- t$0
-t$0 <- x
+t$3 <- t$0
+t$1 <- int 3
 t$2 <- int 3
-t$3 <- int 3
-t$4 <- + t$2 t$3
-t$5 <- int 4
-t$6 <- + t$4 t$5
-t$7 <- x
-t$8 <- + t$6 t$7
-x <- t$8
-t$0 <- x
-t$9 <- x
-t$0 <- call out_int t$9
-t$10 <- string
-\n
-t$0 <- call out_string t$10
+t$3 <- + t$1 t$2
+t$3 <- t$3
+t$4 <- t$3
+t$5 <- t$3
+t$0 <- call out_int t$5
 return t$0
