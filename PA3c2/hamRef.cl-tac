@@ -1,0 +1,77 @@
+comment start
+label Main_main_0
+x <- call in_int
+t$1 <- x
+t$9 <- x
+t$10 <- int 10
+t$7 <- + t$9 t$10
+t$15 <- int 5
+t$16 <- int 3
+t$13 <- * t$15 t$16
+t$14 <- int 5
+t$11 <- * t$13 t$14
+t$12 <- int 34
+t$8 <- / t$11 t$12
+t$5 <- - t$7 t$8
+t$17 <- int 523245
+t$6 <- ~ t$17
+t$3 <- + t$5 t$6
+t$18 <- int 24
+t$20 <- int 54
+t$19 <- ~ t$20
+t$4 <- / t$18 t$19
+y <- - t$3 t$4
+t$2 <- y
+t$28 <- y
+t$29 <- int 32
+t$26 <- - t$28 t$29
+t$34 <- int 84
+t$35 <- int 3
+t$32 <- * t$34 t$35
+t$33 <- int 8
+t$30 <- / t$32 t$33
+t$31 <- int 32
+t$27 <- * t$30 t$31
+t$24 <- - t$26 t$27
+t$25 <- int 9000
+t$22 <- + t$24 t$25
+t$36 <- int 43
+t$23 <- ~ t$36
+y <- - t$22 t$23
+t$21 <- y
+t$38 <- string
+Enter a number\n
+t$37 <- call out_string t$38
+t$40 <- y
+t$39 <- call out_int t$40
+t$42 <- string
+\n
+t$41 <- call out_string t$42
+t$44 <- string
+finally\n
+t$43 <- call out_string t$44
+t$45 <- z
+t$48 <- not t$45
+bt t$48 Main_main_12
+bt t$45 Main_main_11
+comment then branch
+label Main_main_11
+t$46 <- string
+uh\n
+jmp Main_main_14
+comment else branch
+label Main_main_12
+t$47 <- string
+maybe\n
+jmp Main_main_16
+comment if-join
+label Main_main_13
+return t$0
+comment fcall-pre to out_string
+label Main_main_14
+t$0 <- call out_string t$46
+jmp Main_main_13
+comment fcall-pre to out_string
+label Main_main_16
+t$0 <- call out_string t$47
+jmp Main_main_13

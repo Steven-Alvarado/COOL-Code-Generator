@@ -161,7 +161,7 @@ Main..new:              ## constructor for Main
                         movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $3, %r12
+                        movq $4, %r12
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,10 +171,31 @@ Main..new:              ## constructor for Main
                         ## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $3, %r14
+                        movq $4, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
+                        ## initialize attributes
+                        ## self[3] holds field q (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 24(%r12)
+                        ## self[3] q initializer <- 4
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, 24(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -478,6 +499,7 @@ Main.main:              ## method definition
                         movq $48, %r14
                         subq %r14, %rsp
                         ## return address handling
+                        ## self[3] holds field q (Int)
                         ## method body begins
                         ## fp[0] holds local x (Int)
                         ## new Int
@@ -714,6 +736,28 @@ movq %rax, %r13
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
+                        movq %r13, -32(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -32(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -32(%rbp)
+                        ## q
+                        movq 24(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq -32(%rbp), %r14
+                        
+movq %r14, %rax
+imull %r13d, %eax
+shlq $32, %rax
+shrq $32, %rax
+movl %eax, %r13d
                         movq %r13, -32(%rbp)
                         ## new Int
                         pushq %rbp
@@ -1000,7 +1044,7 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "ERROR: 6: Exception: division by zero\\n"
+string8:                # "ERROR: 7: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -1008,7 +1052,7 @@ string8:                # "ERROR: 6: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  54 # '6'
+.byte  55 # '7'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'

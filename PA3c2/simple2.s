@@ -157,11 +157,11 @@ Int..new:               ## constructor for Int
 Main..new:              ## constructor for Main
                         pushq %rbp
                         movq %rsp, %rbp
-                        ## stack room for temporaries: 0
-                        movq $0, %r14
+                        ## stack room for temporaries: 1
+                        movq $16, %r14
                         subq %r14, %rsp
                         ## return address handling
-                        movq $3, %r12
+                        movq $4, %r12
 			## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq $8, %rsi
@@ -171,11 +171,35 @@ Main..new:              ## constructor for Main
 			## store class tag, object size and vtable pointer
                         movq $11, %r14
                         movq %r14, 0(%r12)
-                        movq $3, %r14
+                        movq $4, %r14
                         movq %r14, 8(%r12)
                         movq $Main..vtable, %r14
                         movq %r14, 16(%r12)
                         ## initialize attributes
+                        ## self[3] holds field q (Int)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, 24(%r12)
+                        ## self[3] q initializer <- 4
+                        ## new int t$0 <- 4
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        movq 24(%r13), %r13
+                        movq %r13, -16(%rbp)
+                        movq -8(%rbp), %r13
+                        movq %r13, 24(%r12)
                         movq %r12, %r13
                         ## return address handling
                         movq %rbp, %rsp
@@ -475,10 +499,11 @@ Main.main:           ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 21
-                        movq $336, %r14
+                        ## stack room for temporaries: 23
+                        movq $368, %r14
                         subq %r14, %rsp
                         ## return address handling
+                        ## self[3] holds field q (Int)
                         ## method body begins
                         ## Basic block: BB0
                         ##t$0 <- Default Int
@@ -759,19 +784,33 @@ movq %rax, %r13
                         movq -256(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -248(%rbp)
-                        ## t$16 <- t$13 + t$15
+                       ## t$16 <- q (temp <- field)
+                       movq 24(%r12), %r13
+                       movq %r13, -264(%rbp)
+                       movq 24(%r13), %r13
+                       movq %r13, -272(%rbp)
+                        ## t$17 <- t$15 * t$16
+                        movq -256(%rbp), %r13
+                        movq -272(%rbp), %r14
+movq %r14, %rax
+imull %r13d, %eax
+shlq $32, %rax   
+shrq $32, %rax   
+movl %eax, %r13d 
+                        movq %r13, -288(%rbp)
+                        ## t$18 <- t$13 + t$17
                         movq -224(%rbp), %r13
-                        movq -256(%rbp), %r14
+                        movq -288(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -272(%rbp)
-                        ## new Int x <- t$16 (local <- temp)
+                        movq %r13, -304(%rbp)
+                        ## new Int x <- t$18 (local <- temp)
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -272(%rbp), %r14
+                        movq -304(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -1000(%rbp)
                        ## t$0 <- x (temp <- local)
@@ -779,13 +818,13 @@ movq %rax, %r13
                        movq %r13, -8(%rbp)
                        movq -1008(%rbp), %r13
                        movq %r13, -16(%rbp)
-                       ## t$17 <- z (temp <- local)
+                       ## t$19 <- z (temp <- local)
                        movq -1032(%rbp), %r13
-                       movq %r13, -280(%rbp)
+                       movq %r13, -312(%rbp)
                        movq -1040(%rbp), %r13
-                       movq %r13, -288(%rbp)
-                        ## t$18 <- not t$17
-                        movq -280(%rbp), %r13
+                       movq %r13, -320(%rbp)
+                        ## t$20 <- not t$19
+                        movq -312(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
             jne main_l13_true
@@ -814,17 +853,17 @@ main_l13_true:
                         popq %rbp
 .globl main_l15_end
 main_l15_end:            ## end of if conditional
-                        movq %r13, -296(%rbp)
+                        movq %r13, -328(%rbp)
                         movq 24(%r13), %r14
-                        movq %r14, -304(%rbp)
-                        ## if t$18 jump to main_l1
-                        movq -296(%rbp), %r13
+                        movq %r14, -336(%rbp)
+                        ## if t$20 jump to main_l1
+                        movq -328(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l1
                         ## Basic block: BB1
-                        ## if t$17 jump to main_l0
-                        movq -280(%rbp), %r13
+                        ## if t$19 jump to main_l0
+                        movq -312(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l0
@@ -833,16 +872,16 @@ main_l15_end:            ## end of if conditional
                         ## Basic block: BB3
 .globl main_l0
 main_l0:
-                       ## t$19 <- x (temp <- local)
+                       ## t$21 <- x (temp <- local)
                        movq -1000(%rbp), %r13
-                       movq %r13, -312(%rbp)
+                       movq %r13, -344(%rbp)
                        movq -1008(%rbp), %r13
-                       movq %r13, -320(%rbp)
+                       movq %r13, -352(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$19 (pointer)
-                        movq -312(%rbp), %r13
+                        ## arg t$21 (pointer)
+                        movq -344(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -863,7 +902,7 @@ main_l0:
                         ## Basic block: BB5
 .globl main_l1
 main_l1:
-                        ## new String t$20 <- "wrong\n"
+                        ## new String t$22 <- "wrong\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
@@ -873,12 +912,12 @@ main_l1:
                         ## string8 holds "wrong\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -328(%rbp)
+                        movq %r13, -360(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$20 (pointer)
-                        movq -328(%rbp), %r13
+                        ## arg t$22 (pointer)
+                        movq -360(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -1194,7 +1233,7 @@ string9:			  # "ERROR: 0: Exception: String.substr out of range\n"
 
 
 .globl string10
-string10:			  # "ERROR: 6: Exception: division by zero\n"
+string10:			  # "ERROR: 7: Exception: division by zero\n"
 .byte 69	# 'E'
 .byte 82	# 'R'
 .byte 82	# 'R'
@@ -1202,7 +1241,7 @@ string10:			  # "ERROR: 6: Exception: division by zero\n"
 .byte 82	# 'R'
 .byte 58	# ':'
 .byte 32	# ' '
-.byte 54	# '6'
+.byte 55	# '7'
 .byte 58	# ':'
 .byte 32	# ' '
 .byte 69	# 'E'

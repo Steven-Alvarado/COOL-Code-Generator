@@ -514,7 +514,7 @@ Main.main:           ## method definition
                         movq %r13, -8(%rbp)
                         movq 24(%r13), %r13
                         movq %r13, -16(%rbp)
-                        ## new Bool isfalse <- t$0
+                        ## new Bool isfalse <- t$0 (field <- temp)
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
@@ -524,12 +524,12 @@ Main.main:           ## method definition
                         movq -16(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                       ## t$0 <- isfalse
+                       ## t$0 <- isfalse (temp <- field)
                        movq 24(%r12), %r13
                        movq %r13, -8(%rbp)
                        movq 24(%r13), %r13
                        movq %r13, -16(%rbp)
-                       ## t$1 <- isfalse
+                       ## t$1 <- isfalse (temp <- field)
                        movq 24(%r12), %r13
                        movq %r13, -24(%rbp)
                        movq 24(%r13), %r13
@@ -563,7 +563,9 @@ main_l3_true:
                         popq %r12
                         popq %rbp
 .globl main_l5_end
-main_l5_end:                ## end of if conditional
+main_l5_end:            ## end of if conditional
+                        movq %r13, -40(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -48(%rbp)
                         ## t$3 <- not t$2
                         movq -40(%rbp), %r13
@@ -594,15 +596,19 @@ main_l6_true:
                         popq %r12
                         popq %rbp
 .globl main_l8_end
-main_l8_end:                ## end of if conditional
+main_l8_end:            ## end of if conditional
+                        movq %r13, -56(%rbp)
+                        movq 24(%r13), %r14
                         movq %r14, -64(%rbp)
                         ## if t$3 jump to main_l1
                         movq -56(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l1
                         ## Basic block: BB1
                         ## if t$2 jump to main_l0
                         movq -40(%rbp), %r13
+                        movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l0
                         ## Basic block: BB2
