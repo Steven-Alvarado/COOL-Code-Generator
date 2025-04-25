@@ -1,0 +1,7 @@
+comment start
+label Main_main_0
+t$0 <- default String
+t$1 <- t$0
+t$2 <- t$3
+t$0 <- call out_string t$2
+return t$0

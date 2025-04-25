@@ -1,10 +1,7 @@
 class Main inherits IO{
-    y : String;
     main () : Object{
-        {
-            y <- in_string();
+            let y : String in{
             out_string(y);
-            out_string("\n");
         }
     };
 };
