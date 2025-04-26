@@ -1,0 +1,30 @@
+comment start
+label Main_main_0
+t$0 <- default Bool
+t$1 <- t$0
+t$2 <- bool true
+t$3 <- not t$2
+t$4 <- not t$3
+t$1 <- t$4
+t$5 <- t$1
+t$6 <- t$1
+bt t$6 main_l1
+jmp main_l2
+comment then branch
+label main_l1
+t$8 <- string
+correct\n
+t$0 <- call out_string t$8
+t$7 <- t$0
+jmp main_l3
+comment else branch
+label main_l2
+t$9 <- string
+wrong\n
+t$0 <- call out_string t$9
+t$7 <- t$0
+jmp main_l3
+comment if-join
+label main_l3
+t$0 <- t$7
+return t$0

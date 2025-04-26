@@ -1,6 +1,39 @@
 comment start
 label Main_main_0
 t$1 <- default String
-t$2 <- t$1
-t$0 <- call out_string t$2
+t$2 <- default Int
+t$3 <- default Bool
+t$5 <- t$1
+t$4 <- call out_string t$5
+t$7 <- string
+\n
+t$6 <- call out_string t$7
+t$9 <- t$2
+t$8 <- call out_int t$9
+t$3 <- bool false
+t$10 <- t$3
+t$11 <- t$3
+t$14 <- not t$11
+bt t$14 Main_main_8
+bt t$11 Main_main_7
+comment then branch
+label Main_main_7
+t$12 <- string
+correct\n
+jmp Main_main_10
+comment else branch
+label Main_main_8
+t$13 <- string
+wrong\n
+jmp Main_main_12
+comment if-join
+label Main_main_9
 return t$0
+comment fcall-pre to out_string
+label Main_main_10
+t$0 <- call out_string t$12
+jmp Main_main_9
+comment fcall-pre to out_string
+label Main_main_12
+t$0 <- call out_string t$13
+jmp Main_main_9

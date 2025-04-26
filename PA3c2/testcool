@@ -50,13 +50,13 @@ echo "🚀 Running your executable..."
 ./a.out &> "$OUT_MINE" || echo "⚠️ Your program exited with error."
 
 # Step 8: Print outputs
-echo -e "\n==================== 📤 Reference Output ===================="
+echo -e "\n====================  Reference Output ===================="
 cat "$OUT_REF"
-echo -e "\n==================== 📥 Your Output ===================="
+echo -e "\n====================  Your Output ===================="
 cat "$OUT_MINE"
 
 # Step 9: Show diff
-echo -e "\n==================== 🔍 DIFF ===================="
+echo -e "\n====================  DIFF ===================="
 diff "$OUT_REF" "$OUT_MINE" || echo "❗ Outputs differ."
 
 # Optional: Cleanup (you can comment this out if you want to inspect outputs)

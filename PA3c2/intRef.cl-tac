@@ -2,47 +2,88 @@ comment start
 label Main_main_0
 t$1 <- default Int
 t$2 <- default Int
+t$3 <- default Int
+t$4 <- default Int
+t$5 <- default String
 t$1 <- call in_int
-t$3 <- t$1
-t$11 <- t$1
-t$12 <- int 10
-t$9 <- + t$11 t$12
-t$17 <- int 5
-t$18 <- int 3
-t$15 <- * t$17 t$18
-t$16 <- int 5
-t$13 <- * t$15 t$16
-t$14 <- int 34
-t$10 <- / t$13 t$14
-t$7 <- - t$9 t$10
-t$19 <- int 523245
-t$8 <- ~ t$19
-t$5 <- + t$7 t$8
-t$20 <- int 24
-t$22 <- int 54
-t$21 <- ~ t$22
-t$6 <- / t$20 t$21
-t$2 <- - t$5 t$6
-t$4 <- t$2
-t$30 <- t$2
-t$31 <- int 32
-t$28 <- - t$30 t$31
-t$36 <- int 84
-t$37 <- int 3
-t$34 <- * t$36 t$37
-t$35 <- int 8
-t$32 <- / t$34 t$35
-t$33 <- int 32
-t$29 <- * t$32 t$33
-t$26 <- - t$28 t$29
-t$27 <- int 9000
-t$24 <- + t$26 t$27
-t$38 <- int 43
-t$25 <- ~ t$38
-t$2 <- - t$24 t$25
-t$23 <- t$2
+t$6 <- t$1
 t$2 <- call in_int
-t$39 <- t$2
-t$40 <- t$2
-t$0 <- call out_int t$40
+t$7 <- t$2
+t$15 <- t$1
+t$16 <- int 10
+t$13 <- + t$15 t$16
+t$21 <- int 5
+t$22 <- int 3
+t$19 <- * t$21 t$22
+t$20 <- int 5
+t$17 <- * t$19 t$20
+t$18 <- int 34
+t$14 <- / t$17 t$18
+t$11 <- - t$13 t$14
+t$23 <- int 523245
+t$12 <- ~ t$23
+t$9 <- + t$11 t$12
+t$24 <- int 24
+t$26 <- int 54
+t$25 <- ~ t$26
+t$10 <- / t$24 t$25
+t$2 <- - t$9 t$10
+t$8 <- t$2
+t$34 <- t$2
+t$35 <- int 32
+t$32 <- - t$34 t$35
+t$40 <- int 84
+t$41 <- int 3
+t$38 <- * t$40 t$41
+t$39 <- int 8
+t$36 <- / t$38 t$39
+t$37 <- int 32
+t$33 <- * t$36 t$37
+t$30 <- - t$32 t$33
+t$31 <- int 9000
+t$28 <- + t$30 t$31
+t$42 <- int 43
+t$29 <- ~ t$42
+t$2 <- - t$28 t$29
+t$27 <- t$2
+t$44 <- t$2
+t$43 <- call out_int t$44
+t$46 <- string
+\n
+t$45 <- call out_string t$46
+t$48 <- t$3
+t$47 <- call out_int t$48
+t$50 <- string
+\n
+t$49 <- call out_string t$50
+t$52 <- t$1
+t$51 <- call out_int t$52
+t$5 <- string
+hi
+t$53 <- t$5
+t$55 <- t$5
+t$54 <- call out_string t$55
+t$57 <- string
+hadiffsni\n
+t$56 <- call out_string t$57
+t$59 <- t$2
+t$58 <- call out_int t$59
+t$61 <- t$3
+t$60 <- call out_int t$61
+t$63 <- t$1
+t$62 <- call out_int t$63
+t$65 <- t$2
+t$64 <- call out_int t$65
+t$67 <- t$4
+t$66 <- call out_int t$67
+t$69 <- t$3
+t$68 <- call out_int t$69
+t$71 <- t$2
+t$70 <- call out_int t$71
+t$73 <- t$2
+t$72 <- call out_int t$73
+t$75 <- t$2
+t$74 <- call out_int t$75
+t$76 <- t$2
+t$0 <- call out_int t$76
 return t$0

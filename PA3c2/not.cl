@@ -1,8 +1,7 @@
 class Main inherits IO{
-    iscool : Bool; 
     main () : Object {
-        {
-        iscool <- not false;
+        let iscool : Bool in{
+        iscool <- not not true;
 
         if iscool then 
             out_string("correct\n")

@@ -1,30 +1,37 @@
 comment start
 label Main_main_0
-isfalse <- bool false
-t$1 <- isfalse
-t$3 <- isfalse
-t$2 <- not t$3
-t$6 <- not t$2
-bt t$6 Main_main_2
-bt t$2 Main_main_1
+t$1 <- default Int
+t$2 <- default Int
+t$3 <- default Bool
+t$1 <- int 0
+t$4 <- t$1
+t$7 <- t$1
+t$8 <- t$2
+t$6 <- < t$7 t$8
+t$3 <- not t$6
+t$5 <- t$3
+t$9 <- t$3
+t$12 <- not t$9
+bt t$12 Main_main_2
+bt t$9 Main_main_1
 comment then branch
 label Main_main_1
-t$4 <- string
-correct\n
+t$10 <- string
+correct:)\n
 jmp Main_main_4
 comment else branch
 label Main_main_2
-t$5 <- string
-wrong\n
+t$11 <- string
+wrong:(\n
 jmp Main_main_6
 comment if-join
 label Main_main_3
 return t$0
 comment fcall-pre to out_string
 label Main_main_4
-t$0 <- call out_string t$4
+t$0 <- call out_string t$10
 jmp Main_main_3
 comment fcall-pre to out_string
 label Main_main_6
-t$0 <- call out_string t$5
+t$0 <- call out_string t$11
 jmp Main_main_3
