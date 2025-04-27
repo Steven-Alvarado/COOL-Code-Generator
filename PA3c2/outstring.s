@@ -454,7 +454,7 @@ IO.out_string.end:      ## method body ends
                         ret
 						## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
-Main.main:          ## method definition
+Main.main:              ## method definition
 						pushq %rbp
 						movq %rsp, %rbp
 						movq 16(%rbp), %r12
@@ -463,7 +463,7 @@ Main.main:          ## method definition
 						subq %r14, %rsp
 						## return address handling
 						## method body begins
-          ## Basic block: BB0
+                        ## Basic block: BB0
                         ##t$0 <- Default String
                         pushq %rbp
                         pushq %r12

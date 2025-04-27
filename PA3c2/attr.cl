@@ -1,9 +1,11 @@
 class Main inherits IO{
-    str : String <- "hi";
     x : Int <- 3;
-    y : Int <- x + 4;
-    z : Int <- y -4;
     main() : Object{
-        out_string(str)
+        {
+        out_int(x);
+        let x : Int in{
+            out_int(x);
+        };
+        }
     };
 };

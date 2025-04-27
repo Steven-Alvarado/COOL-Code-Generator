@@ -1,5 +1,8 @@
 comment start
 label Main_main_0
-t$1 <- str
-t$0 <- call out_string t$1
+t$2 <- x
+t$1 <- call out_int t$2
+t$3 <- default Int
+t$4 <- t$3
+t$0 <- call out_int t$4
 return t$0

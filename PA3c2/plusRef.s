@@ -457,8 +457,8 @@ Main.main:              ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 16
-                        movq $128, %r14
+                        ## stack room for temporaries: 24
+                        movq $192, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
@@ -563,6 +563,86 @@ Main.main:              ## method definition
                         popq %r12
                         popq %rbp
                         movq %r13, -80(%rbp)
+                        ## fp[-11] holds local k (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -88(%rbp)
+                        ## fp[-12] holds local l (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -96(%rbp)
+                        ## fp[-13] holds local m (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -104(%rbp)
+                        ## fp[-14] holds local o (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -112(%rbp)
+                        ## fp[-15] holds local p (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $the.empty.string, %r15
+                        movq %r15, 24(%r13)
+                        movq %r13, -120(%rbp)
+                        ## fp[-16] holds local s (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $the.empty.string, %r15
+                        movq %r15, 24(%r13)
+                        movq %r13, -128(%rbp)
+                        ## fp[-17] holds local t (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $the.empty.string, %r15
+                        movq %r15, 24(%r13)
+                        movq %r13, -136(%rbp)
+                        ## fp[-18] holds local u (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $the.empty.string, %r15
+                        movq %r15, 24(%r13)
+                        movq %r13, -144(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -609,15 +689,15 @@ Main.main:              ## method definition
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -625,10 +705,10 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -639,7 +719,7 @@ Main.main:              ## method definition
                         movq $3, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -664,14 +744,14 @@ Main.main:              ## method definition
 .globl l3
 l3:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -679,14 +759,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -694,10 +774,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -708,7 +788,7 @@ movq %rax, %r13
                         movq $100, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -719,7 +799,7 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -730,11 +810,11 @@ movq %rax, %r13
                         movq $7, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -742,17 +822,17 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -760,10 +840,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -774,14 +854,14 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -789,12 +869,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -802,21 +882,21 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -8(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -824,10 +904,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -838,7 +918,7 @@ movl %eax, %r13d
                         movq $15, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -849,7 +929,7 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -860,11 +940,11 @@ movl %eax, %r13d
                         movq $3, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -872,17 +952,17 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -890,12 +970,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -903,10 +983,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -917,7 +997,7 @@ movl %eax, %r13d
                         movq $8, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -942,14 +1022,14 @@ movl %eax, %r13d
 .globl l4
 l4:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -957,14 +1037,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -972,7 +1052,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -24(%rbp)
                         ## new Int
@@ -985,7 +1065,7 @@ movq %rax, %r13
                         movq $15, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1010,14 +1090,14 @@ movq %rax, %r13
 .globl l5
 l5:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1025,10 +1105,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1039,7 +1119,7 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1050,11 +1130,11 @@ movq %rax, %r13
                         movq $4, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1062,17 +1142,17 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1080,10 +1160,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1094,11 +1174,11 @@ movl %eax, %r13d
                         movq $9, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1106,25 +1186,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1132,12 +1212,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1145,28 +1225,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -32(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1174,12 +1254,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1187,10 +1267,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1201,15 +1281,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1217,10 +1297,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1245,14 +1325,14 @@ movl %eax, %r13d
 .globl l6
 l6:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1260,14 +1340,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1275,10 +1355,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1289,7 +1369,7 @@ movq %rax, %r13
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1300,14 +1380,14 @@ movq %rax, %r13
                         movq $11, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1315,10 +1395,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1329,15 +1409,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1345,17 +1425,17 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1363,12 +1443,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1376,28 +1456,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -40(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1405,12 +1485,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1418,16 +1498,16 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1435,10 +1515,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1449,15 +1529,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1465,10 +1545,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1479,14 +1559,14 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1494,10 +1574,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r14
@@ -1515,14 +1595,14 @@ movl %eax, %r13d
 .globl l7
 l7:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1530,14 +1610,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1545,24 +1625,24 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -48(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1570,14 +1650,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r14
@@ -1595,14 +1675,14 @@ movl %eax, %r13d
 .globl l8
 l8:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1610,14 +1690,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1625,10 +1705,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1639,15 +1719,15 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1655,10 +1735,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1669,14 +1749,14 @@ movq %rax, %r13
                         movq $10, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1684,12 +1764,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1697,28 +1777,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -56(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1726,14 +1806,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1741,14 +1821,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1759,7 +1839,7 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1770,11 +1850,11 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1782,7 +1862,7 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r14
                         cmpq $0, %r14
@@ -1799,14 +1879,14 @@ movl %eax, %r13d
 .globl l9
 l9:                     ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1814,12 +1894,12 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1827,25 +1907,25 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1853,14 +1933,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1868,7 +1948,7 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -64(%rbp)
                         ## new Int
@@ -1881,15 +1961,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## h
                         movq -64(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1897,25 +1977,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1923,12 +2003,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1936,25 +2016,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1962,14 +2042,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1977,25 +2057,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2003,12 +2083,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2016,18 +2096,18 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2035,28 +2115,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -72(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## i
                         movq -72(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## h
                         movq -64(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2064,12 +2144,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2077,25 +2157,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2103,21 +2183,21 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2125,14 +2205,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2140,25 +2220,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2166,12 +2246,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2179,14 +2259,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## i
                         movq -72(%rbp), %r13
                         movq 24(%r13), %r14
@@ -2204,14 +2284,14 @@ movl %eax, %r13d
 .globl l10
 l10:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2219,14 +2299,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2234,7 +2314,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -80(%rbp)
                         ## out_string(...)
@@ -2583,7 +2663,7 @@ movq %rax, %r13
                         addq $8, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, -16(%rbp)
+                        movq %r13, -128(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -2611,7 +2691,7 @@ movq %rax, %r13
                         pushq %r12
                         pushq %rbp
                         ## s
-                        movq -16(%rbp), %r13
+                        movq -128(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -2668,15 +2748,15 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2684,10 +2764,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2698,7 +2778,7 @@ movq %rax, %r13
                         movq $3, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2723,14 +2803,14 @@ movq %rax, %r13
 .globl l11
 l11:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2738,14 +2818,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2753,10 +2833,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2767,7 +2847,7 @@ movq %rax, %r13
                         movq $100, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2778,7 +2858,7 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2789,11 +2869,11 @@ movq %rax, %r13
                         movq $7, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2801,17 +2881,17 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2819,10 +2899,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2833,14 +2913,14 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2848,12 +2928,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2861,21 +2941,21 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -8(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2883,10 +2963,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2897,7 +2977,7 @@ movl %eax, %r13d
                         movq $15, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2908,7 +2988,7 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2919,11 +2999,11 @@ movl %eax, %r13d
                         movq $3, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2931,17 +3011,17 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2949,12 +3029,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2962,10 +3042,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -2976,7 +3056,7 @@ movl %eax, %r13d
                         movq $8, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3001,14 +3081,14 @@ movl %eax, %r13d
 .globl l12
 l12:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3016,14 +3096,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3031,7 +3111,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -24(%rbp)
                         ## new Int
@@ -3044,7 +3124,7 @@ movq %rax, %r13
                         movq $15, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3069,14 +3149,14 @@ movq %rax, %r13
 .globl l13
 l13:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3084,10 +3164,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3098,7 +3178,7 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3109,11 +3189,11 @@ movq %rax, %r13
                         movq $4, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3121,17 +3201,17 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3139,10 +3219,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3153,11 +3233,11 @@ movl %eax, %r13d
                         movq $9, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3165,25 +3245,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3191,12 +3271,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3204,28 +3284,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -32(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3233,12 +3313,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3246,10 +3326,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3260,15 +3340,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3276,10 +3356,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3304,14 +3384,14 @@ movl %eax, %r13d
 .globl l14
 l14:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3319,14 +3399,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3334,10 +3414,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3348,7 +3428,7 @@ movq %rax, %r13
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3359,14 +3439,14 @@ movq %rax, %r13
                         movq $11, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3374,10 +3454,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3388,15 +3468,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3404,17 +3484,17 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3422,12 +3502,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3435,28 +3515,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -40(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3464,12 +3544,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3477,16 +3557,16 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3494,10 +3574,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3508,15 +3588,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3524,10 +3604,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3538,14 +3618,14 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3553,10 +3633,10 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r14
@@ -3574,14 +3654,14 @@ movl %eax, %r13d
 .globl l15
 l15:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3589,14 +3669,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3604,24 +3684,24 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -48(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3629,14 +3709,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r14
@@ -3654,14 +3734,14 @@ movl %eax, %r13d
 .globl l16
 l16:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3669,14 +3749,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3684,10 +3764,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3698,15 +3778,15 @@ movq %rax, %r13
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3714,10 +3794,10 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3725,17 +3805,17 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $180, %r14
+                        movq $1805, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3743,12 +3823,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3756,28 +3836,28 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -56(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3785,14 +3865,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3800,14 +3880,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3818,7 +3898,7 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3829,11 +3909,11 @@ movl %eax, %r13d
                         movq $2, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -104(%rbp)
+                        movq %r13, -168(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3841,7 +3921,7 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -104(%rbp), %r14
+                        movq -168(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r14
                         cmpq $0, %r14
@@ -3858,14 +3938,14 @@ movl %eax, %r13d
 .globl l17
 l17:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3873,12 +3953,12 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3886,25 +3966,25 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3912,14 +3992,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3927,7 +4007,7 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -64(%rbp)
                         ## new Int
@@ -3940,15 +4020,15 @@ movl %eax, %r13d
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## h
                         movq -64(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3956,25 +4036,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3982,12 +4062,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -3995,25 +4075,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4021,14 +4101,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4036,25 +4116,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4062,12 +4142,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4075,18 +4155,18 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4094,19 +4174,19 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -72(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## g
                         movq -56(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4114,25 +4194,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## i
                         movq -72(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## h
                         movq -64(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4140,12 +4220,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4153,25 +4233,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## f
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## e
                         movq -40(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4179,21 +4259,21 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## d
                         movq -32(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4201,14 +4281,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4216,25 +4296,25 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## b
                         movq -8(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## a
                         movq 0(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq %r14, %rax
 imull %r13d, %eax
 shlq $32, %rax
 shrq $32, %rax
 movl %eax, %r13d
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4242,12 +4322,12 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         addq %r14, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4255,14 +4335,14 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## c
                         movq -24(%rbp), %r13
                         movq 24(%r13), %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## i
                         movq -72(%rbp), %r13
                         movq 24(%r13), %r14
@@ -4280,14 +4360,14 @@ movl %eax, %r13d
 .globl l18
 l18:                    ## division is OK
                         movq 24(%r13), %r13
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         
 movq $0, %rdx
 movq %r14, %rax
 cdq 
 idivl %r13d
 movq %rax, %r13
-                        movq %r13, -96(%rbp)
+                        movq %r13, -160(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4295,14 +4375,14 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -96(%rbp), %r14
+                        movq -160(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, %rax
 			subq %r13, %rax
 			movq %rax, %r13
-                        movq %r13, -88(%rbp)
+                        movq %r13, -152(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -4310,7 +4390,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -88(%rbp), %r14
+                        movq -152(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, -80(%rbp)
                         ## out_string(...)
@@ -4659,7 +4739,7 @@ movq %rax, %r13
                         addq $8, %rsp
                         popq %rbp
                         popq %r12
-                        movq %r13, -16(%rbp)
+                        movq %r13, -128(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -4687,7 +4767,7 @@ movq %rax, %r13
                         pushq %r12
                         pushq %rbp
                         ## s
-                        movq -16(%rbp), %r13
+                        movq -128(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -4951,7 +5031,7 @@ string8:                # "Enter number: "
 .byte 0
 
 .globl string9
-string9:                # "ERROR: 16: Exception: division by zero\\n"
+string9:                # "ERROR: 24: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -4959,8 +5039,8 @@ string9:                # "ERROR: 16: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  49 # '1'
-.byte  54 # '6'
+.byte  50 # '2'
+.byte  52 # '4'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -4995,7 +5075,7 @@ string9:                # "ERROR: 16: Exception: division by zero\\n"
 .byte 0
 
 .globl string10
-string10:               # "ERROR: 17: Exception: division by zero\\n"
+string10:               # "ERROR: 25: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5003,8 +5083,8 @@ string10:               # "ERROR: 17: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  49 # '1'
-.byte  55 # '7'
+.byte  50 # '2'
+.byte  53 # '5'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5039,7 +5119,7 @@ string10:               # "ERROR: 17: Exception: division by zero\\n"
 .byte 0
 
 .globl string11
-string11:               # "ERROR: 18: Exception: division by zero\\n"
+string11:               # "ERROR: 26: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5047,8 +5127,8 @@ string11:               # "ERROR: 18: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  49 # '1'
-.byte  56 # '8'
+.byte  50 # '2'
+.byte  54 # '6'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5083,7 +5163,7 @@ string11:               # "ERROR: 18: Exception: division by zero\\n"
 .byte 0
 
 .globl string12
-string12:               # "ERROR: 19: Exception: division by zero\\n"
+string12:               # "ERROR: 27: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5091,8 +5171,8 @@ string12:               # "ERROR: 19: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  49 # '1'
-.byte  57 # '9'
+.byte  50 # '2'
+.byte  55 # '7'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5127,7 +5207,7 @@ string12:               # "ERROR: 19: Exception: division by zero\\n"
 .byte 0
 
 .globl string13
-string13:               # "ERROR: 20: Exception: division by zero\\n"
+string13:               # "ERROR: 28: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5136,7 +5216,7 @@ string13:               # "ERROR: 20: Exception: division by zero\\n"
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  50 # '2'
-.byte  48 # '0'
+.byte  56 # '8'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5171,7 +5251,7 @@ string13:               # "ERROR: 20: Exception: division by zero\\n"
 .byte 0
 
 .globl string14
-string14:               # "ERROR: 21: Exception: division by zero\\n"
+string14:               # "ERROR: 29: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5180,7 +5260,7 @@ string14:               # "ERROR: 21: Exception: division by zero\\n"
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  50 # '2'
-.byte  49 # '1'
+.byte  57 # '9'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5215,7 +5295,7 @@ string14:               # "ERROR: 21: Exception: division by zero\\n"
 .byte 0
 
 .globl string15
-string15:               # "ERROR: 22: Exception: division by zero\\n"
+string15:               # "ERROR: 30: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5223,8 +5303,8 @@ string15:               # "ERROR: 22: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  50 # '2'
-.byte  50 # '2'
+.byte  51 # '3'
+.byte  48 # '0'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5259,7 +5339,7 @@ string15:               # "ERROR: 22: Exception: division by zero\\n"
 .byte 0
 
 .globl string16
-string16:               # "ERROR: 24: Exception: division by zero\\n"
+string16:               # "ERROR: 32: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5267,8 +5347,8 @@ string16:               # "ERROR: 24: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
+.byte  51 # '3'
 .byte  50 # '2'
-.byte  52 # '4'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5329,7 +5409,7 @@ string18:               # "Enter string: \\n"
 .byte 0
 
 .globl string19
-string19:               # "ERROR: 45: Exception: division by zero\\n"
+string19:               # "ERROR: 53: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5337,8 +5417,8 @@ string19:               # "ERROR: 45: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  52 # '4'
 .byte  53 # '5'
+.byte  51 # '3'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5373,7 +5453,7 @@ string19:               # "ERROR: 45: Exception: division by zero\\n"
 .byte 0
 
 .globl string20
-string20:               # "ERROR: 46: Exception: division by zero\\n"
+string20:               # "ERROR: 54: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5381,8 +5461,8 @@ string20:               # "ERROR: 46: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
+.byte  53 # '5'
 .byte  52 # '4'
-.byte  54 # '6'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5417,7 +5497,7 @@ string20:               # "ERROR: 46: Exception: division by zero\\n"
 .byte 0
 
 .globl string21
-string21:               # "ERROR: 47: Exception: division by zero\\n"
+string21:               # "ERROR: 55: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5425,8 +5505,8 @@ string21:               # "ERROR: 47: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  52 # '4'
-.byte  55 # '7'
+.byte  53 # '5'
+.byte  53 # '5'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5461,7 +5541,7 @@ string21:               # "ERROR: 47: Exception: division by zero\\n"
 .byte 0
 
 .globl string22
-string22:               # "ERROR: 48: Exception: division by zero\\n"
+string22:               # "ERROR: 56: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5469,8 +5549,8 @@ string22:               # "ERROR: 48: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  52 # '4'
-.byte  56 # '8'
+.byte  53 # '5'
+.byte  54 # '6'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5505,7 +5585,7 @@ string22:               # "ERROR: 48: Exception: division by zero\\n"
 .byte 0
 
 .globl string23
-string23:               # "ERROR: 49: Exception: division by zero\\n"
+string23:               # "ERROR: 57: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5513,8 +5593,8 @@ string23:               # "ERROR: 49: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  52 # '4'
-.byte  57 # '9'
+.byte  53 # '5'
+.byte  55 # '7'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5549,7 +5629,7 @@ string23:               # "ERROR: 49: Exception: division by zero\\n"
 .byte 0
 
 .globl string24
-string24:               # "ERROR: 50: Exception: division by zero\\n"
+string24:               # "ERROR: 58: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5558,7 +5638,7 @@ string24:               # "ERROR: 50: Exception: division by zero\\n"
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  53 # '5'
-.byte  48 # '0'
+.byte  56 # '8'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5593,7 +5673,7 @@ string24:               # "ERROR: 50: Exception: division by zero\\n"
 .byte 0
 
 .globl string25
-string25:               # "ERROR: 51: Exception: division by zero\\n"
+string25:               # "ERROR: 59: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5602,7 +5682,7 @@ string25:               # "ERROR: 51: Exception: division by zero\\n"
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  53 # '5'
-.byte  49 # '1'
+.byte  57 # '9'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'
@@ -5637,7 +5717,7 @@ string25:               # "ERROR: 51: Exception: division by zero\\n"
 .byte 0
 
 .globl string26
-string26:               # "ERROR: 53: Exception: division by zero\\n"
+string26:               # "ERROR: 61: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -5645,8 +5725,8 @@ string26:               # "ERROR: 53: Exception: division by zero\\n"
 .byte  82 # 'R'
 .byte  58 # ':'
 .byte  32 # ' '
-.byte  53 # '5'
-.byte  51 # '3'
+.byte  54 # '6'
+.byte  49 # '1'
 .byte  58 # ':'
 .byte  32 # ' '
 .byte  69 # 'E'

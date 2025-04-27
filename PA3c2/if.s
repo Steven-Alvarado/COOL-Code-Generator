@@ -458,11 +458,13 @@ Main.main:              ## method definition
 						pushq %rbp
 						movq %rsp, %rbp
 						movq 16(%rbp), %r12
-						## stack room for temporaries: 68
-						movq $544, %r14
+						## stack room for temporaries: 16
+						movq $128, %r14
 						subq %r14, %rsp
 						## return address handling
 						## method body begins
+                        ## Basic block: BB11
+                        ## else branch
                         ## Basic block: BB0
                         ##t$0 <- Default Int
                         pushq %rbp
@@ -478,106 +480,29 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$1 <- t$0
                         movq -8(%rbp), %r13
                         movq %r13, -16(%rbp)
-                        ##t$2 <- Default Int
+                        ##t$2 <- Default Bool
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $0, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
                         movq %r13, -24(%rbp)
                         ## (temp <- temp): t$3 <- t$2
                         movq -24(%rbp), %r13
                         movq %r13, -32(%rbp)
-                        ##t$4 <- Default Int
+                        ## new int t$4 <- 4
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $0, %r14
+                        movq $4, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, -40(%rbp)
-                        ## (temp <- temp): t$5 <- t$4
-                        movq -40(%rbp), %r13
-                        movq %r13, -48(%rbp)
-                        ##t$6 <- Default Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $0, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -56(%rbp)
-                        ## (temp <- temp): t$7 <- t$6
-                        movq -56(%rbp), %r13
-                        movq %r13, -64(%rbp)
-                        ##t$8 <- Default String
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## empty string
-                        movq $the.empty.string, %r15
-                        movq %r15, 24(%r13)
-                        movq %r13, -72(%rbp)
-                        ## (temp <- temp): t$9 <- t$8
-                        movq -72(%rbp), %r13
-                        movq %r13, -80(%rbp)
-                        ## in_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up in_int() at offset 5 in vtable
-                        movq 40(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$1 <- t$0
-                        movq -8(%rbp), %r13
-                        movq %r13, -16(%rbp)
-                        ## (temp <- temp): t$10 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -88(%rbp)
-                        ## in_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up in_int() at offset 5 in vtable
-                        movq 40(%r14), %r14
-                        call *%r14
-                        addq $8, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$2 <- t$0
-                        movq -8(%rbp), %r13
-                        movq %r13, -24(%rbp)
-                        ## (temp <- temp): t$11 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -96(%rbp)
-                        ## (temp <- temp): t$12 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -104(%rbp)
-                        ## new int t$13 <- 10
+                        ## new int t$5 <- 10
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -587,532 +512,103 @@ Main.main:              ## method definition
                         movq $10, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
-                        movq %r13, -112(%rbp)
-                        ## t$14 <- t$12 + t$13
-                        movq -104(%rbp), %r13
-                        movq -112(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -120(%rbp)
-                        ## new int t$15 <- 5
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -128(%rbp)
-                        ## new int t$16 <- 3
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $3, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -136(%rbp)
-                        ## t$17 <- t$15 * t$16
-                        movq -128(%rbp), %r13
-                        movq -136(%rbp), %r14
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax   
-shrq $32, %rax   
-movl %eax, %r13d 
-                        movq %r13, -144(%rbp)
-                        ## new int t$18 <- 5
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -152(%rbp)
-                        ## t$19 <- t$17 * t$18
-                        movq -144(%rbp), %r13
-                        movq -152(%rbp), %r14
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax   
-shrq $32, %rax   
-movl %eax, %r13d 
-                        movq %r13, -160(%rbp)
-                        ## new int t$20 <- 34
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $34, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -168(%rbp)
-                        ## t$21 <- t$19 / t$20
-                        movq -168(%rbp), %r13
-                        cmpq $0, %r13
-           jne main_l0_div_ok
-                        movq $string12, %r13
-                        ## division by zero detected
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movq %r13, %rdi
-           call cooloutstr
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movl $0, %edi
-           call exit
-.global main_l0_div_ok
-main_l0_div_ok:        ## division is okay 
-                        movq -160(%rbp), %r14
-movq $0, %rdx
-movq %r14, %rax
-cdq
-idivl %r13d
-movq %rax, %r13
-                        movq %r13, -176(%rbp)
-                        ## t$22 <- t$14 - t$21
-                        movq -120(%rbp), %r13
-                        movq -176(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -184(%rbp)
-                        ## new int t$23 <- 523245
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $523245, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -192(%rbp)
-                        ## t$24 <- -t$23
-                        movq -192(%rbp), %r13
-movq %r13, %rax
-negq %rax
-movq %rax, %r13 
-                        movq %r13, -200(%rbp)
-                        ## t$25 <- t$22 + t$24
-                        movq -184(%rbp), %r13
-                        movq -200(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -208(%rbp)
-                        ## new int t$26 <- 24
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $24, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -216(%rbp)
-                        ## new int t$27 <- 54
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $54, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -224(%rbp)
-                        ## t$28 <- -t$27
-                        movq -224(%rbp), %r13
-movq %r13, %rax
-negq %rax
-movq %rax, %r13 
-                        movq %r13, -232(%rbp)
-                        ## t$29 <- t$26 / t$28
-                        movq -232(%rbp), %r13
-                        cmpq $0, %r13
-           jne main_l1_div_ok
-                        movq $string12, %r13
-                        ## division by zero detected
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movq %r13, %rdi
-           call cooloutstr
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movl $0, %edi
-           call exit
-.global main_l1_div_ok
-main_l1_div_ok:        ## division is okay 
-                        movq -216(%rbp), %r14
-movq $0, %rdx
-movq %r14, %rax
-cdq
-idivl %r13d
-movq %rax, %r13
-                        movq %r13, -240(%rbp)
-                        ## t$30 <- t$25 - t$29
-                        movq -208(%rbp), %r13
-                        movq -240(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -248(%rbp)
-                        ## (temp <- temp): t$2 <- t$30
-                        movq -248(%rbp), %r13
-                        movq %r13, -24(%rbp)
-                        ## (temp <- temp): t$31 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -256(%rbp)
-                        ## (temp <- temp): t$32 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -264(%rbp)
-                        ## new int t$33 <- 32
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $32, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -272(%rbp)
-                        ## t$34 <- t$32 - t$33
-                        movq -264(%rbp), %r13
-                        movq -272(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -280(%rbp)
-                        ## new int t$35 <- 84
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $84, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -288(%rbp)
-                        ## new int t$36 <- 3
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $3, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -296(%rbp)
-                        ## t$37 <- t$35 * t$36
-                        movq -288(%rbp), %r13
-                        movq -296(%rbp), %r14
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax   
-shrq $32, %rax   
-movl %eax, %r13d 
-                        movq %r13, -304(%rbp)
-                        ## new int t$38 <- 8
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $8, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -312(%rbp)
-                        ## t$39 <- t$37 / t$38
-                        movq -312(%rbp), %r13
-                        cmpq $0, %r13
-           jne main_l2_div_ok
-                        movq $string13, %r13
-                        ## division by zero detected
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movq %r13, %rdi
-           call cooloutstr
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movl $0, %edi
-           call exit
-.global main_l2_div_ok
-main_l2_div_ok:        ## division is okay 
-                        movq -304(%rbp), %r14
-movq $0, %rdx
-movq %r14, %rax
-cdq
-idivl %r13d
-movq %rax, %r13
-                        movq %r13, -320(%rbp)
-                        ## new int t$40 <- 32
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $32, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -328(%rbp)
-                        ## t$41 <- t$39 * t$40
-                        movq -320(%rbp), %r13
-                        movq -328(%rbp), %r14
-movq %r14, %rax
-imull %r13d, %eax
-shlq $32, %rax   
-shrq $32, %rax   
-movl %eax, %r13d 
-                        movq %r13, -336(%rbp)
-                        ## t$42 <- t$34 - t$41
-                        movq -280(%rbp), %r13
-                        movq -336(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -344(%rbp)
-                        ## new int t$43 <- 9000
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $9000, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -352(%rbp)
-                        ## t$44 <- t$42 + t$43
-                        movq -344(%rbp), %r13
-                        movq -352(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -360(%rbp)
-                        ## new int t$45 <- 43
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -368(%rbp)
-                        ## t$46 <- -t$45
-                        movq -368(%rbp), %r13
-movq %r13, %rax
-negq %rax
-movq %rax, %r13 
-                        movq %r13, -376(%rbp)
-                        ## t$47 <- t$44 - t$46
-                        movq -360(%rbp), %r13
-                        movq -376(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -384(%rbp)
-                        ## (temp <- temp): t$2 <- t$47
-                        movq -384(%rbp), %r13
-                        movq %r13, -24(%rbp)
-                        ## (temp <- temp): t$48 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -392(%rbp)
-                        ## (temp <- temp): t$49 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -400(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -400(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$49
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## new String t$50 <- "\n"
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string8 holds "\n"
-                        movq $string8, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -408(%rbp)
-                        ## out_string(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## arg t$50 (pointer)
-                        movq -408(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$51 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -416(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -416(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$51
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## new String t$52 <- "\n"
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string8 holds "\n"
-                        movq $string8, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -424(%rbp)
-                        ## out_string(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## arg t$52 (pointer)
-                        movq -424(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
-                        popq %rbp
-                        popq %r12
-                        movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$53 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -432(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -432(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$53
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## new String t$54 <- "hi"
-                        pushq %rbp
-                        pushq %r12
-                        movq $String..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        ## string9 holds "hi"
-                        movq $string9, %r14
-                        movq %r14, 24(%r13)
-                        movq %r13, -440(%rbp)
-                        ## (temp <- temp): t$5 <- t$54
-                        movq -440(%rbp), %r13
                         movq %r13, -48(%rbp)
-                        ## (temp <- temp): t$55 <- t$5
-                        movq -48(%rbp), %r13
-                        movq %r13, -448(%rbp)
-                        ## (temp <- temp): t$56 <- t$5
-                        movq -48(%rbp), %r13
-                        movq %r13, -456(%rbp)
-                        ## out_string(...)
+                        ## t$6 <- t$4 < t$5 
                         pushq %r12
                         pushq %rbp
-                        ## arg t$56 (pointer)
-                        movq -456(%rbp), %r13
+                        ## t$4
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -40(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        ## t$5
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -48(%rbp), %r14
+                        movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_string() at offset 8 in vtable
-                        movq 64(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
+                        call lt_handler
+                        addq $24, %rsp
+                        movq %r13, -56(%rbp)
                         popq %rbp
                         popq %r12
-                        movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## new String t$57 <- "hadiffsni\n"
+                        ## t$7 <- not t$6
+                        movq -56(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+            jne main_l6_true
+.globl main_l7_false
+main_l7_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l8_end
+.globl main_l6_true
+main_l6_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl main_l8_end
+main_l8_end:            ## end of if conditional
+                        movq %r13, -64(%rbp)
+                        ## (temp <- temp): t$2 <- t$7
+                        movq -64(%rbp), %r13
+                        movq %r13, -24(%rbp)
+                        ## (temp <- temp): t$8 <- t$2
+                        movq -24(%rbp), %r13
+                        movq %r13, -72(%rbp)
+                        ## (temp <- temp): t$9 <- t$2
+                        movq -24(%rbp), %r13
+                        movq %r13, -80(%rbp)
+                        ## if t$9 jump to main_l0
+                        movq -80(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l0
+                        ## Basic block: BB1
+                        ## unconditional jump to main_l1
+                        jmp main_l1
+                        ## Basic block: BB12
+.globl main_l1
+main_l1:
+                        ## new String t$15 <- "yes\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string10 holds "hadiffsni\n"
+                        ## string10 holds "yes\n"
                         movq $string10, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -464(%rbp)
+                        movq %r13, -128(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$57 (pointer)
-                        movq -464(%rbp), %r13
+                        ## arg t$15 (pointer)
+                        movq -128(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -1125,286 +621,118 @@ movq %rax, %r13
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$58 <- t$2
+                        ## (temp <- temp): t$10 <- t$0
+                        movq -8(%rbp), %r13
+                        movq %r13, -88(%rbp)
+                        ## unconditional jump to main_l2
+                        jmp main_l2
+                        ## Basic block: BB5
+                        ## then branch
+                        ## Basic block: BB7
+                        ## else branch
+                        ## Basic block: BB9
+                        ## if-join
+                        ## Basic block: BB2
+                        ## then branch
+                        ## Basic block: BB3
+.globl main_l0
+main_l0:
+                        ## (temp <- temp): t$11 <- t$2
                         movq -24(%rbp), %r13
-                        movq %r13, -472(%rbp)
-                        ## new Int
+                        movq %r13, -96(%rbp)
+                        ## if t$11 jump to main_l3
+                        movq -96(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l3
+                        ## Basic block: BB6
+.globl main_l3
+main_l3:
+                        ## new String t$13 <- "hi\n"
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq  -472(%rbp), %r14
+                        ## string8 holds "hi\n"
+                        movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
+                        movq %r13, -112(%rbp)
+                        ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$58
-                        movq 0(%rbp), %r13
+                        ## arg t$13 (pointer)
+                        movq -112(%rbp), %r13
                         pushq %r13
                         pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$59 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -480(%rbp)
-                        ## new Int
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r14
+                        movq %r14, -8(%rbp)
+                        ## (temp <- temp): t$12 <- t$0
+                        movq -8(%rbp), %r13
+                        movq %r13, -104(%rbp)
+                        ## unconditional jump to main_l5
+                        jmp main_l5
+                        ## Basic block: BB4
+                        ## unconditional jump to main_l4
+                        jmp main_l4
+                        ## Basic block: BB8
+.globl main_l4
+main_l4:
+                        ## new String t$14 <- "no\n"
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
+                        movq $String..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq  -480(%rbp), %r14
+                        ## string9 holds "no\n"
+                        movq $string9, %r14
                         movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
+                        movq %r13, -120(%rbp)
+                        ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$59
-                        movq 0(%rbp), %r13
+                        ## arg t$14 (pointer)
+                        movq -120(%rbp), %r13
                         pushq %r13
                         pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$60 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -488(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
-                        popq %r12
+                        addq $16, %rsp
                         popq %rbp
-                        movq  -488(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$60
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$61 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -496(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
                         popq %r12
-                        popq %rbp
-                        movq  -496(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$61
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$62 <- t$4
-                        movq -40(%rbp), %r13
-                        movq %r13, -504(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -504(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$62
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$63 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -512(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -512(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$63
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$64 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -520(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -520(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$64
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$65 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -528(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -528(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$65
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$66 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -536(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -536(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$66
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
-                        ## (temp <- temp): t$67 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -544(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq  -544(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq %r13,       0(%rbp)
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## t$67
-                        movq 0(%rbp), %r13
-                        pushq %r13
-                        pushq %r12
-                        ##  obtain vtable for self object of type Main
-                        movq  16(%r12), %r14
-                        ##   look up out_int() at offset 7 in vtable
-                        movq  56(%r14), %r14
-                        call  *%r14
-                        addq  $16, %rsp
-                        popq  %rbp
-                        popq  %r12
+                        movq 24(%r13), %r14
+                        movq %r14, -8(%rbp)
+                        ## (temp <- temp): t$12 <- t$0
+                        movq -8(%rbp), %r13
+                        movq %r13, -104(%rbp)
+                        ## unconditional jump to main_l5
+                        jmp main_l5
+                        ## Basic block: BB10
+.globl main_l5
+main_l5:
+                        ## (temp <- temp): t$10 <- t$12
+                        movq -104(%rbp), %r13
+                        movq %r13, -88(%rbp)
+                        ## unconditional jump to main_l2
+                        jmp main_l2
+                        ## Basic block: BB13
+                        ## if-join
+                        ## Basic block: BB14
+.globl main_l2
+main_l2:
 
 .globl Main.main.end
 Main.main.end:          ## method body ends
@@ -1629,30 +957,28 @@ string7:			  # "abort\n"
 
 
 .globl string8
-string8:			  # "\n"
+string8:			  # "hi\n"
+.byte 104	# 'h'
+.byte 105	# 'i'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
 
 
 .globl string9
-string9:			  # "hi"
-.byte 104	# 'h'
-.byte 105	# 'i'
+string9:			  # "no\n"
+.byte 110	# 'n'
+.byte 111	# 'o'
+.byte 92	# '\\'
+.byte 110	# 'n'
 .byte 0	
 
 
 .globl string10
-string10:			  # "hadiffsni\n"
-.byte 104	# 'h'
-.byte 97	# 'a'
-.byte 100	# 'd'
-.byte 105	# 'i'
-.byte 102	# 'f'
-.byte 102	# 'f'
+string10:			  # "yes\n"
+.byte 121	# 'y'
+.byte 101	# 'e'
 .byte 115	# 's'
-.byte 110	# 'n'
-.byte 105	# 'i'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
@@ -1707,94 +1033,6 @@ string11:			  # "ERROR: 0: Exception: String.substr out of range\n"
 .byte 110	# 'n'
 .byte 103	# 'g'
 .byte 101	# 'e'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string12
-string12:			  # "ERROR: 6: Exception: division by zero\n"
-.byte 69	# 'E'
-.byte 82	# 'R'
-.byte 82	# 'R'
-.byte 79	# 'O'
-.byte 82	# 'R'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 54	# '6'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 69	# 'E'
-.byte 120	# 'x'
-.byte 99	# 'c'
-.byte 101	# 'e'
-.byte 112	# 'p'
-.byte 116	# 't'
-.byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 100	# 'd'
-.byte 105	# 'i'
-.byte 118	# 'v'
-.byte 105	# 'i'
-.byte 115	# 's'
-.byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 32	# ' '
-.byte 98	# 'b'
-.byte 121	# 'y'
-.byte 32	# ' '
-.byte 122	# 'z'
-.byte 101	# 'e'
-.byte 114	# 'r'
-.byte 111	# 'o'
-.byte 92	# '\\'
-.byte 110	# 'n'
-.byte 0	
-
-
-.globl string13
-string13:			  # "ERROR: 7: Exception: division by zero\n"
-.byte 69	# 'E'
-.byte 82	# 'R'
-.byte 82	# 'R'
-.byte 79	# 'O'
-.byte 82	# 'R'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 55	# '7'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 69	# 'E'
-.byte 120	# 'x'
-.byte 99	# 'c'
-.byte 101	# 'e'
-.byte 112	# 'p'
-.byte 116	# 't'
-.byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 58	# ':'
-.byte 32	# ' '
-.byte 100	# 'd'
-.byte 105	# 'i'
-.byte 118	# 'v'
-.byte 105	# 'i'
-.byte 115	# 's'
-.byte 105	# 'i'
-.byte 111	# 'o'
-.byte 110	# 'n'
-.byte 32	# ' '
-.byte 98	# 'b'
-.byte 121	# 'y'
-.byte 32	# ' '
-.byte 122	# 'z'
-.byte 101	# 'e'
-.byte 114	# 'r'
-.byte 111	# 'o'
 .byte 92	# '\\'
 .byte 110	# 'n'
 .byte 0	
