@@ -759,7 +759,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let new_var = fresh_variable () in
         ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env, context)
 
-       | AST_Let (bindings, body_exp) ->
+    | AST_Let (bindings, body_exp) ->
         let rec process_bindings remaining_bindings current_env current_ctx acc_instrs =
             match remaining_bindings with
             | [] ->
@@ -797,7 +797,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                         ctx_after_init.temp_vars 
                 } in
 
-                             (* Create assignment instruction from init expression to the temporary variable *)
+                (* Create assignment instruction from init expression to the temporary variable *)
                 let assign_instr = [TAC_Assign_Variable (temp_var_name, tac_expr_to_string init_expr)] in
 
                 (* Process remaining bindings *)

@@ -46,77 +46,78 @@ t$36 <- t$6
 t$37 <- t$4
 t$38 <- t$5
 t$39 <- = t$37 t$38
-t$7 <- t$39
-t$40 <- t$7
+t$40 <- not t$39
+t$7 <- t$40
 t$41 <- t$7
-bt t$41 main_l1
+t$42 <- t$7
+bt t$42 main_l1
 jmp main_l2
 comment then branch
 label main_l1
-t$43 <- t$6
-bt t$43 main_l4
+t$44 <- t$6
+bt t$44 main_l4
 jmp main_l5
 comment then branch
 label main_l4
-t$45 <- string
+t$46 <- string
 Branch A\n
-t$0 <- call out_string t$45
-t$44 <- t$0
+t$0 <- call out_string t$46
+t$45 <- t$0
 jmp main_l6
 comment else branch
 label main_l5
-t$46 <- t$5
-bt t$46 main_l7
+t$47 <- t$5
+bt t$47 main_l7
 jmp main_l8
 comment then branch
 label main_l7
-t$48 <- string
+t$49 <- string
 Branch B1\n
-t$0 <- call out_string t$48
-t$47 <- t$0
+t$0 <- call out_string t$49
+t$48 <- t$0
 jmp main_l9
 comment else branch
 label main_l8
-t$49 <- string
+t$50 <- string
 Branch B2\n
-t$0 <- call out_string t$49
-t$47 <- t$0
+t$0 <- call out_string t$50
+t$48 <- t$0
 jmp main_l9
 comment if-join
 label main_l9
-t$44 <- t$47
+t$45 <- t$48
 jmp main_l6
 comment if-join
 label main_l6
-t$42 <- t$44
+t$43 <- t$45
 jmp main_l3
 comment else branch
 label main_l2
-t$50 <- t$4
-t$51 <- t$6
-t$52 <- = t$50 t$51
-t$53 <- not t$52
-bt t$53 main_l10
+t$51 <- t$4
+t$52 <- t$6
+t$53 <- = t$51 t$52
+t$54 <- not t$53
+bt t$54 main_l10
 jmp main_l11
 comment then branch
 label main_l10
-t$55 <- string
+t$56 <- string
 Branch C\n
-t$0 <- call out_string t$55
-t$54 <- t$0
+t$0 <- call out_string t$56
+t$55 <- t$0
 jmp main_l12
 comment else branch
 label main_l11
-t$56 <- string
+t$57 <- string
 Branch D\n
-t$0 <- call out_string t$56
-t$54 <- t$0
+t$0 <- call out_string t$57
+t$55 <- t$0
 jmp main_l12
 comment if-join
 label main_l12
-t$42 <- t$54
+t$43 <- t$55
 jmp main_l3
 comment if-join
 label main_l3
-t$0 <- t$42
+t$0 <- t$43
 return t$0
