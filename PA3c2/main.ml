@@ -759,68 +759,29 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let new_var = fresh_variable () in
         ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env, context)
 
-    | AST_Let (bindings, body_exp) ->
+       | AST_Let (bindings, body_exp) ->
         let rec process_bindings remaining_bindings current_env current_ctx acc_instrs =
             match remaining_bindings with
             | [] ->
                 let body_instrs, body_expr, final_env, final_ctx =
                     convert current_class current_method current_env current_ctx body_exp
                 in
-                (* Get the type of the body expression if possible *)
-                let body_type =
-                    match body_exp.static_type with
-                    | Some (Class type_name) -> type_name
-                    | Some (SELF_TYPE type_name) -> type_name
-                    | None -> 
-                        (* Try to get the type from the context based on the temporary variable *)
-                        match body_expr with
-                        | TAC_Variable var_name ->
-                            (match List.assoc_opt var_name final_ctx.temp_vars with
-                                | Some location -> location.var_type
-                                | None -> "Object")  (* Default fallback *)
-                        | _ -> "Object"
-                in
-
-                (* If body_expr is already properly typed, we don't need to create a new temp var *)
                 (acc_instrs @ body_instrs, body_expr, final_env, final_ctx)
-
             | (var_id, type_id, init_opt) :: rest ->
                 (* Process the initialization expression if it exists *)
                 let init_instrs, init_expr, env_after_init, ctx_after_init =
                     match init_opt with
                     | Some exp ->
-                        let instrs, expr, env', ctx' = 
-                            convert current_class current_method current_env current_ctx exp
-                        in
-                        (* Get the type from the expression if possible *)
-                        let init_type = 
-                            match exp.static_type with
-                            | Some (Class type_name) -> type_name
-                            | Some (SELF_TYPE type_name) -> type_name
-                            | None ->
-                                (* Try to infer from expression kind *)
-                                match exp.exp_kind with
-                                | AST_Integer _ -> "Int"
-                                | AST_String _ -> "String"
-                                | AST_True | AST_False -> "Bool"
-                                | _ -> snd type_id  (* Use declared type as fallback *)
-                        in
-                        (instrs, expr, env', ctx')
+                        convert current_class current_method current_env current_ctx exp
                     | None ->
                         let temp = fresh_variable () in
-                        let type_str = snd type_id in
-                        let var_location = { offset = newloc (); var_type = type_str } in
-                        let updated_ctx = { 
-                            current_ctx with 
-                            temp_vars = (temp, var_location) :: current_ctx.temp_vars 
-                        } in
                         ([ TAC_Assign_Default (temp, snd type_id) ],
                             TAC_Variable temp,
                             current_env,
-                            updated_ctx)
+                            current_ctx)
                 in
 
-                (* Allocate a new location for the local variable with proper type *)
+                (* Allocate a new location for the local variable *)
                 let var_offset = newloc () in
                 let var_type_str = snd type_id in
                 let var_temp_loc = { offset = var_offset; var_type = var_type_str } in
@@ -836,7 +797,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                         ctx_after_init.temp_vars 
                 } in
 
-                (* Create assignment instruction from init expression to the temporary variable *)
+                             (* Create assignment instruction from init expression to the temporary variable *)
                 let assign_instr = [TAC_Assign_Variable (temp_var_name, tac_expr_to_string init_expr)] in
 
                 (* Process remaining bindings *)

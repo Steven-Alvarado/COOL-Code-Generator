@@ -27,59 +27,58 @@ t$20 <- t$1
 t$21 <- t$3
 t$6 <- = t$20 t$21
 t$19 <- t$6
-t$24 <- t$4
-t$25 <- t$5
-t$23 <- = t$24 t$25
-t$7 <- not t$23
+t$23 <- t$4
+t$24 <- t$5
+t$7 <- = t$23 t$24
 t$22 <- t$7
-t$26 <- t$7
-t$38 <- not t$26
-bt t$38 Main_main_2
-bt t$26 Main_main_1
+t$25 <- t$7
+t$37 <- not t$25
+bt t$37 Main_main_2
+bt t$25 Main_main_1
 comment then branch
 label Main_main_1
-t$27 <- t$6
-t$39 <- not t$27
-bt t$39 Main_main_5
-bt t$27 Main_main_4
+t$26 <- t$6
+t$38 <- not t$26
+bt t$38 Main_main_5
+bt t$26 Main_main_4
 comment else branch
 label Main_main_2
-t$34 <- t$4
-t$35 <- t$6
-t$33 <- = t$34 t$35
-t$32 <- not t$33
-t$40 <- not t$32
-bt t$40 Main_main_17
-bt t$32 Main_main_16
+t$33 <- t$4
+t$34 <- t$6
+t$32 <- = t$33 t$34
+t$31 <- not t$32
+t$39 <- not t$31
+bt t$39 Main_main_17
+bt t$31 Main_main_16
 comment if-join
 label Main_main_3
 return t$0
 comment then branch
 label Main_main_4
-t$28 <- string
+t$27 <- string
 Branch A\n
 jmp Main_main_7
 comment else branch
 label Main_main_5
-t$29 <- t$5
-t$41 <- not t$29
-bt t$41 Main_main_10
-bt t$29 Main_main_9
+t$28 <- t$5
+t$40 <- not t$28
+bt t$40 Main_main_10
+bt t$28 Main_main_9
 comment if-join
 label Main_main_6
 jmp Main_main_3
 comment fcall-pre to out_string
 label Main_main_7
-t$0 <- call out_string t$28
+t$0 <- call out_string t$27
 jmp Main_main_6
 comment then branch
 label Main_main_9
-t$30 <- string
+t$29 <- string
 Branch B1\n
 jmp Main_main_12
 comment else branch
 label Main_main_10
-t$31 <- string
+t$30 <- string
 Branch B2\n
 jmp Main_main_14
 comment if-join
@@ -87,20 +86,20 @@ label Main_main_11
 jmp Main_main_6
 comment fcall-pre to out_string
 label Main_main_12
-t$0 <- call out_string t$30
+t$0 <- call out_string t$29
 jmp Main_main_11
 comment fcall-pre to out_string
 label Main_main_14
-t$0 <- call out_string t$31
+t$0 <- call out_string t$30
 jmp Main_main_11
 comment then branch
 label Main_main_16
-t$36 <- string
+t$35 <- string
 Branch C\n
 jmp Main_main_19
 comment else branch
 label Main_main_17
-t$37 <- string
+t$36 <- string
 Branch D\n
 jmp Main_main_21
 comment if-join
@@ -108,9 +107,9 @@ label Main_main_18
 jmp Main_main_3
 comment fcall-pre to out_string
 label Main_main_19
-t$0 <- call out_string t$36
+t$0 <- call out_string t$35
 jmp Main_main_18
 comment fcall-pre to out_string
 label Main_main_21
-t$0 <- call out_string t$37
+t$0 <- call out_string t$36
 jmp Main_main_18

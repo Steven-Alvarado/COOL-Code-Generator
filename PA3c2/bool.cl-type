@@ -314,9 +314,6 @@ assign
 x
 12
 Bool
-not
-12
-Bool
 eq
 12
 Bool
@@ -659,9 +656,6 @@ Bool
 assign
 12
 x
-12
-Bool
-not
 12
 Bool
 eq

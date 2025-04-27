@@ -697,40 +697,14 @@ l11:                    ## end of if conditional
                         addq $24, %rsp
                         popq %rbp
                         popq %r12
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-			jne l12
-.globl l13
-l13:                    ## false branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        jmp l14
-.globl l12
-l12:                    ## true branch
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-.globl l14
-l14:                    ## end of if conditional
                         movq %r13, -48(%rbp)
                         ## x
                         movq -48(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l15
-.globl l16
-l16:                    ## false branch
+			jne l12
+.globl l13
+l13:                    ## false branch
                         pushq %r12
                         pushq %rbp
                         ## u
@@ -746,9 +720,9 @@ l16:                    ## false branch
                         popq %r12
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l18
-.globl l19
-l19:                    ## false branch
+			jne l15
+.globl l16
+l16:                    ## false branch
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -758,9 +732,9 @@ l19:                    ## false branch
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        jmp l20
-.globl l18
-l18:                    ## true branch
+                        jmp l17
+.globl l15
+l15:                    ## true branch
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -768,13 +742,13 @@ l18:                    ## true branch
                         call *%r14
                         popq %r12
                         popq %rbp
-.globl l20
-l20:                    ## end of if conditional
+.globl l17
+l17:                    ## end of if conditional
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l21
-.globl l22
-l22:                    ## false branch
+			jne l18
+.globl l19
+l19:                    ## false branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -798,9 +772,9 @@ l22:                    ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l23
-.globl l21
-l21:                    ## true branch
+                        jmp l20
+.globl l18
+l18:                    ## true branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -824,25 +798,25 @@ l21:                    ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l23
-l23:                    ## end of if conditional
-                        jmp l17
-.globl l15
-l15:                    ## true branch
+.globl l20
+l20:                    ## end of if conditional
+                        jmp l14
+.globl l12
+l12:                    ## true branch
                         ## w
                         movq -40(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l21
+.globl l22
+l22:                    ## false branch
+                        ## v
+                        movq -32(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l24
 .globl l25
 l25:                    ## false branch
-                        ## v
-                        movq -32(%rbp), %r13
-                        movq 24(%r13), %r13
-                        cmpq $0, %r13
-			jne l27
-.globl l28
-l28:                    ## false branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -866,9 +840,9 @@ l28:                    ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l29
-.globl l27
-l27:                    ## true branch
+                        jmp l26
+.globl l24
+l24:                    ## true branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -892,11 +866,11 @@ l27:                    ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l29
-l29:                    ## end of if conditional
-                        jmp l26
-.globl l24
-l24:                    ## true branch
+.globl l26
+l26:                    ## end of if conditional
+                        jmp l23
+.globl l21
+l21:                    ## true branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -920,10 +894,10 @@ l24:                    ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l26
-l26:                    ## end of if conditional
-.globl l17
-l17:                    ## end of if conditional
+.globl l23
+l23:                    ## end of if conditional
+.globl l14
+l14:                    ## end of if conditional
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -1035,7 +1009,7 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l30
+			jne l27
                         movq $string13, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
@@ -1045,8 +1019,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l30
-l30:                    movq %r13, 24(%r15)
+.globl l27
+l27:                    movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
