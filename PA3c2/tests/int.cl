@@ -1,14 +1,13 @@
 class Main inherits IO{
-    x : Int <- 5;
-    y : Int;
+x : Int <- 3 + 43 + 232;
     main () : Object{
         {
-        x <- in_int();
-        y <- x + 10 - 5 * 3 * 5 / 34;
-        y <- y - 32 - 84 * 3 / 8 * 32;
-        out_int(y);
-        out_string("\n");
-        out_string("finally\n");
+            out_int(x);
+            let x : Int in {
+                x <- 4;
+                out_string("\n");
+                out_int(x);
+            };
         }
     };
 };

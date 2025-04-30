@@ -354,26 +354,9 @@ IO.in_int:              ## method definition
                         popq %r12
                         popq %rbp
                         movq %r13, %r14
-                        			movl	$1, %esi
-			movl $4096, %edi
-			call calloc
-			pushq %rax
-			movq %rax, %rdi
-			movq $4096, %rsi 
-			movq stdin(%rip), %rdx
-			call fgets 
-			popq %rdi 
-			movl $0, %eax
-			pushq %rax
-			movq %rsp, %rdx
-			movq $percent.ld, %rsi
-			call sscanf
-			popq %rax
-			movq $0, %rsi 
-			cmpq $2147483647, %rax 
-			cmovg %rsi, %rax
-			cmpq $-2147483648, %rax 
-			cmovl %rsi, %rax
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			call coolinint
 			movq %rax, %r13
                         movq %r13, 24(%r14)
                         movq %r14, %r13
@@ -1564,10 +1547,6 @@ coolstrcat:
 	.cfi_endproc
 .LFE8:
 	.size	coolstrcat, .-coolstrcat
-	.section	.rodata
-.LC1:
-	.string	""
-	.text
 	.globl	coolgetstr
 	.type	coolgetstr, @function
 coolgetstr:
@@ -1579,45 +1558,65 @@ coolgetstr:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	$1, %esi
-	movl	$40960, %edi
-	call	calloc@PLT
+	subq	$32, %rsp
+	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
-	movl	$0, -16(%rbp)
-.L21:
-	movq	stdin(%rip), %rax
+	xorl	%eax, %eax
+	movq	$0, -32(%rbp)
+	movq	$0, -24(%rbp)
+	movq	stdin(%rip), %rdx
+	leaq	-24(%rbp), %rcx
+	leaq	-32(%rbp), %rax
+	movq	%rcx, %rsi
 	movq	%rax, %rdi
-	call	fgetc@PLT
-	movl	%eax, -12(%rbp)
-	cmpl	$-1, -12(%rbp)
+	call	getline@PLT
+	movq	%rax, -16(%rbp)
+	cmpq	$-1, -16(%rbp)
 	je	.L15
-	cmpl	$10, -12(%rbp)
+	movq	-32(%rbp), %rax
+	testq	%rax, %rax
 	jne	.L16
 .L15:
-	cmpl	$0, -16(%rbp)
-	je	.L17
-	leaq	.LC1(%rip), %rax
-	jmp	.L18
-.L17:
-	movq	-8(%rbp), %rax
-	jmp	.L18
-.L16:
-	cmpl	$0, -12(%rbp)
-	jne	.L19
-	movl	$1, -16(%rbp)
-	jmp	.L21
-.L19:
-	movq	-8(%rbp), %rax
+	movq	-32(%rbp), %rax
 	movq	%rax, %rdi
-	call	coolstrlen
-	movl	%eax, %edx
-	movq	-8(%rbp), %rax
-	addq	%rdx, %rax
-	movl	-12(%rbp), %edx
-	movb	%dl, (%rax)
-	jmp	.L21
+	call	free@PLT
+	movl	$1, %edi
+	call	malloc@PLT
+	movq	%rax, -32(%rbp)
+	movq	-32(%rbp), %rax
+	movb	$0, (%rax)
+	jmp	.L17
+.L16:
+	movq	-16(%rbp), %rdx
+	movq	-32(%rbp), %rax
+	movl	$0, %esi
+	movq	%rax, %rdi
+	call	memchr@PLT
+	testq	%rax, %rax
+	je	.L18
+	movq	-32(%rbp), %rax
+	movb	$0, (%rax)
+	jmp	.L17
 .L18:
+	movq	-32(%rbp), %rdx
+	movq	-16(%rbp), %rax
+	subq	$1, %rax
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	cmpb	$10, %al
+	jne	.L17
+	movq	-32(%rbp), %rdx
+	subq	$1, -16(%rbp)
+	movq	-16(%rbp), %rax
+	addq	%rdx, %rax
+	movb	$0, (%rax)
+.L17:
+	movq	-32(%rbp), %rax
+	movq	-8(%rbp), %rdx
+	subq	%fs:40, %rdx
+	je	.L20
+	call	__stack_chk_fail@PLT
+.L20:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
@@ -1644,20 +1643,20 @@ coolsubstr:
 	call	coolstrlen
 	movl	%eax, -4(%rbp)
 	cmpq	$0, -32(%rbp)
-	js	.L23
+	js	.L22
 	cmpq	$0, -40(%rbp)
-	js	.L23
+	js	.L22
 	movq	-32(%rbp), %rdx
 	movq	-40(%rbp), %rax
 	addq	%rax, %rdx
 	movl	-4(%rbp), %eax
 	cltq
 	cmpq	%rax, %rdx
-	jle	.L24
-.L23:
+	jle	.L23
+.L22:
 	movl	$0, %eax
-	jmp	.L25
-.L24:
+	jmp	.L24
+.L23:
 	movq	-40(%rbp), %rax
 	movq	-32(%rbp), %rcx
 	movq	-24(%rbp), %rdx
@@ -1665,11 +1664,125 @@ coolsubstr:
 	movq	%rax, %rsi
 	movq	%rdx, %rdi
 	call	strndup@PLT
-.L25:
+.L24:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE10:
 	.size	coolsubstr, .-coolsubstr
+	.globl	coolinint
+	.type	coolinint, @function
+coolinint:
+.LFB11:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$304, %rsp
+	movq	%fs:40, %rax
+	movq	%rax, -8(%rbp)
+	xorl	%eax, %eax
+	movq	stdin(%rip), %rdx
+	leaq	-272(%rbp), %rax
+	movl	$256, %esi
+	movq	%rax, %rdi
+	call	fgets@PLT
+	testq	%rax, %rax
+	jne	.L26
+	movl	$0, %eax
+	jmp	.L37
+.L26:
+	leaq	-272(%rbp), %rax
+	movq	%rax, -288(%rbp)
+	jmp	.L28
+.L29:
+	addq	$1, -288(%rbp)
+.L28:
+	call	__ctype_b_loc@PLT
+	movq	(%rax), %rdx
+	movq	-288(%rbp), %rax
+	movzbl	(%rax), %eax
+	movzbl	%al, %eax
+	addq	%rax, %rax
+	addq	%rdx, %rax
+	movzwl	(%rax), %eax
+	movzwl	%ax, %eax
+	andl	$8192, %eax
+	testl	%eax, %eax
+	jne	.L29
+	movq	-288(%rbp), %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	je	.L30
+	movq	-288(%rbp), %rax
+	movzbl	(%rax), %eax
+	cmpb	$45, %al
+	je	.L31
+	movq	-288(%rbp), %rax
+	movzbl	(%rax), %eax
+	cmpb	$43, %al
+	je	.L31
+	call	__ctype_b_loc@PLT
+	movq	(%rax), %rdx
+	movq	-288(%rbp), %rax
+	movzbl	(%rax), %eax
+	movzbl	%al, %eax
+	addq	%rax, %rax
+	addq	%rdx, %rax
+	movzwl	(%rax), %eax
+	movzwl	%ax, %eax
+	andl	$2048, %eax
+	testl	%eax, %eax
+	jne	.L31
+.L30:
+	movl	$0, %eax
+	jmp	.L37
+.L31:
+	leaq	-296(%rbp), %rcx
+	movq	-288(%rbp), %rax
+	movl	$10, %edx
+	movq	%rcx, %rsi
+	movq	%rax, %rdi
+	call	strtol@PLT
+	movq	%rax, -280(%rbp)
+	movabsq	$-2147483649, %rax
+	cmpq	%rax, -280(%rbp)
+	jle	.L32
+	movl	$2147483648, %eax
+	cmpq	%rax, -280(%rbp)
+	jl	.L34
+.L32:
+	movl	$0, %eax
+	jmp	.L37
+.L36:
+	movq	-296(%rbp), %rax
+	addq	$1, %rax
+	movq	%rax, -296(%rbp)
+.L34:
+	movq	-296(%rbp), %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	je	.L35
+	movq	-296(%rbp), %rax
+	movzbl	(%rax), %eax
+	cmpb	$10, %al
+	jne	.L36
+.L35:
+	movq	-280(%rbp), %rax
+.L37:
+	movq	-8(%rbp), %rdx
+	subq	%fs:40, %rdx
+	je	.L38
+	call	__stack_chk_fail@PLT
+.L38:
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE11:
+	.size	coolinint, .-coolinint
 

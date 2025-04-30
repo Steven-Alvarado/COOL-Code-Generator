@@ -1,11 +1,16 @@
 class Main inherits IO{
-    x : Int <- 5;
-    y : Int <- 100;
+    a  : Bool <- true;
+    b : Int <- ~5;
     main () : Object{
         {
-        x <- x * y;
-        out_int(x);
-        out_string("\n");
+            let x : Int, y : Bool , z : Int in
+            {
+            if y then out_string("wrong\n") else out_int(b) fi;
+            z <- 4;
+            x <- z + 4 / 4 - ~10 * 43 / 89234 + 4 ;
+            out_string("\n");
+            out_int(x); 
+            };
         }
     };
 };

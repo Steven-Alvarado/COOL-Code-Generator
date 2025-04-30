@@ -22,7 +22,7 @@ class Main inherits IO {
         obj: Object => out_string("unknown\n");
       esac;
 
-      0
+      0;
     }
   };
 };

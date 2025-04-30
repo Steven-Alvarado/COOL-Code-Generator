@@ -489,8 +489,8 @@ Main.main:              ## method definition
           ## self[3] holds field x (Int)
 						## method body begins
                         ## Basic block: BB0
-                        ## (temp <- temp): t$0 <- t$1
-                        movq -16(%rbp), %r13
+                        ## t$0 <- self.x (attr3)
+                        movq 24(%r12), %r13
                         movq %r13, -8(%rbp)
                         ## new Int
                         pushq %rbp
@@ -531,8 +531,8 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$2 <- t$1
                         movq -16(%rbp), %r13
                         movq %r13, -24(%rbp)
-                        ## (temp <- temp): t$3 <- t$2
-                        movq -24(%rbp), %r13
+                        ## t$3 <- self.x (attr3)
+                        movq 24(%r12), %r13
                         movq %r13, -32(%rbp)
                         ## new Int
                         pushq %rbp
