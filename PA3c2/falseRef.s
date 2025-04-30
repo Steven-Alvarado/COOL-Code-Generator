@@ -479,13 +479,27 @@ Main.main:              ## method definition
                         popq %r12
                         popq %rbp
                         movq %r13, 0(%rbp)
-                        ## x
-                        movq 0(%rbp), %r13
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l3
 .globl l4
 l4:                     ## false branch
+                        ## x
+                        movq 0(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l6
+.globl l7
+l7:                     ## false branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -496,7 +510,7 @@ l4:                     ## false branch
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string8 holds "correct\n"
+                        ## string8 holds "dfs\t"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
@@ -509,9 +523,9 @@ l4:                     ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l5
-.globl l3
-l3:                     ## true branch
+                        jmp l8
+.globl l6
+l6:                     ## true branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -522,7 +536,7 @@ l3:                     ## true branch
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string9 holds "wrong\n"
+                        ## string9 holds "correct\n"
                         movq $string9, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
@@ -535,6 +549,95 @@ l3:                     ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
+.globl l8
+l8:                     ## end of if conditional
+                        jmp l5
+.globl l3
+l3:                     ## true branch
+                        ## x
+                        movq 0(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l9
+.globl l10
+l10:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l11
+.globl l9
+l9:                     ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l11
+l11:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l12
+.globl l13
+l13:                    ## false branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds "hi\n\t"
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        jmp l14
+.globl l12
+l12:                    ## true branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "wrong\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+.globl l14
+l14:                    ## end of if conditional
 .globl l5
 l5:                     ## end of if conditional
 .globl Main.main.end
@@ -648,8 +751,8 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l6
-                        movq $string10, %r13
+			jne l15
+                        movq $string12, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -658,8 +761,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l6
-l6:                     movq %r13, 24(%r15)
+.globl l15
+l15:                    movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -749,7 +852,16 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "correct\\n"
+string8:                # "dfs\\t"
+.byte 100 # 'd'
+.byte 102 # 'f'
+.byte 115 # 's'
+.byte  92 # '\\'
+.byte 116 # 't'
+.byte 0
+
+.globl string9
+string9:                # "correct\\n"
 .byte  99 # 'c'
 .byte 111 # 'o'
 .byte 114 # 'r'
@@ -761,8 +873,18 @@ string8:                # "correct\\n"
 .byte 110 # 'n'
 .byte 0
 
-.globl string9
-string9:                # "wrong\\n"
+.globl string10
+string10:               # "hi\\n\\t"
+.byte 104 # 'h'
+.byte 105 # 'i'
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte  92 # '\\'
+.byte 116 # 't'
+.byte 0
+
+.globl string11
+string11:               # "wrong\\n"
 .byte 119 # 'w'
 .byte 114 # 'r'
 .byte 111 # 'o'
@@ -772,8 +894,8 @@ string9:                # "wrong\\n"
 .byte 110 # 'n'
 .byte 0
 
-.globl string10
-string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
+.globl string12
+string12:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

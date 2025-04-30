@@ -33,22 +33,24 @@ class Main inherits IO {
       out_string("\n");
       
       (* Test complex if-then-else with expressions *)
-      if b1 then
+      if b1 then{
         if b2 then
           out_string("Path 1: b1 true, b2 true\n")
         else
           out_string("Path 2: b1 true, b2 false\n")
         fi;
         (* Reassign variables inside nested conditionals *)
-        x <- if not b3 then x * 2 else x - 1 fi
-      else
+        x <- if not b3 then x * 2 else x - 1 fi;
+      }
+      else{
         if not b2 then
           out_string("Path 3: b1 false, b2 false\n")
         else
           out_string("Path 4: b1 false, b2 true\n")
         fi;
         (* Different reassignment based on condition path *)
-        y <- if b3 then y * 3 else y - 2 fi
+        y <- if b3 then y * 3 else y - 2 fi;
+      }
       fi;
       
       (* Test complex arithmetic after conditionals *)
@@ -72,13 +74,15 @@ class Main inherits IO {
       out_string("\n");
       
       (* Final complex conditional with nested conditionals *)
-      if (if b1 then not b2 else b3 fi) then
+      if (if b1 then not b2 else b3 fi) then{
         out_string("Complex condition true\n");
-        out_string(input_str)
-      else
+        out_string(input_str);
+      }
+      else{
         out_string("Complex condition false\n");
-        out_string(input_str)
-      fi
+        out_string(input_str);
+      }
+      fi;
     }
   };
 };
