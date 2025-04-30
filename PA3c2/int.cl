@@ -11,7 +11,8 @@ class Main inherits IO{
         out_string("\n");
 out_int(x);
 w <- "hi";
-        out_string(w);
+if ( 3 < 4) then 
+        out_string(w) else out_string ("hi\n") fi;
         out_string("hadiffsni\n");
 out_int(y);out_int(z);out_int(x);out_int(y);out_int(d);out_int(z);out_int(y);out_int(y);out_int(y);out_int(y);
         }

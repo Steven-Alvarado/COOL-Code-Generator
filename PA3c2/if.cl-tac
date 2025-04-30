@@ -5,45 +5,47 @@ t$1 <- t$0
 t$2 <- default Bool
 t$3 <- t$2
 t$4 <- int 4
-t$5 <- int 10
-t$6 <- < t$4 t$5
-t$7 <- not t$6
+t$5 <- ~ t$4
+t$6 <- int 10
+t$7 <- < t$5 t$6
 t$2 <- t$7
 t$8 <- t$2
 t$9 <- t$2
+t$10 <- not t$9
+bt t$10 main_l2
 bt t$9 main_l1
-jmp main_l2
 comment then branch
 label main_l1
 t$11 <- t$2
+t$12 <- not t$11
+bt t$12 main_l5
 bt t$11 main_l4
-jmp main_l5
 comment then branch
 label main_l4
 t$13 <- string
 hi\n
 t$0 <- call out_string t$13
-t$12 <- t$0
+t$15 <- t$0
 jmp main_l6
 comment else branch
 label main_l5
 t$14 <- string
 no\n
 t$0 <- call out_string t$14
-t$12 <- t$0
+t$15 <- t$0
 jmp main_l6
 comment if-join
 label main_l6
-t$10 <- t$12
+t$17 <- t$15
 jmp main_l3
 comment else branch
 label main_l2
-t$15 <- string
+t$16 <- string
 yes\n
-t$0 <- call out_string t$15
-t$10 <- t$0
+t$0 <- call out_string t$16
+t$17 <- t$0
 jmp main_l3
 comment if-join
 label main_l3
-t$0 <- t$10
+t$0 <- t$17
 return t$0

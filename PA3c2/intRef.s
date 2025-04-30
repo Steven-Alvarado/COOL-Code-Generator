@@ -1168,6 +1168,64 @@ movl %eax, %r13d
                         movq $string11, %r14
                         movq %r14, 24(%r13)
                         movq %r13, -32(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $3, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l6
+.globl l7
+l7:                     ## false branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string12 holds "hi\n"
+                        movq $string12, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        jmp l8
+.globl l6
+l6:                     ## true branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -1183,6 +1241,8 @@ movl %eax, %r13d
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
+.globl l8
+l8:                     ## end of if conditional
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -1193,8 +1253,8 @@ movl %eax, %r13d
                         call *%r14
                         popq %r12
                         popq %rbp
-                        ## string12 holds "hadiffsni\n"
-                        movq $string12, %r14
+                        ## string13 holds "hadiffsni\n"
+                        movq $string13, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -1467,8 +1527,8 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l6
-                        movq $string13, %r13
+			jne l9
+                        movq $string14, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -1477,8 +1537,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l6
-l6:                     movq %r13, 24(%r15)
+.globl l9
+l9:                     movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -1666,7 +1726,15 @@ string11:               # "hi"
 .byte 0
 
 .globl string12
-string12:               # "hadiffsni\\n"
+string12:               # "hi\\n"
+.byte 104 # 'h'
+.byte 105 # 'i'
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string13
+string13:               # "hadiffsni\\n"
 .byte 104 # 'h'
 .byte  97 # 'a'
 .byte 100 # 'd'
@@ -1680,8 +1748,8 @@ string12:               # "hadiffsni\\n"
 .byte 110 # 'n'
 .byte 0
 
-.globl string13
-string13:               # "ERROR: 0: Exception: String.substr out of range\\n"
+.globl string14
+string14:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

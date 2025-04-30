@@ -2,10 +2,10 @@ comment start
 label Main_main_0
 t$1 <- default Int
 t$2 <- default Bool
-t$5 <- int 4
-t$6 <- int 10
-t$4 <- < t$5 t$6
-t$2 <- not t$4
+t$6 <- int 4
+t$4 <- ~ t$6
+t$5 <- int 10
+t$2 <- < t$4 t$5
 t$3 <- t$2
 t$7 <- t$2
 t$12 <- not t$7

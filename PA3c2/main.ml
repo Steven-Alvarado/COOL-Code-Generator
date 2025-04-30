@@ -533,56 +533,61 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             TAC_Variable new_var,
             env,
             context )  
-    | AST_If (cond, then_branch, else_branch) ->
-        (* Convert the condition expression *)
-        let cond_instrs, cond_expr, env1, ctx1 =
-            convert current_class current_method env context cond
-        in
+  | AST_If (cond, then_branch, else_branch) ->
+    let cond_instrs, cond_tac, env1, ctx1 =
+      convert current_class current_method env context cond
+    in
+    let cond_str = tac_expr_to_string cond_tac in
 
-        (* Create fresh labels for control flow *)
-        let label_then = fresh_label current_class current_method in
-        let label_else = fresh_label current_class current_method in
-        let label_join = fresh_label current_class current_method in
+    let not_cond = fresh_variable () in
 
-        (* Create a fresh variable for the result instead of hardcoded "t$0" *)
-        let result_var = fresh_variable () in
+    let label_then = fresh_label current_class current_method in
+    let label_else = fresh_label current_class current_method in
+    let label_join = fresh_label current_class current_method in
 
-        (* Convert the then branch *)
-        let then_instrs, then_expr, env2, ctx2 =
-            convert current_class current_method env1 ctx1 then_branch
-        in
+    let then_instrs, then_tac, env2, ctx2 =
+      convert current_class current_method env1 ctx1 then_branch
+    in
+    let else_instrs, else_tac, env3, ctx3 =
+      convert current_class current_method env2 ctx2 else_branch
+    in
 
-        (* Generate code for the then branch *)
-        let then_code =
-            [ TAC_Comment "then branch"; TAC_Label label_then ]
-            @ then_instrs
-            @ [ TAC_Assign_Variable (result_var, tac_expr_to_string then_expr); 
-                TAC_Jump label_join ]
-        in
+    let result_var = fresh_variable () in
 
-        (* Convert the else branch *)
-        let else_instrs, else_expr, env3, ctx3 =
-            convert current_class current_method env2 ctx2 else_branch
-        in
+    let entry_code =
+      cond_instrs
+      @ [ TAC_Assign_Not      (not_cond, cond_tac)
+        ; TAC_ConditionalJump (not_cond,  label_else)
+        ; TAC_ConditionalJump (cond_str,   label_then)
+        ]
+    in
 
-        (* Generate code for the else branch *)
-        let else_code =
-            [ TAC_Comment "else branch"; TAC_Label label_else ]
-            @ else_instrs
-            @ [ TAC_Assign_Variable (result_var, tac_expr_to_string else_expr);
-                TAC_Jump label_join ]
-        in
+    let then_code =
+      [ TAC_Comment "then branch"
+      ; TAC_Label   label_then ]
+      @ then_instrs
+      @ [ TAC_Assign_Variable(result_var, tac_expr_to_string then_tac)
+        ; TAC_Jump            label_join
+        ]
+    in
 
-        (* conditional branching - only need one jump *)
-        let if_instrs =
-            cond_instrs
-            @ [ TAC_ConditionalJump (tac_expr_to_string cond_expr, label_then);
-                TAC_Jump label_else ]  (* Fall through to else if condition is false *)
-            @ then_code @ else_code
-            @ [ TAC_Comment "if-join"; TAC_Label label_join ]
-        in
+    let else_code =
+      [ TAC_Comment "else branch"
+      ; TAC_Label   label_else ]
+      @ else_instrs
+      @ [ TAC_Assign_Variable(result_var, tac_expr_to_string else_tac)
+        ; TAC_Jump            label_join
+        ]
+    in
 
-        (if_instrs, TAC_Variable result_var, env3, ctx3)
+    let join_code =
+      [ TAC_Comment "if-join"
+      ; TAC_Label   label_join ]
+    in
+
+    (entry_code @ then_code @ else_code @ join_code,
+     TAC_Variable result_var,
+     env3, ctx3)
 
     | AST_Assign (var_name, expr) ->
         let instrs, expr_val, env1, ctx1 =
@@ -612,6 +617,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
 
         (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)    
+
     | AST_Block exprs ->
         let rec process_block exprs env_acc ctx_acc =
             match exprs with
@@ -904,7 +910,6 @@ let create_label_to_block_map (blocks : basic_block list) :
 
     label_map
 
-(* build the control flow graph  *)
 (* build the control flow graph  *)
 let build_cfg (blocks : basic_block list) : cfg =
     let cfg_map = Hashtbl.create (List.length blocks) in
@@ -2052,7 +2057,7 @@ let codegen context tac =
             ]
         in
         let rest = [
-            "                        movq 24(%r13), %r13";  (* load value again *)
+            (* "                        movq 24(%r13), %r13";  (* load value again *) *)
             "                        movq %r13, " ^ string_of_int loc.offset ^ "(%rbp)";    (* store value *)
         ]
         in 
@@ -2360,44 +2365,7 @@ let codegen context tac =
                 "                        addq  $16, %rsp";                          (* pop arg+self *)
                 "                        popq  %rbp";
                 "                        popq  %r12";
-            ]
-        (* else if method_name = "out_string" && List.length args = 1 then *)
-        (*     (* --- Special case for out_int --- *) *)
-        (*     let arg = List.hd args in *)
-        (*     let arg_locs = lookup_temp_location context arg in *)
-        (*     let voff = Hashtbl.find vtable_offsets (class_name, "out_string") in *)
-        (*     [ *)
-        (**)
-        (*         "                        ## out_string(...)"; *)
-        (*         "                        pushq %r12"; *)
-        (*         "                        pushq %rbp"; *)
-        (*         "                        ## new String"; *)
-        (*         "                        pushq %rbp"; *)
-        (*         "                        pushq %r12"; *)
-        (*         "                        movq $String..new, %r14"; *)
-        (*         "                        call *%r14"; *)
-        (*         "                        popq %r12"; *)
-        (*         "                        popq %rbp"; *)
-        (*         (* Use the offset from arg_locs instead of a string lookup *) *)
-        (*         Printf.sprintf "                        movq  %d(%%rbp), %%r14" arg_locs.offset; *)
-        (**)
-        (*         "                        ## "^ arg ; *)
-        (*         "                        movq %r14, 24(%r13)"; *)
-        (*         (* save frame & self *) *)
-        (**)
-        (*         (* wrap primitive into an Int object *) *)
-        (*         "                        pushq %r13"; *)
-        (*         "                        pushq %r12"; *)
-        (**)
-        (*         "                        ##  obtain vtable for self object of type " ^ class_name; *)
-        (*         "                        movq  16(%r12), %r14";                  (* load vptr *) *)
-        (*         "                        ##   look up out_int() at offset " ^ string_of_int (voff/8) ^" in vtable"; *)
-        (*         Printf.sprintf "                        movq  %d(%%r14), %%r14" voff; (* load slot *) *)
-        (*         "                        call  *%r14";                              (* call out_int *) *)
-        (*         "                        addq  $16, %rsp";                          (* pop arg+self *) *)
-        (*         "                        popq  %rbp"; *)
-        (*         "                        popq  %r12"; *)
-        (*     ] *)
+            ] 
         else if method_name = "in_string" && List.length args = 0 then
             let voff = Hashtbl.find vtable_offsets (class_name, "in_string") in
 
@@ -3027,61 +2995,76 @@ let rec get_class_attributes
     in
     inherited @ direct
 
-let topological_sort (cfg : cfg) : string list =
-    (* Create a dependency count map (in-degree for each block) *)
-    let dependency_count = Hashtbl.create (Hashtbl.length cfg) in
+(* let topological_sort (cfg : cfg) : string list = *)
+(*     (* Create a dependency count map (in-degree for each block) *) *)
+(*     let dependency_count = Hashtbl.create (Hashtbl.length cfg) in *)
+(**)
+(*     (* Initialize all blocks with zero dependencies *) *)
+(*     Hashtbl.iter (fun id _ -> *)
+(*         Hashtbl.add dependency_count id 0 *)
+(*     ) cfg; *)
+(**)
+(*     (* Count dependencies (incoming edges) for each block *) *)
+(*     Hashtbl.iter (fun _ block -> *)
+(*         List.iter (fun succ_id -> *)
+(*             if Hashtbl.mem cfg succ_id then *)
+(*                 let count = *)
+(*                     Hashtbl.find dependency_count succ_id + 1 *)
+(*                 in *)
+(*                 Hashtbl.replace dependency_count succ_id count *)
+(*         ) block.successors *)
+(*     ) cfg; *)
+(**)
+(*     (* Initialize a queue with blocks that have no dependencies *) *)
+(*     let queue = Queue.create () in *)
+(*     Hashtbl.iter (fun id count -> *)
+(*         if count = 0 then Queue.add id queue *)
+(*     ) dependency_count; *)
+(**)
+(*     (* Process queue in FIFO order *) *)
+(*     let sorted_blocks = ref [] in *)
+(*     while not (Queue.is_empty queue) do *)
+(*         (* Dequeue next block *) *)
+(*         let block_id = Queue.take queue in *)
+(**)
+(*         (* Add to sorted result *) *)
+(*         sorted_blocks := block_id :: !sorted_blocks; *)
+(**)
+(*         (* Decrement dependency counts of successors *) *)
+(*         if Hashtbl.mem cfg block_id then *)
+(*             let block = Hashtbl.find cfg block_id in *)
+(*             List.iter (fun succ_id -> *)
+(*                 if Hashtbl.mem dependency_count succ_id then *)
+(*                     let count = Hashtbl.find dependency_count succ_id - 1 in *)
+(*                     Hashtbl.replace dependency_count succ_id count; *)
+(*                     if count = 0 then *)
+(*                         Queue.add succ_id queue *)
+(*             ) block.successors *)
+(*     done; *)
+(**)
+(*     (* Return in forward order *) *)
+(*     (* Check for cycles *) *)
+(*     if List.length !sorted_blocks <> Hashtbl.length cfg then *)
+(*         failwith "Topological sort error: the CFG has at least one cycle" *)
+(*     else *)
+(*         List.rev !sorted_blocks *)
 
-    (* Initialize all blocks with zero dependencies *)
-    Hashtbl.iter (fun id _ ->
-        Hashtbl.add dependency_count id 0
-    ) cfg;
+(* try to just emit code regularly*)
+let sort_cfg_blocks (cfg : cfg) : string list =
+  (* collect all block IDs *)
+  let ids = Hashtbl.fold (fun id _ acc -> id :: acc) cfg [] in
 
-    (* Count dependencies (incoming edges) for each block *)
-    Hashtbl.iter (fun _ block ->
-        List.iter (fun succ_id ->
-            if Hashtbl.mem cfg succ_id then
-                let count =
-                    Hashtbl.find dependency_count succ_id + 1
-                in
-                Hashtbl.replace dependency_count succ_id count
-        ) block.successors
-    ) cfg;
+  (* parse "BB123" → 123, fallback to zero if malformed *)
+  let idx_of_id id =
+    try
+      let n = String.sub id 2 (String.length id - 2) in
+      int_of_string n
+    with _ -> 0
+  in
 
-    (* Initialize a queue with blocks that have no dependencies *)
-    let queue = Queue.create () in
-    Hashtbl.iter (fun id count ->
-        if count = 0 then Queue.add id queue
-    ) dependency_count;
+  (* sort ascending by that numeric index *)
+  List.sort (fun a b -> compare (idx_of_id a) (idx_of_id b)) ids
 
-    (* Process queue in FIFO order *)
-    let sorted_blocks = ref [] in
-    while not (Queue.is_empty queue) do
-        (* Dequeue next block *)
-        let block_id = Queue.take queue in
-
-        (* Add to sorted result *)
-        sorted_blocks := block_id :: !sorted_blocks;
-
-        (* Decrement dependency counts of successors *)
-        if Hashtbl.mem cfg block_id then
-            let block = Hashtbl.find cfg block_id in
-            List.iter (fun succ_id ->
-                if Hashtbl.mem dependency_count succ_id then
-                    let count = Hashtbl.find dependency_count succ_id - 1 in
-                    Hashtbl.replace dependency_count succ_id count;
-                    if count = 0 then
-                        Queue.add succ_id queue
-            ) block.successors
-    done;
-
-    (* Return in forward order *)
-    (* Check for cycles *)
-    if List.length !sorted_blocks <> Hashtbl.length cfg then
-        failwith "Topological sort error: the CFG has at least one cycle"
-    else
-        List.rev !sorted_blocks
-
-(* New function to get proper block order for assembly generation *)
 (* Generate method definition assembly code *)
 let generate_method_definition class_name method_name params return_type body
     class_map parent_map =
@@ -3246,7 +3229,7 @@ let generate_method_definition class_name method_name params return_type body
         Printf.printf "\n==== END OF CONTEXT DUMP ====\n\n";
         flush stdout
     in
-    let sorted_blocks = topological_sort cfg in
+    let sorted_blocks = sort_cfg_blocks cfg in
     (* Generate assembly for each basic block *)
     let body_asm =
         List.concat_map (fun block_id ->

@@ -194,10 +194,10 @@ assign
 y
 4
 Bool
-not
-4
-Bool
 lt
+4
+Int
+negate
 4
 Int
 integer
@@ -376,10 +376,10 @@ assign
 y
 4
 Bool
-not
-4
-Bool
 lt
+4
+Int
+negate
 4
 Int
 integer

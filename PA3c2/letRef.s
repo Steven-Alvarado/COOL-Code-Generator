@@ -482,30 +482,6 @@ Main.main:              ## method definition
                         movq %r13, -8(%rbp)
                         ## y
                         movq -8(%rbp), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -16(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -16(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -16(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -16(%rbp), %r14
-                        movq %r14, 24(%r13)
                         movq %r13, 0(%rbp)
                         ## out_int(...)
                         pushq %r12

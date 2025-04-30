@@ -7,110 +7,302 @@ t$4 <- default Bool
 t$5 <- default Bool
 t$6 <- default Bool
 t$7 <- default Bool
-t$8 <- default Bool
-t$1 <- int 5
-t$9 <- t$1
-t$2 <- int 2
-t$10 <- t$2
-t$3 <- int 5
-t$11 <- t$3
-t$14 <- t$1
-t$15 <- t$2
-t$13 <- < t$14 t$15
-t$4 <- not t$13
-t$12 <- t$4
-t$17 <- t$2
-t$18 <- t$3
-t$5 <- <= t$17 t$18
-t$16 <- t$5
+t$8 <- default String
+t$9 <- default Int
+t$11 <- string
+Enter two integers p and q:\n
+t$10 <- call out_string t$11
+t$1 <- call in_int
+t$12 <- t$1
+t$2 <- call in_int
+t$13 <- t$2
+t$17 <- t$1
+t$19 <- t$2
+t$18 <- ~ t$19
+t$15 <- + t$17 t$18
 t$20 <- t$1
-t$21 <- t$3
-t$6 <- = t$20 t$21
-t$19 <- t$6
-t$24 <- t$4
-t$25 <- t$5
-t$23 <- = t$24 t$25
-t$7 <- not t$23
-t$22 <- t$7
-t$26 <- t$7
-t$38 <- not t$26
-bt t$38 Main_main_2
-bt t$26 Main_main_1
+t$22 <- int 2
+t$21 <- ~ t$22
+t$16 <- / t$20 t$21
+t$3 <- - t$15 t$16
+t$14 <- t$3
+t$28 <- t$1
+t$26 <- ~ t$28
+t$29 <- t$2
+t$30 <- t$3
+t$27 <- + t$29 t$30
+t$25 <- < t$26 t$27
+t$24 <- not t$25
+t$122 <- not t$24
+bt t$122 Main_main_8
+bt t$24 Main_main_7
 comment then branch
-label Main_main_1
-t$27 <- t$6
-t$39 <- not t$27
-bt t$39 Main_main_5
-bt t$27 Main_main_4
-comment else branch
-label Main_main_2
-t$34 <- t$4
-t$35 <- t$6
-t$33 <- = t$34 t$35
-t$32 <- not t$33
-t$40 <- not t$32
-bt t$40 Main_main_17
-bt t$32 Main_main_16
-comment if-join
-label Main_main_3
-return t$0
-comment then branch
-label Main_main_4
-t$28 <- string
-Branch A\n
-jmp Main_main_7
-comment else branch
-label Main_main_5
-t$29 <- t$5
-t$41 <- not t$29
-bt t$41 Main_main_10
-bt t$29 Main_main_9
-comment if-join
-label Main_main_6
-jmp Main_main_3
-comment fcall-pre to out_string
 label Main_main_7
-t$0 <- call out_string t$28
-jmp Main_main_6
-comment then branch
+t$34 <- t$3
+t$36 <- t$2
+t$35 <- ~ t$36
+t$32 <- - t$34 t$35
+t$37 <- t$1
+t$39 <- int 2
+t$38 <- ~ t$39
+t$33 <- + t$37 t$38
+t$31 <- <= t$32 t$33
+t$123 <- not t$31
+bt t$123 Main_main_11
+bt t$31 Main_main_10
+comment else branch
+label Main_main_8
+t$4 <- bool false
+jmp Main_main_9
+comment if-join
 label Main_main_9
-t$30 <- string
-Branch B1\n
+t$23 <- t$4
+t$42 <- t$1
+t$44 <- t$3
+t$43 <- ~ t$44
+t$41 <- = t$42 t$43
+t$124 <- not t$41
+bt t$124 Main_main_14
+bt t$41 Main_main_13
+comment then branch
+label Main_main_10
+t$4 <- bool true
 jmp Main_main_12
 comment else branch
-label Main_main_10
-t$31 <- string
-Branch B2\n
-jmp Main_main_14
-comment if-join
 label Main_main_11
-jmp Main_main_6
-comment fcall-pre to out_string
+t$4 <- bool false
+jmp Main_main_12
+comment if-join
 label Main_main_12
-t$0 <- call out_string t$30
-jmp Main_main_11
-comment fcall-pre to out_string
+jmp Main_main_9
+comment then branch
+label Main_main_13
+t$5 <- bool true
+jmp Main_main_15
+comment else branch
 label Main_main_14
-t$0 <- call out_string t$31
-jmp Main_main_11
+t$46 <- t$2
+t$48 <- t$1
+t$47 <- ~ t$48
+t$45 <- < t$46 t$47
+t$125 <- not t$45
+bt t$125 Main_main_17
+bt t$45 Main_main_16
+comment if-join
+label Main_main_15
+t$40 <- t$5
+t$54 <- t$1
+t$52 <- ~ t$54
+t$55 <- t$2
+t$53 <- ~ t$55
+t$50 <- + t$52 t$53
+t$56 <- t$3
+t$57 <- t$1
+t$51 <- - t$56 t$57
+t$6 <- = t$50 t$51
+t$49 <- t$6
+t$60 <- t$4
+t$61 <- t$6
+t$59 <- = t$60 t$61
+t$7 <- not t$59
+t$58 <- t$7
+t$65 <- t$3
+t$67 <- t$6
+t$126 <- not t$67
+bt t$126 Main_main_20
+bt t$67 Main_main_19
 comment then branch
 label Main_main_16
-t$36 <- string
-Branch C\n
-jmp Main_main_19
+t$5 <- bool true
+jmp Main_main_18
 comment else branch
 label Main_main_17
-t$37 <- string
-Branch D\n
-jmp Main_main_21
+t$5 <- bool false
+jmp Main_main_18
 comment if-join
 label Main_main_18
-jmp Main_main_3
-comment fcall-pre to out_string
+jmp Main_main_15
+comment then branch
 label Main_main_19
-t$0 <- call out_string t$36
-jmp Main_main_18
-comment fcall-pre to out_string
+t$68 <- t$2
+t$70 <- int 1
+t$69 <- ~ t$70
+t$66 <- + t$68 t$69
+jmp Main_main_21
+comment else branch
+label Main_main_20
+t$71 <- t$1
+t$73 <- int 2
+t$72 <- ~ t$73
+t$66 <- - t$71 t$72
+jmp Main_main_21
+comment if-join
 label Main_main_21
-t$0 <- call out_string t$37
-jmp Main_main_18
+t$63 <- / t$65 t$66
+t$64 <- int 3
+t$9 <- + t$63 t$64
+t$62 <- t$9
+t$75 <- string
+Computed values:\n
+t$74 <- call out_string t$75
+t$77 <- string
+  p = 
+t$76 <- call out_string t$77
+t$79 <- t$1
+t$78 <- call out_int t$79
+t$81 <- string
+\n
+t$80 <- call out_string t$81
+t$83 <- string
+  q = 
+t$82 <- call out_string t$83
+t$85 <- t$2
+t$84 <- call out_int t$85
+t$87 <- string
+\n
+t$86 <- call out_string t$87
+t$89 <- string
+  r = 
+t$88 <- call out_string t$89
+t$91 <- t$3
+t$90 <- call out_int t$91
+t$93 <- string
+\n
+t$92 <- call out_string t$93
+t$95 <- string
+  z = 
+t$94 <- call out_string t$95
+t$97 <- t$9
+t$96 <- call out_int t$97
+t$99 <- string
+\n\n
+t$98 <- call out_string t$99
+t$101 <- string
+Now choosing a branch...\n
+t$100 <- call out_string t$101
+t$104 <- t$4
+t$127 <- not t$104
+bt t$127 Main_main_51
+bt t$104 Main_main_50
+comment then branch
+label Main_main_50
+t$106 <- t$5
+t$128 <- not t$106
+bt t$128 Main_main_54
+bt t$106 Main_main_53
+comment else branch
+label Main_main_51
+t$103 <- bool false
+jmp Main_main_52
+comment if-join
+label Main_main_52
+t$102 <- not t$103
+t$129 <- not t$102
+bt t$129 Main_main_60
+bt t$102 Main_main_59
+comment then branch
+label Main_main_53
+t$105 <- bool true
+jmp Main_main_55
+comment else branch
+label Main_main_54
+t$105 <- t$6
+jmp Main_main_55
+comment if-join
+label Main_main_55
+t$130 <- not t$105
+bt t$130 Main_main_57
+bt t$105 Main_main_56
+comment then branch
+label Main_main_56
+t$103 <- bool true
+jmp Main_main_58
+comment else branch
+label Main_main_57
+t$103 <- bool false
+jmp Main_main_58
+comment if-join
+label Main_main_58
+jmp Main_main_52
+comment then branch
+label Main_main_59
+t$108 <- t$9
+t$110 <- t$1
+t$111 <- t$2
+t$109 <- + t$110 t$111
+t$107 <- <= t$108 t$109
+t$131 <- not t$107
+bt t$131 Main_main_63
+bt t$107 Main_main_62
+comment else branch
+label Main_main_60
+t$118 <- t$4
+t$119 <- t$6
+t$117 <- = t$118 t$119
+t$116 <- not t$117
+t$132 <- not t$116
+bt t$132 Main_main_75
+bt t$116 Main_main_74
+comment if-join
+label Main_main_61
+return t$0
+comment then branch
+label Main_main_62
+t$112 <- string
+Branch A\n
+jmp Main_main_65
+comment else branch
+label Main_main_63
+t$113 <- t$5
+t$133 <- not t$113
+bt t$133 Main_main_68
+bt t$113 Main_main_67
+comment if-join
+label Main_main_64
+jmp Main_main_61
+comment fcall-pre to out_string
+label Main_main_65
+t$0 <- call out_string t$112
+jmp Main_main_64
+comment then branch
+label Main_main_67
+t$114 <- string
+Branch B1\n
+jmp Main_main_70
+comment else branch
+label Main_main_68
+t$115 <- string
+Branch B2\n
+jmp Main_main_72
+comment if-join
+label Main_main_69
+jmp Main_main_64
+comment fcall-pre to out_string
+label Main_main_70
+t$0 <- call out_string t$114
+jmp Main_main_69
+comment fcall-pre to out_string
+label Main_main_72
+t$0 <- call out_string t$115
+jmp Main_main_69
+comment then branch
+label Main_main_74
+t$120 <- string
+Branch C\n
+jmp Main_main_77
+comment else branch
+label Main_main_75
+t$121 <- string
+Branch D\n
+jmp Main_main_79
+comment if-join
+label Main_main_76
+jmp Main_main_61
+comment fcall-pre to out_string
+label Main_main_77
+t$0 <- call out_string t$120
+jmp Main_main_76
+comment fcall-pre to out_string
+label Main_main_79
+t$0 <- call out_string t$121
+jmp Main_main_76

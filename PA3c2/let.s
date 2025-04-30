@@ -452,18 +452,18 @@ IO.out_string.end:      ## method body ends
                         movq %rbp, %rsp
                         popq %rbp
                         ret
-          ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+						## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .globl Main.main
-Main.main:          ## method definition
-          pushq %rbp
-          movq %rsp, %rbp
-          movq 16(%rbp), %r12
-          ## stack room for temporaries: 9
-          movq $80, %r14
-          subq %r14, %rsp
-          ## return address handling
-          ## method body begins
-          ## Basic block: BB0
+Main.main:              ## method definition
+						pushq %rbp
+						movq %rsp, %rbp
+						movq 16(%rbp), %r12
+						## stack room for temporaries: 7
+						movq $64, %r14
+						subq %r14, %rsp
+						## return address handling
+						## method body begins
+                        ## Basic block: BB0
                         ##t$0 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -475,9 +475,9 @@ Main.main:          ## method definition
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, -8(%rbp)
-          ## (temp <- temp): t$1 <- t$0
-          movq -8(%rbp), %r13
-          movq %r13, -16(%rbp)
+                        ## (temp <- temp): t$1 <- t$0
+                        movq -8(%rbp), %r13
+                        movq %r13, -16(%rbp)
                         ##t$2 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -489,37 +489,21 @@ Main.main:          ## method definition
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, -24(%rbp)
-          ## (temp <- temp): t$3 <- t$2
-          movq -24(%rbp), %r13
-          movq %r13, -32(%rbp)
-          ## (temp <- temp): t$4 <- t$2
-          movq -24(%rbp), %r13
-          movq %r13, -40(%rbp)
-                        ## new int t$5 <- 5
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -48(%rbp)
-                        ## t$6 <- t$4 + t$5
+                        ## (temp <- temp): t$3 <- t$2
+                        movq -24(%rbp), %r13
+                        movq %r13, -32(%rbp)
+                        ## (temp <- temp): t$4 <- t$2
+                        movq -24(%rbp), %r13
+                        movq %r13, -40(%rbp)
+                        ## (temp <- temp): t$1 <- t$4
                         movq -40(%rbp), %r13
-                        movq -48(%rbp), %r14
-                        addq %r14, %r13
+                        movq %r13, -16(%rbp)
+                        ## (temp <- temp): t$5 <- t$1
+                        movq -16(%rbp), %r13
+                        movq %r13, -48(%rbp)
+                        ## (temp <- temp): t$6 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -56(%rbp)
-          ## (temp <- temp): t$1 <- t$6
-          movq -56(%rbp), %r13
-          movq %r13, -16(%rbp)
-          ## (temp <- temp): t$7 <- t$1
-          movq -16(%rbp), %r13
-          movq %r13, -64(%rbp)
-          ## (temp <- temp): t$8 <- t$1
-          movq -16(%rbp), %r13
-          movq %r13, -72(%rbp)
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -527,13 +511,13 @@ Main.main:          ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq  -72(%rbp), %r14
+                        movq  -56(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13,       0(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$8
+                        ## t$6
                         movq 0(%rbp), %r13
                         pushq %r13
                         pushq %r12

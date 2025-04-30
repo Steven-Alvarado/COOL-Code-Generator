@@ -71,29 +71,48 @@ t$54 <- string
 hi
 t$5 <- t$54
 t$55 <- t$5
-t$56 <- t$5
-t$0 <- call out_string t$56
-t$57 <- string
+t$56 <- int 3
+t$57 <- int 4
+t$58 <- < t$56 t$57
+t$59 <- not t$58
+bt t$59 main_l2
+bt t$58 main_l1
+comment then branch
+label main_l1
+t$60 <- t$5
+t$0 <- call out_string t$60
+t$62 <- t$0
+jmp main_l3
+comment else branch
+label main_l2
+t$61 <- string
+hi\n
+t$0 <- call out_string t$61
+t$62 <- t$0
+jmp main_l3
+comment if-join
+label main_l3
+t$63 <- string
 hadiffsni\n
-t$0 <- call out_string t$57
-t$58 <- t$2
-t$0 <- call out_int t$58
-t$59 <- t$3
-t$0 <- call out_int t$59
-t$60 <- t$1
-t$0 <- call out_int t$60
-t$61 <- t$2
-t$0 <- call out_int t$61
-t$62 <- t$4
-t$0 <- call out_int t$62
-t$63 <- t$3
-t$0 <- call out_int t$63
+t$0 <- call out_string t$63
 t$64 <- t$2
 t$0 <- call out_int t$64
-t$65 <- t$2
+t$65 <- t$3
 t$0 <- call out_int t$65
-t$66 <- t$2
+t$66 <- t$1
 t$0 <- call out_int t$66
 t$67 <- t$2
 t$0 <- call out_int t$67
+t$68 <- t$4
+t$0 <- call out_int t$68
+t$69 <- t$3
+t$0 <- call out_int t$69
+t$70 <- t$2
+t$0 <- call out_int t$70
+t$71 <- t$2
+t$0 <- call out_int t$71
+t$72 <- t$2
+t$0 <- call out_int t$72
+t$73 <- t$2
+t$0 <- call out_int t$73
 return t$0
