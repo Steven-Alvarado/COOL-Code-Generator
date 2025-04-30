@@ -2867,9 +2867,7 @@ let generate_custom_constructor class_map class_name
                     let temp_vars =
                         List.init temp_count (fun n ->
                             let name = "t$" ^ string_of_int n in
-                            let temp_offset = (-8) * (n + 1) in (* Single offset from rbp *)
-                            (* Include the type - since these are temps, you can use a generic type
-               or try to infer it from context if needed *)
+                            let temp_offset = (-8) * (n + 1) in 
                             (name, { offset = temp_offset; var_type = "Object" (* Default type *) }))
                     in
                     let context = {
