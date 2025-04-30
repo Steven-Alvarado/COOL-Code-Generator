@@ -1,9 +1,2 @@
-Enter an integer value for x: Enter an integer value for y: Enter a string: You entered: hi
-Path 1: b1 true, b2 true
-Final values:
-x = 86
-y = 32
-z = -2666
-New z value: 254
-Complex condition false
-hi
+278
+4

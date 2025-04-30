@@ -410,8 +410,31 @@ let rec convert (current_class : string) (current_method : string) (env : env)
     (context : context) (a : exp) : tac_instr list * tac_expr * env * context =
     match a.exp_kind with
     | AST_Identifier var_name ->
-        if snd var_name = "self" then
-            ([], TAC_Variable "self", env, context) 
+       if snd var_name = "self" then
+        ([], TAC_Variable "self", env, context) 
+    else 
+        (* Check if the identifier is a class attribute *)
+        let is_class_attr = List.exists (fun (name, _, _) -> name = snd var_name) context.class_attributes in
+        
+        if is_class_attr then
+            (* Create a fresh variable for the attribute access *)
+            let result_var = fresh_variable () in
+            
+            (* Get the attribute info *)
+            let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = snd var_name) context.class_attributes in
+            
+            (* Create a temporary variable for the attribute *)
+            let var_location = { offset = newloc (); var_type = attr_type } in
+            let updated_context = { 
+                context with 
+                temp_vars = (result_var, var_location) :: context.temp_vars 
+            } in
+            
+            (* Generate appropriate TAC access instruction - use the field name directly *)
+            ([ TAC_Assign_Variable (result_var, snd var_name) ],
+             TAC_Variable result_var,
+             env,
+             updated_context)
         else 
             (* Lookup the variable in the context; if not found, allocate a new location *)
             let location_option = List.assoc_opt (snd var_name) context.temp_vars in
@@ -593,7 +616,20 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let instrs, expr_val, env1, ctx1 =
             convert current_class current_method env context expr
         in
-
+ (* Check if this is a class attribute *)
+    let is_class_attr = List.exists (fun (name, _, _) -> name = snd var_name) ctx1.class_attributes in
+    
+    if is_class_attr then
+        (* Get attribute info *)
+        let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = snd var_name) ctx1.class_attributes in
+        
+        (* We'll use the existing TAC_Assign_Variable but will handle attribute assignment in codegen *)
+        let result_var = fresh_variable () in
+        let assign_instr = TAC_Assign_Variable (snd var_name, tac_expr_to_string expr_val) in
+        let final_copy = TAC_Assign_Variable (result_var, snd var_name) in
+        
+        (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
+    else
         (* Find the temp location for this variable *)
         let var_loc_opt = List.assoc_opt (snd var_name) ctx1.temp_vars in
         let temp_var_name = 

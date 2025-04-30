@@ -470,24 +470,11 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq %r13, 0(%rbp)
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq %r13, 0(%rbp)
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
+                        movq %r13, 0(%rbp)
+                        ## x
+                        movq 0(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l3
