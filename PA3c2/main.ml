@@ -410,78 +410,76 @@ let rec convert (current_class : string) (current_method : string) (env : env)
     (context : context) (a : exp) : tac_instr list * tac_expr * env * context =
     match a.exp_kind with
     | AST_Identifier var_name ->
-    let var_name_str = snd var_name in
-    Printf.printf "DEBUG: Checking identifier: %s\n" var_name_str;
-    Printf.printf "DEBUG: Class attributes: %s\n" 
-        (String.concat ", " (List.map (fun (name, _, _) -> name) context.class_attributes));
-    
-    if var_name_str = "self" then
-        ([], TAC_Variable "self", env, context) 
-    else 
-        (* First try to find in temp_vars - local variables take precedence *)
-        let location_option = List.assoc_opt var_name_str context.temp_vars in
-        if location_option <> None then
-            (* Handle temp var case - local variable found *)
-            let var_location = Option.get location_option in
-            let result_var = fresh_variable () in
-            
-            (* Debug info *)
-            Printf.printf "DEBUG: Found local variable %s at offset %d\n" 
-                var_name_str var_location.offset;
-            
-            (* Use the offset directly for consistent variable naming *)
-            let source_var_name = Printf.sprintf "t$%d" var_location.offset in
-            
-            (* Add result var to context with same location *)
-            let final_context = { 
-                context with 
-                temp_vars = (result_var, var_location) :: context.temp_vars 
-            } in
-            
-            ([ TAC_Assign_Variable (result_var, source_var_name) ],
-                TAC_Variable result_var,
-                env,
-                final_context)
-        else
-            (* Try to find in params *)
-            let param_loc_opt = List.assoc_opt var_name_str context.params in
-            if param_loc_opt <> None then
-                (* Handle param case *)
-                let param_offset = Option.get param_loc_opt in
+        let var_name_str = snd var_name in
+        Printf.printf "DEBUG: Checking identifier: %s\n" var_name_str;
+        Printf.printf "DEBUG: Class attributes: %s\n" 
+            (String.concat ", " (List.map (fun (name, _, _) -> name) context.class_attributes));
+
+        if var_name_str = "self" then
+            ([], TAC_Variable "self", env, context) 
+        else 
+            (* First try to find in temp_vars  *)
+            let location_option = List.assoc_opt var_name_str context.temp_vars in
+            if location_option <> None then
+                (*local variable found *)
+                let var_location = Option.get location_option in
                 let result_var = fresh_variable () in
-                let var_location = { offset = newloc (); var_type = "Object" } in
-                let updated_context = { 
+
+                Printf.printf "DEBUG: Found local variable %s at offset %d\n" 
+                    var_name_str var_location.offset;
+
+                let source_var_name = Printf.sprintf "t$%d" var_location.offset in
+
+                (* Add result var to context with same location *)
+                let final_context = { 
                     context with 
                     temp_vars = (result_var, var_location) :: context.temp_vars 
                 } in
-                let source_var_name = Printf.sprintf "param%d" param_offset in
+
                 ([ TAC_Assign_Variable (result_var, source_var_name) ],
                     TAC_Variable result_var,
                     env,
-                    updated_context)
+                    final_context)
             else
-                (* Check if the identifier is a class attribute - last priority *)
-                let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-                if is_class_attr then
-                    (* Create a fresh variable for the attribute access *)
+                (* Try to find in params *)
+                let param_loc_opt = List.assoc_opt var_name_str context.params in
+                if param_loc_opt <> None then
+                    (* Handle param case *)
+                    let param_offset = Option.get param_loc_opt in
                     let result_var = fresh_variable () in
-                    (* Get the attribute info *)
-                    let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-                    Printf.printf "DEBUG: Found attribute %s at index %d\n" var_name_str attr_idx;
-                    (* Create proper type information for the variable *)
-                    let var_location = { offset = newloc (); var_type = attr_type } in
+                    let var_location = { offset = newloc (); var_type = "Object" } in
                     let updated_context = { 
                         context with 
                         temp_vars = (result_var, var_location) :: context.temp_vars 
                     } in
-                    (* Generate TAC to access the attribute - just use the attribute name directly *)
-                    ([ TAC_Assign_Variable (result_var, var_name_str) ],
+                    let source_var_name = Printf.sprintf "param%d" param_offset in
+                    ([ TAC_Assign_Variable (result_var, source_var_name) ],
                         TAC_Variable result_var,
                         env,
                         updated_context)
                 else
-                    (* Not found anywhere *)
-                    failwith (Printf.sprintf "AST_Identifier: Variable not found: %s" var_name_str)
+                    (* Check if the identifier is a class attribute - last priority *)
+                    let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) context.class_attributes in
+                    if is_class_attr then
+                        (* Create a fresh variable for the attribute access *)
+                        let result_var = fresh_variable () in
+                        (* Get the attribute info *)
+                        let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) context.class_attributes in
+                        Printf.printf "DEBUG: Found attribute %s at index %d\n" var_name_str attr_idx;
+                        (* Create proper type information for the variable *)
+                        let var_location = { offset = newloc (); var_type = attr_type } in
+                        let updated_context = { 
+                            context with 
+                            temp_vars = (result_var, var_location) :: context.temp_vars 
+                        } in
+                        (* Generate TAC to access the attribute - just use the attribute name directly *)
+                        ([ TAC_Assign_Variable (result_var, var_name_str) ],
+                            TAC_Variable result_var,
+                            env,
+                            updated_context)
+                    else
+                        (* Not found anywhere *)
+                        failwith (Printf.sprintf "AST_Identifier: Variable not found: %s" var_name_str)
     | AST_Integer i ->
         let new_var = fresh_variable () in
         let type_str = "Int" in  (* Explicitly set type *)
@@ -568,111 +566,109 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             TAC_Variable new_var,
             env,
             context )  
-  | AST_If (cond, then_branch, else_branch) ->
-    let cond_instrs, cond_tac, env1, ctx1 =
-      convert current_class current_method env context cond
-    in
-    let cond_str = tac_expr_to_string cond_tac in
+    | AST_If (cond, then_branch, else_branch) ->
+        let cond_instrs, cond_tac, env1, ctx1 =
+            convert current_class current_method env context cond
+        in
+        let cond_str = tac_expr_to_string cond_tac in
 
-    let not_cond = fresh_variable () in
+        let not_cond = fresh_variable () in
 
-    let label_then = fresh_label current_class current_method in
-    let label_else = fresh_label current_class current_method in
-    let label_join = fresh_label current_class current_method in
+        let label_then = fresh_label current_class current_method in
+        let label_else = fresh_label current_class current_method in
+        let label_join = fresh_label current_class current_method in
 
-    let then_instrs, then_tac, env2, ctx2 =
-      convert current_class current_method env1 ctx1 then_branch
-    in
-    let else_instrs, else_tac, env3, ctx3 =
-      convert current_class current_method env2 ctx2 else_branch
-    in
+        let then_instrs, then_tac, env2, ctx2 =
+            convert current_class current_method env1 ctx1 then_branch
+        in
+        let else_instrs, else_tac, env3, ctx3 =
+            convert current_class current_method env2 ctx2 else_branch
+        in
 
-    let result_var = fresh_variable () in
-
-    let entry_code =
-      cond_instrs
-      @ [ TAC_Assign_Not      (not_cond, cond_tac)
-        ; TAC_ConditionalJump (not_cond,  label_else)
-        ; TAC_ConditionalJump (cond_str,   label_then)
-        ]
-    in
-
-    let then_code =
-      [ TAC_Comment "then branch"
-      ; TAC_Label   label_then ]
-      @ then_instrs
-      @ [ TAC_Assign_Variable(result_var, tac_expr_to_string then_tac)
-        ; TAC_Jump            label_join
-        ]
-    in
-
-    let else_code =
-      [ TAC_Comment "else branch"
-      ; TAC_Label   label_else ]
-      @ else_instrs
-      @ [ TAC_Assign_Variable(result_var, tac_expr_to_string else_tac)
-        ; TAC_Jump            label_join
-        ]
-    in
-
-    let join_code =
-      [ TAC_Comment "if-join"
-      ; TAC_Label   label_join ]
-    in
-
-    (entry_code @ then_code @ else_code @ join_code,
-     TAC_Variable result_var,
-     env3, ctx3)
-
-  | AST_Assign (var_name, expr) ->(
-    let instrs, expr_val, env1, ctx1 =
-        convert current_class current_method env context expr
-    in
-    (* Check if this is a class attribute *)
-    let var_name_str = snd var_name in
-    Printf.printf "DEBUG: Assigning to: %s\n" var_name_str;
-    Printf.printf "DEBUG: Class attributes: %s\n" 
-      (String.concat ", " (List.map (fun (name, _, _) -> name) ctx1.class_attributes));
-    
-    let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-    Printf.printf "DEBUG: Is class attribute: %b\n" is_class_attr;
-    
-    if is_class_attr then
-        (* Get attribute info *)
-        let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-        
-        (* We'll use the existing TAC_Assign_Variable but will handle attribute assignment in codegen *)
         let result_var = fresh_variable () in
-        let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
-        let final_copy = TAC_Assign_Variable (result_var, var_name_str) in
-        
-        (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
-    else
-        (* Find the temp location for this variable *)
-        let var_loc_opt = List.assoc_opt var_name_str ctx1.temp_vars in
-        match var_loc_opt with
-        | Some location -> 
-            (* Use the offset for consistent variable naming *)
-            let temp_var_name = Printf.sprintf "t$%d" location.offset in
-            
-            (* Create the assignment directly to the memory location *)
-            let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
-            
-            (* Create result variable *)
+
+        let entry_code =
+            cond_instrs
+            @ [ TAC_Assign_Not      (not_cond, cond_tac)
+                ; TAC_ConditionalJump (not_cond,  label_else)
+                ; TAC_ConditionalJump (cond_str,   label_then)
+            ]
+        in
+
+        let then_code =
+            [ TAC_Comment "then branch"
+                ; TAC_Label   label_then ]
+            @ then_instrs
+            @ [ TAC_Assign_Variable(result_var, tac_expr_to_string then_tac)
+                ; TAC_Jump            label_join
+            ]
+        in
+
+        let else_code =
+            [ TAC_Comment "else branch"
+                ; TAC_Label   label_else ]
+            @ else_instrs
+            @ [ TAC_Assign_Variable(result_var, tac_expr_to_string else_tac)
+                ; TAC_Jump            label_join
+            ]
+        in
+
+        let join_code =
+            [ TAC_Comment "if-join"
+                ; TAC_Label   label_join ]
+        in
+
+        (entry_code @ then_code @ else_code @ join_code,
+            TAC_Variable result_var,
+            env3, ctx3)
+
+    | AST_Assign (var_name, expr) ->(
+        let instrs, expr_val, env1, ctx1 =
+            convert current_class current_method env context expr
+        in
+        (* Check if this is a class attribute *)
+        let var_name_str = snd var_name in
+        Printf.printf "DEBUG: Assigning to: %s\n" var_name_str;
+        Printf.printf "DEBUG: Class attributes: %s\n" 
+            (String.concat ", " (List.map (fun (name, _, _) -> name) ctx1.class_attributes));
+
+        let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
+        Printf.printf "DEBUG: Is class attribute: %b\n" is_class_attr;
+
+        if is_class_attr then
+            (* Get attribute info *)
+            let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
+
             let result_var = fresh_variable () in
-            
-            (* Add result var to context with same location *)
-            let updated_ctx = {
-                ctx1 with
-                temp_vars = (result_var, location) :: ctx1.temp_vars
-            } in
-            
-            (* Final copy for return value *)
-            let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
-            
-            (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, updated_ctx)
-            
-        | None -> 
+            let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
+            let final_copy = TAC_Assign_Variable (result_var, var_name_str) in
+
+            (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
+        else
+            (* Find the temp location for this variable *)
+            let var_loc_opt = List.assoc_opt var_name_str ctx1.temp_vars in
+            match var_loc_opt with
+            | Some location -> 
+
+                let temp_var_name = Printf.sprintf "t$%d" location.offset in
+
+                (* Create the assignment directly to the memory location *)
+                let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
+
+                (* Create result variable *)
+                let result_var = fresh_variable () in
+
+                (* Add result var to context with same location *)
+                let updated_ctx = {
+                    ctx1 with
+                    temp_vars = (result_var, location) :: ctx1.temp_vars
+                } in
+
+                let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
+
+                (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, updated_ctx)
+
+            | None -> 
             (* Try param or class attribute as fallback *)
             let param_loc_opt = List.assoc_opt var_name_str ctx1.params in
             match param_loc_opt with
@@ -694,6 +690,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                     (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
                 | None -> 
                     failwith (Printf.sprintf "AST_Assign: Variable not found: %s" var_name_str))
+
     | AST_Block exprs ->
         let rec process_block exprs env_acc ctx_acc =
             match exprs with
@@ -745,7 +742,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         (* Branch to body if condition is true *)
         TAC_ConditionalJump (cond_var, loop_body);
         
-        (* Unconditionally jump to exit if not taken - THIS IS CRITICAL! *)
+        (* exit if not taken *)
         TAC_Jump loop_exit;
         
         (* While body *)
@@ -830,29 +827,92 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             }
         in
         convert current_class current_method env context dispatch_exp
-    | AST_Case (expr, case_elements) ->
-        let expr_instrs, expr_temp, env1, ctx1 =
-            convert current_class current_method env context expr
-        in
-        let result_var = fresh_variable () in
-        let case_instrs, _, final_ctx =
-            List.fold_left
-                (fun (instrs, idx, current_ctx) (id, type_name, body) ->
-                    let case_label = fresh_label current_class current_method in
-                    let next_label = fresh_label current_class current_method in
-                    let body_instrs, body_temp, env_updated, ctx_updated =
-                        convert current_class current_method env1 current_ctx body
-                    in
-                    let branch_instrs =
-                        body_instrs
-                        @ [
-                            TAC_Assign_Variable (result_var, tac_expr_to_string body_temp);
-                        ]
-                    in
-                    (instrs @ branch_instrs, idx + 1, ctx_updated))
-                ([], 0, ctx1) case_elements
-        in
-        (expr_instrs @ case_instrs, TAC_Variable result_var, env1, final_ctx)
+ | AST_Case (expr, case_elements) ->
+    (* Convert the expression being tested *)
+    let expr_instrs, expr_temp, env1, ctx1 =
+        convert current_class current_method env context expr
+    in
+    
+    (* Create a variable to hold the result *)
+    let result_var = fresh_variable () in
+    
+    (* Generate label for the end of the case statement *)
+    let case_end = fresh_label current_class current_method in
+    
+    (* Process each branch in the case statement *)
+    let case_instrs, _, final_ctx =
+        List.fold_left
+            (fun (instrs, idx, current_ctx) (var_id, type_id, body) ->
+                (* Extract string from id tuples *)
+                let var_name = snd var_id in
+                let type_name = snd type_id in
+                
+                let branch_label = fresh_label current_class current_method in
+                let next_label = fresh_label current_class current_method in
+                
+                (* Use a direct type check instruction that your compiler supports *)
+                let type_check = [
+                    TAC_Comment ("case branch for type: " ^ type_name);
+                    
+                    (* Create a string variable for the type name *)
+                    TAC_Assign_String ("t$_type_name", type_name);
+                    
+                    (* Call runtime type check function *)
+                    TAC_Call ("t$_type_result", "is_type", [tac_expr_to_string expr_temp; "t$_type_name"]);
+                    TAC_ConditionalJump ("t$_type_result", branch_label);
+                    TAC_Jump next_label;
+                    TAC_Label branch_label;
+                ] in
+                
+                (* Create a binding for the branch variable *)
+                let branch_var = fresh_variable () in
+                let bind_var = [
+                    TAC_Assign (branch_var, expr_temp);
+                ] in
+                
+                (* Add the branch variable to context *)
+                let var_location = { offset = newloc (); var_type = type_name } in
+                let updated_ctx = { 
+                    current_ctx with 
+                    temp_vars = (var_name, var_location) :: current_ctx.temp_vars 
+                } in
+                
+                (* Convert the branch body with the updated context *)
+                let body_instrs, body_temp, _, ctx_after_body =
+                    convert current_class current_method env1 updated_ctx body
+                in
+                
+                (* Store result and jump to end *)
+                let store_result = [
+                    TAC_Assign (result_var, body_temp);
+                    TAC_Jump case_end;
+                    TAC_Label next_label;
+                ] in
+                
+                (* Add this branch's code to accumulated instructions *)
+                (instrs @ type_check @ bind_var @ body_instrs @ store_result, 
+                 idx + 1, 
+                 ctx_after_body))
+            ([], 0, ctx1) case_elements
+    in
+    
+    (* Add error handler for no matching branch *)
+    let error_handler = [
+        TAC_Comment "case: no match found (runtime error)";
+        TAC_Call ("t$0", "abort", []);
+    ] in
+    
+    (* Add final label *)
+    let final_code = expr_instrs @ case_instrs @ error_handler @ [TAC_Label case_end] in
+    
+    (* Create location for result variable *)
+    let result_loc = { offset = newloc (); var_type = "Object" } in
+    let final_context = { 
+        final_ctx with 
+        temp_vars = (result_var, result_loc) :: final_ctx.temp_vars 
+    } in
+    
+    (final_code, TAC_Variable result_var, env1, final_context)
 
     | AST_Internal s ->
         let new_var = fresh_variable () in
@@ -3023,9 +3083,9 @@ let generate_custom_constructor class_map class_name
                 let initial_env = Hashtbl.create 10 in
                 reset_temp_var_counter ();
                 
-                (* Make sure we're using the full attributes list *)
+                (* Make sure we're use the full attributes list *)
                 let initial_context = {
-                    class_attributes = attributes_with_index;  (* Important: use full attributes list *)
+                    class_attributes = attributes_with_index;  
                     temp_vars = [];
                     params = [];
                     class_name = class_name;
@@ -4824,7 +4884,6 @@ let main () =
     let generate_assembly  (class_map : class_map)
         (impl_map : impl_map) (parent_map : parent_map)
         (class_order : string list) : string list =
-        (* Read the class information from your input files *)
 
         collect_all_strings class_map class_order impl_map;
         (* print_string_label_map (); *)

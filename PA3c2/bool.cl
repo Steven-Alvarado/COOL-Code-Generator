@@ -83,6 +83,14 @@ class Main inherits IO {
         out_string(input_str);
       }
       fi;
+
+      let x : Int, y : String<- "\n" in {
+          while ( x < 10 ) loop{
+              out_int(x);
+              out_string(y);
+              x <-x + 1;     
+          } pool;
+      };
     }
   };
 };
