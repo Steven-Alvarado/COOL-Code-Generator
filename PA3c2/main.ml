@@ -410,36 +410,52 @@ let rec convert (current_class : string) (current_method : string) (env : env)
     (context : context) (a : exp) : tac_instr list * tac_expr * env * context =
     match a.exp_kind with
     | AST_Identifier var_name ->
-        let var_name_str = snd var_name in
-        Printf.printf "DEBUG: Checking identifier: %s\n" var_name_str;
-        Printf.printf "DEBUG: Class attributes: %s\n" 
-            (String.concat ", " (List.map (fun (name, _, _) -> name) context.class_attributes));
-
-        if var_name_str = "self" then
-            ([], TAC_Variable "self", env, context) 
-        else 
-            (* First try to find in temp_vars  *)
-            let location_option = List.assoc_opt var_name_str context.temp_vars in
-            if location_option <> None then
-                (*local variable found *)
-                let var_location = Option.get location_option in
+    let var_name_str = snd var_name in
+    
+    if var_name_str = "self" then
+        ([], TAC_Variable "self", env, context) 
+    else 
+        (* First try to find in temp_vars - local variables take precedence *)
+        let location_option = List.assoc_opt var_name_str context.temp_vars in
+        if location_option <> None then
+            (* Handle temp var case - local variable found *)
+            let var_location = Option.get location_option in
+            let result_var = fresh_variable () in
+            
+            (* Use the offset directly for consistent variable naming *)
+            let source_var_name = Printf.sprintf "t$%d" var_location.offset in
+            
+            (* Add result var to context with same location *)
+            let final_context = { 
+                context with 
+                temp_vars = (result_var, var_location) :: context.temp_vars 
+            } in
+            
+            ([ TAC_Assign_Variable (result_var, source_var_name) ],
+                TAC_Variable result_var,
+                env,
+                final_context)
+        else
+            (* Check if the identifier is a class attribute *)
+            let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) context.class_attributes in
+            if is_class_attr then
+                (* Create a fresh variable for the attribute access *)
                 let result_var = fresh_variable () in
-
-                Printf.printf "DEBUG: Found local variable %s at offset %d\n" 
-                    var_name_str var_location.offset;
-
-                let source_var_name = Printf.sprintf "t$%d" var_location.offset in
-
-                (* Add result var to context with same location *)
-                let final_context = { 
+                (* Get the attribute info *)
+                let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) context.class_attributes in
+                
+                (* Create proper type information for the variable *)
+                let var_location = { offset = newloc (); var_type = attr_type } in
+                let updated_context = { 
                     context with 
                     temp_vars = (result_var, var_location) :: context.temp_vars 
                 } in
-
-                ([ TAC_Assign_Variable (result_var, source_var_name) ],
+                
+                (* Generate TAC to access the attribute - just use the attribute name directly *)
+                ([ TAC_Assign_Variable (result_var, var_name_str) ],
                     TAC_Variable result_var,
                     env,
-                    final_context)
+                    updated_context)
             else
                 (* Try to find in params *)
                 let param_loc_opt = List.assoc_opt var_name_str context.params in
@@ -458,28 +474,9 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                         env,
                         updated_context)
                 else
-                    (* Check if the identifier is a class attribute - last priority *)
-                    let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-                    if is_class_attr then
-                        (* Create a fresh variable for the attribute access *)
-                        let result_var = fresh_variable () in
-                        (* Get the attribute info *)
-                        let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-                        Printf.printf "DEBUG: Found attribute %s at index %d\n" var_name_str attr_idx;
-                        (* Create proper type information for the variable *)
-                        let var_location = { offset = newloc (); var_type = attr_type } in
-                        let updated_context = { 
-                            context with 
-                            temp_vars = (result_var, var_location) :: context.temp_vars 
-                        } in
-                        (* Generate TAC to access the attribute - just use the attribute name directly *)
-                        ([ TAC_Assign_Variable (result_var, var_name_str) ],
-                            TAC_Variable result_var,
-                            env,
-                            updated_context)
-                    else
-                        (* Not found anywhere *)
-                        failwith (Printf.sprintf "AST_Identifier: Variable not found: %s" var_name_str)
+                    (* Not found anywhere *)
+                    failwith (Printf.sprintf "AST_Identifier: Variable not found: %s" var_name_str)
+
     | AST_Integer i ->
         let new_var = fresh_variable () in
         let type_str = "Int" in  (* Explicitly set type *)
@@ -623,53 +620,41 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             env3, ctx3)
 
     | AST_Assign (var_name, expr) ->(
-        let instrs, expr_val, env1, ctx1 =
-            convert current_class current_method env context expr
-        in
-        (* Check if this is a class attribute *)
-        let var_name_str = snd var_name in
-        Printf.printf "DEBUG: Assigning to: %s\n" var_name_str;
-        Printf.printf "DEBUG: Class attributes: %s\n" 
-            (String.concat ", " (List.map (fun (name, _, _) -> name) ctx1.class_attributes));
-
-        let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-        Printf.printf "DEBUG: Is class attribute: %b\n" is_class_attr;
-
-        if is_class_attr then
-            (* Get attribute info *)
-            let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-
+    let instrs, expr_val, env1, ctx1 =
+        convert current_class current_method env context expr
+    in
+    
+    let var_name_str = snd var_name in
+    
+    (* Check if this is a class attribute *)
+    let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
+    
+    if is_class_attr then
+        (* Handle class attribute assignment *)
+        let result_var = fresh_variable () in
+        let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
+        let final_copy = TAC_Assign_Variable (result_var, var_name_str) in
+        
+        (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
+    else
+        (* Handle local variable assignment *)
+        let var_loc_opt = List.assoc_opt var_name_str ctx1.temp_vars in
+        
+        match var_loc_opt with
+        | Some location -> 
+            (* Create temp var name from offset *)
+            let temp_var_name = Printf.sprintf "t$%d" location.offset in
+            
+            (* Generate assignment instruction *)
+            let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
+            
+            (* Create result var for return value *)
             let result_var = fresh_variable () in
-            let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
-            let final_copy = TAC_Assign_Variable (result_var, var_name_str) in
-
+            let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
+            
             (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
-        else
-            (* Find the temp location for this variable *)
-            let var_loc_opt = List.assoc_opt var_name_str ctx1.temp_vars in
-            match var_loc_opt with
-            | Some location -> 
-
-                let temp_var_name = Printf.sprintf "t$%d" location.offset in
-
-                (* Create the assignment directly to the memory location *)
-                let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
-
-                (* Create result variable *)
-                let result_var = fresh_variable () in
-
-                (* Add result var to context with same location *)
-                let updated_ctx = {
-                    ctx1 with
-                    temp_vars = (result_var, location) :: ctx1.temp_vars
-                } in
-
-                let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
-
-                (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, updated_ctx)
-
-            | None -> 
-            (* Try param or class attribute as fallback *)
+        | None ->
+            (* If variable not found, check for params or fail *)
             let param_loc_opt = List.assoc_opt var_name_str ctx1.params in
             match param_loc_opt with
             | Some offset -> 
@@ -679,18 +664,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
                 let final_copy = TAC_Assign_Variable (result_var, param_name) in
                 (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
             | None ->
-                (* Final check for class attribute *)
-                let attr_info_opt = List.find_opt (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-                match attr_info_opt with
-                | Some (_, _, idx) -> 
-                    let attr_name = Printf.sprintf "attr%d" idx in
-                    let assign_instr = TAC_Assign_Variable (attr_name, tac_expr_to_string expr_val) in
-                    let result_var = fresh_variable () in
-                    let final_copy = TAC_Assign_Variable (result_var, attr_name) in
-                    (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
-                | None -> 
-                    failwith (Printf.sprintf "AST_Assign: Variable not found: %s" var_name_str))
-
+                failwith (Printf.sprintf "AST_Assign: Variable not found: %s" var_name_str))
     | AST_Block exprs ->
         let rec process_block exprs env_acc ctx_acc =
             match exprs with
@@ -827,92 +801,29 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             }
         in
         convert current_class current_method env context dispatch_exp
- | AST_Case (expr, case_elements) ->
-    (* Convert the expression being tested *)
-    let expr_instrs, expr_temp, env1, ctx1 =
-        convert current_class current_method env context expr
-    in
-    
-    (* Create a variable to hold the result *)
-    let result_var = fresh_variable () in
-    
-    (* Generate label for the end of the case statement *)
-    let case_end = fresh_label current_class current_method in
-    
-    (* Process each branch in the case statement *)
-    let case_instrs, _, final_ctx =
-        List.fold_left
-            (fun (instrs, idx, current_ctx) (var_id, type_id, body) ->
-                (* Extract string from id tuples *)
-                let var_name = snd var_id in
-                let type_name = snd type_id in
-                
-                let branch_label = fresh_label current_class current_method in
-                let next_label = fresh_label current_class current_method in
-                
-                (* Use a direct type check instruction that your compiler supports *)
-                let type_check = [
-                    TAC_Comment ("case branch for type: " ^ type_name);
-                    
-                    (* Create a string variable for the type name *)
-                    TAC_Assign_String ("t$_type_name", type_name);
-                    
-                    (* Call runtime type check function *)
-                    TAC_Call ("t$_type_result", "is_type", [tac_expr_to_string expr_temp; "t$_type_name"]);
-                    TAC_ConditionalJump ("t$_type_result", branch_label);
-                    TAC_Jump next_label;
-                    TAC_Label branch_label;
-                ] in
-                
-                (* Create a binding for the branch variable *)
-                let branch_var = fresh_variable () in
-                let bind_var = [
-                    TAC_Assign (branch_var, expr_temp);
-                ] in
-                
-                (* Add the branch variable to context *)
-                let var_location = { offset = newloc (); var_type = type_name } in
-                let updated_ctx = { 
-                    current_ctx with 
-                    temp_vars = (var_name, var_location) :: current_ctx.temp_vars 
-                } in
-                
-                (* Convert the branch body with the updated context *)
-                let body_instrs, body_temp, _, ctx_after_body =
-                    convert current_class current_method env1 updated_ctx body
-                in
-                
-                (* Store result and jump to end *)
-                let store_result = [
-                    TAC_Assign (result_var, body_temp);
-                    TAC_Jump case_end;
-                    TAC_Label next_label;
-                ] in
-                
-                (* Add this branch's code to accumulated instructions *)
-                (instrs @ type_check @ bind_var @ body_instrs @ store_result, 
-                 idx + 1, 
-                 ctx_after_body))
-            ([], 0, ctx1) case_elements
-    in
-    
-    (* Add error handler for no matching branch *)
-    let error_handler = [
-        TAC_Comment "case: no match found (runtime error)";
-        TAC_Call ("t$0", "abort", []);
-    ] in
-    
-    (* Add final label *)
-    let final_code = expr_instrs @ case_instrs @ error_handler @ [TAC_Label case_end] in
-    
-    (* Create location for result variable *)
-    let result_loc = { offset = newloc (); var_type = "Object" } in
-    let final_context = { 
-        final_ctx with 
-        temp_vars = (result_var, result_loc) :: final_ctx.temp_vars 
-    } in
-    
-    (final_code, TAC_Variable result_var, env1, final_context)
+    | AST_Case (expr, case_elements) ->
+        let expr_instrs, expr_temp, env1, ctx1 =
+            convert current_class current_method env context expr
+        in
+        let result_var = fresh_variable () in
+        let case_instrs, _, final_ctx =
+            List.fold_left
+                (fun (instrs, idx, current_ctx) (id, type_name, body) ->
+                    let case_label = fresh_label current_class current_method in
+                    let next_label = fresh_label current_class current_method in
+                    let body_instrs, body_temp, env_updated, ctx_updated =
+                        convert current_class current_method env1 current_ctx body
+                    in
+                    let branch_instrs =
+                        body_instrs
+                        @ [
+                            TAC_Assign_Variable (result_var, tac_expr_to_string body_temp);
+                        ]
+                    in
+                    (instrs @ branch_instrs, idx + 1, ctx_updated))
+                ([], 0, ctx1) case_elements
+        in
+        (expr_instrs @ case_instrs, TAC_Variable result_var, env1, final_ctx)
 
     | AST_Internal s ->
         let new_var = fresh_variable () in
@@ -927,7 +838,7 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             in
             (acc_instrs @ body_instrs, body_expr, final_env, final_ctx)
         | (var_id, type_id, init_opt) :: rest ->
-            (* Create location for this variable *)
+            (* Allocate a new location for the variable *)
             let var_offset = newloc () in
             let var_type_str = snd type_id in
             let var_name = snd var_id in
@@ -937,36 +848,51 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             let var_comment = TAC_Comment (Printf.sprintf "fp[%d] holds local %s (%s)" 
                                           var_offset var_name var_type_str) in
             
-            (* Create a temp name based on the offset *)
+            (* Create temp var name from offset *)
             let temp_var_name = Printf.sprintf "t$%d" var_offset in
             
-            (* Register variable in context BEFORE processing initializer *)
+            (* Create initial context with the variable registered *)
             let ctx_with_var = { 
                 current_ctx with 
-                temp_vars = (var_name, var_temp_loc) :: 
-                           (temp_var_name, var_temp_loc) ::
-                           current_ctx.temp_vars 
+                temp_vars = (var_name, var_temp_loc) :: current_ctx.temp_vars 
             } in
             
-            (* Process initialization based on whether there's an initializer *)
-            let (init_instrs, init_var, updated_env, updated_ctx) =
+            (* Handle initializer *)
+            let (init_instrs, updated_ctx) =
                 match init_opt with
                 | Some exp ->
-                    (* Process initializer with updated context *)
-                    let instrs, expr_val, env1, ctx1 =
-                        convert current_class current_method current_env ctx_with_var exp
+                    (* Process initializer *)
+                    let instrs, expr_val, _, ctx1 = 
+                        convert current_class current_method current_env current_ctx exp
                     in
-                    (* Create assignment to the temp var *)
-                    let assign_instr = [TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val)] in
-                    (instrs @ assign_instr, temp_var_name, env1, ctx1)
+                    
+                    (* Assign initializer result to the variable *)
+                    let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
+                    
+                    (* Update context with both variable name and temp var name *)
+                    let ctx_with_both = {
+                        ctx1 with
+                        temp_vars = (var_name, var_temp_loc) :: 
+                                   (temp_var_name, var_temp_loc) ::
+                                   ctx1.temp_vars
+                    } in
+                    
+                    (instrs @ [assign_instr], ctx_with_both)
                 | None ->
-                    (* Default initialization - use TAC_Assign_Default *)
-                    let default_instr = [TAC_Assign_Default (temp_var_name, var_type_str)] in
-                    (default_instr, temp_var_name, current_env, ctx_with_var)
+                    (* Default initialization *)
+                    let default_instr = TAC_Assign_Default (temp_var_name, var_type_str) in
+                    
+                    (* Update context with both variable name and temp var name *)
+                    let ctx_with_both = {
+                        ctx_with_var with
+                        temp_vars = (temp_var_name, var_temp_loc) :: ctx_with_var.temp_vars
+                    } in
+                    
+                    ([default_instr], ctx_with_both)
             in
             
-            (* Process remaining bindings with the updated context *)
-            process_bindings rest updated_env updated_ctx 
+            (* Process remaining bindings *)
+            process_bindings rest current_env updated_ctx 
                 (acc_instrs @ [var_comment] @ init_instrs)
     in
     process_bindings bindings env context []
