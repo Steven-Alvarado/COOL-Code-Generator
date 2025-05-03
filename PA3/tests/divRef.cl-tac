@@ -1,0 +1,14 @@
+comment start
+label Main_main_0
+t$4 <- x
+t$5 <- int 4
+t$2 <- / t$4 t$5
+t$3 <- int 5
+x <- / t$2 t$3
+t$1 <- x
+t$7 <- x
+t$6 <- call out_int t$7
+t$8 <- string
+\n
+t$0 <- call out_string t$8
+return t$0
