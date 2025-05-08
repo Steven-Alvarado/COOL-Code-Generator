@@ -1,0 +1,15 @@
+comment start
+label Main_main_0
+t$0 <- int 3
+t$1 <- t$0
+t$2 <- int 3
+t$3 <- int 4
+t$4 <- + t$2 t$3
+t$5 <- t$2
+t$6 <- + t$4 t$5
+t$7 <- t$6
+t$8 <- t$2
+t$9 <- t$5
+t$10 <- + t$8 t$9
+t$0 <- call out_int t$10
+return t$0

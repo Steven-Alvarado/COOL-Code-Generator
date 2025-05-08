@@ -1,0 +1,108 @@
+comment start
+label Main_main_0
+t$1 <- default Int
+t$1 <- call in_int
+t$2 <- t$1
+t$10 <- t$1
+t$11 <- int 121
+t$8 <- + t$10 t$11
+t$12 <- int 32
+t$13 <- int 4
+t$9 <- / t$12 t$13
+t$6 <- - t$8 t$9
+t$7 <- int 1
+t$4 <- + t$6 t$7
+t$5 <- int 32
+t$1 <- - t$4 t$5
+t$3 <- t$1
+t$27 <- int 4
+t$28 <- int 5
+t$25 <- < t$27 t$28
+t$29 <- int 4
+t$30 <- int 5
+t$26 <- <= t$29 t$30
+t$23 <- = t$25 t$26
+t$33 <- int 42
+t$34 <- int 43
+t$31 <- = t$33 t$34
+t$35 <- bool false
+t$36 <- bool false
+t$32 <- = t$35 t$36
+t$24 <- = t$31 t$32
+t$21 <- = t$23 t$24
+t$41 <- int 4
+t$42 <- int 5
+t$39 <- < t$41 t$42
+t$43 <- int 4
+t$44 <- int 5
+t$40 <- <= t$43 t$44
+t$37 <- = t$39 t$40
+t$47 <- int 42
+t$48 <- int 43
+t$45 <- = t$47 t$48
+t$49 <- bool false
+t$50 <- bool true
+t$46 <- = t$49 t$50
+t$38 <- = t$45 t$46
+t$22 <- = t$37 t$38
+t$19 <- = t$21 t$22
+t$57 <- int 4
+t$58 <- int 1
+t$55 <- < t$57 t$58
+t$59 <- int 4
+t$60 <- int 45
+t$56 <- <= t$59 t$60
+t$53 <- = t$55 t$56
+t$63 <- int 41
+t$64 <- int 43
+t$61 <- = t$63 t$64
+t$65 <- bool false
+t$66 <- bool true
+t$62 <- = t$65 t$66
+t$54 <- = t$61 t$62
+t$51 <- = t$53 t$54
+t$68 <- int 43
+t$69 <- int 32
+t$67 <- <= t$68 t$69
+t$52 <- not t$67
+t$20 <- = t$51 t$52
+t$18 <- = t$19 t$20
+t$16 <- not t$18
+t$71 <- int 4
+t$72 <- int 39
+t$70 <- < t$71 t$72
+t$17 <- not t$70
+t$15 <- = t$16 t$17
+t$14 <- not t$15
+t$85 <- not t$14
+bt t$85 Main_main_4
+bt t$14 Main_main_3
+comment then branch
+label Main_main_3
+t$73 <- t$1
+jmp Main_main_6
+comment else branch
+label Main_main_4
+t$78 <- t$1
+t$79 <- int 3
+t$76 <- + t$78 t$79
+t$77 <- int 1
+t$75 <- - t$76 t$77
+jmp Main_main_8
+comment if-join
+label Main_main_5
+return t$0
+comment fcall-pre to out_int
+label Main_main_6
+t$0 <- call out_int t$73
+jmp Main_main_5
+comment fcall-pre to out_int
+label Main_main_8
+t$74 <- call out_int t$75
+t$82 <- t$1
+t$83 <- int 43
+t$81 <- + t$82 t$83
+t$80 <- call out_int t$81
+t$84 <- t$1
+t$0 <- call out_int t$84
+jmp Main_main_5

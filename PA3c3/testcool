@@ -1,0 +1,64 @@
+#!/bin/bash
+set -e
+
+# Check for exactly one argument
+if [ $# -ne 1 ]; then
+  echo "Usage: test <file.cl>"
+  exit 1
+fi
+
+INPUT="$1"
+BASE="${INPUT%.cl}"
+TYPEFILE="${BASE}.cl-type"
+ASM_REF="${BASE}Ref.s"
+ASM_MINE="${BASE}.s"
+EXE_REF="${BASE}Ref"
+EXE_MINE="${BASE}Mine"
+OUT_REF="reference_output"
+OUT_MINE="my_output"
+
+# Step 1: Typechecking
+echo "📘 Step 1: Typechecking $INPUT..."
+cool --type "$INPUT" || exit
+
+# Step 2: Generate reference assembly
+echo "🛠️  generating tac files..."
+cool --tac "$TYPEFILE" --out "$BASE"Ref
+
+# Step 2: Generate reference assembly
+echo "🛠️  Step 2: Reference compiler generating assembly..."
+cool --x86 "$TYPEFILE" --out "$BASE"Ref
+
+# Step 3: Compile reference
+echo "⚙️  Step 3: Compiling reference..."
+gcc -no-pie -static "$ASM_REF" -g -o "$EXE_REF"
+
+# Step 4: Run reference
+echo "🚀 Running reference executable..."
+./"$EXE_REF" &> "$OUT_REF" || echo "⚠️ Reference program exited with error."
+
+# Step 5: Your compiler generating assembly
+echo "🛠️  Step 4: Your compiler generating assembly..."
+./main.exe "$TYPEFILE"
+
+# Step 6: Compile your output
+echo "⚙️  Step 5: Compiling your output..."
+gcc -no-pie -static "$ASM_MINE" -g
+
+# Step 7: Run your executable
+echo "🚀 Running your executable..."
+./a.out &> "$OUT_MINE" || echo "⚠️ Your program exited with error."
+
+# Step 8: Print outputs
+echo -e "\n====================  Reference Output ===================="
+cat "$OUT_REF"
+echo -e "\n====================  Your Output ===================="
+cat "$OUT_MINE"
+
+# Step 9: Show diff
+echo -e "\n====================  DIFF ===================="
+diff "$OUT_REF" "$OUT_MINE" || echo "❗ Outputs differ."
+
+# Optional: Cleanup (you can comment this out if you want to inspect outputs)
+# rm -f "$ASM_REF" "$ASM_MINE" "$EXE_REF" "$EXE_MINE" "$OUT_REF" "$OUT_MINE"
+
