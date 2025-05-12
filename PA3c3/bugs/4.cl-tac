@@ -1,0 +1,12 @@
+comment start
+label A_f_0
+t$1 <- new SELF_TYPE
+t$0 <- t$1
+return t$0
+comment start
+label Main_main_0
+t$2 <- new B
+obj <- t$2
+t$3 <- obj
+t$0 <- call f 
+return t$0

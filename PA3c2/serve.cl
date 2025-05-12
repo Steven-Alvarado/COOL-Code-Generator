@@ -6,7 +6,7 @@ class Main inherits IO{
     main () : Object{
         {
             z <- 49 - 235 + 43;
-            x <- 4 +  y * z *2;
+            x <- 4 +  y *2;
             out_int(z);
             t <-  (z<x);
                 if t then {

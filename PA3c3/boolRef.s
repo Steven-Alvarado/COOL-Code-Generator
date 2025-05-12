@@ -457,8 +457,8 @@ Main.main:              ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 6
-                        movq $48, %r14
+                        ## stack room for temporaries: 42
+                        movq $336, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
@@ -471,6 +471,29 @@ Main.main:              ## method definition
                         popq %r12
                         popq %rbp
                         movq %r13, 0(%rbp)
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds "Enter an integer val..."
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
                         ## in_int(...)
                         pushq %r12
                         pushq %rbp
@@ -535,7 +558,7 @@ Main.main:              ## method definition
                         movq 24(%r13), %r14
                         cmpq $0, %r14
 			jne l3
-                        movq $string8, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -630,27 +653,239 @@ movq %rax, %r13
                         movq -8(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13, 0(%rbp)
-                        pushq %r12
+                        ## fp[-1] holds local c_0 (Bool)
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
+                        ## fp[-2] holds local c_1 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -16(%rbp)
+                        ## fp[-3] holds local c_2 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -24(%rbp)
+                        ## fp[-4] holds local c_3 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -32(%rbp)
+                        ## fp[-5] holds local c_4 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -40(%rbp)
+                        ## fp[-6] holds local c_5 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -48(%rbp)
+                        ## fp[-7] holds local c_6 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -56(%rbp)
+                        ## fp[-8] holds local c_7 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -64(%rbp)
+                        ## fp[-9] holds local c_8 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -72(%rbp)
+                        ## fp[-10] holds local c_9 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -80(%rbp)
+                        ## fp[-11] holds local c_10 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -88(%rbp)
+                        ## fp[-12] holds local c_11 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -96(%rbp)
+                        ## fp[-13] holds local c_12 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -104(%rbp)
+                        ## fp[-14] holds local c_13 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -112(%rbp)
+                        ## fp[-15] holds local c_14 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -120(%rbp)
+                        ## fp[-16] holds local c_15 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -128(%rbp)
+                        ## fp[-17] holds local c_16 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -136(%rbp)
+                        ## fp[-18] holds local c_17 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -144(%rbp)
+                        ## fp[-19] holds local c_18 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -152(%rbp)
+                        ## fp[-20] holds local c_19 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -160(%rbp)
+                        ## fp[-21] holds local c_20 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -168(%rbp)
+                        ## fp[-22] holds local c_21 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -176(%rbp)
+                        ## fp[-23] holds local c_22 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -184(%rbp)
+                        ## fp[-24] holds local c_23 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -192(%rbp)
+                        ## fp[-25] holds local c_24 (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -200(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
                         pushq %r13
                         ## new Int
                         pushq %rbp
@@ -659,7 +894,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $5, %r14
+                        movq $10, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -670,15 +905,8 @@ movq %rax, %r13
                         pushq %r13
                         pushq %r12
                         pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
+                        ## a
+                        movq 0(%rbp), %r13
                         pushq %r13
                         ## new Int
                         pushq %rbp
@@ -687,7 +915,36 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $5, %r14
+                        movq $20, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $30, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -697,24 +954,9 @@ movq %rax, %r13
                         popq %r12
                         pushq %r13
                         pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
                         pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $42, %r14
-                        movq %r14, 24(%r13)
+                        ## a
+                        movq 0(%rbp), %r13
                         pushq %r13
                         ## new Int
                         pushq %rbp
@@ -723,347 +965,7 @@ movq %rax, %r13
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        pushq %r13
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call lt_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $5, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call le_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $42, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        pushq %r13
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call lt_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $45, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call le_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $41, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        pushq %r13
-                        ## new Bool
-                        pushq %rbp
-                        pushq %r12
-                        movq $Bool..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $1, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        pushq %rbp
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $43, %r14
-                        movq %r14, 24(%r13)
-                        pushq %r13
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $32, %r14
+                        movq $40, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -1097,18 +999,6 @@ l4:                     ## true branch
                         popq %rbp
 .globl l6
 l6:                     ## end of if conditional
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l7
@@ -1137,16 +1027,25 @@ l7:                     ## true branch
 l9:                     ## end of if conditional
                         pushq %r13
                         pushq %r12
-                        pushq %rbp
-                        ## new Int
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -8(%rbp)
+                        pushq %r12
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $4, %r14
-                        movq %r14, 24(%r13)
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
                         pushq %r13
                         ## new Int
                         pushq %rbp
@@ -1155,11 +1054,82 @@ l9:                     ## end of if conditional
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq $39, %r14
+                        movq $17, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
                         call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $31, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $43, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $57, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
                         addq $24, %rsp
                         popq %rbp
                         popq %r12
@@ -1189,12 +1159,6 @@ l10:                    ## true branch
                         popq %rbp
 .globl l12
 l12:                    ## end of if conditional
-                        pushq %r13
-                        pushq %r12
-                        call eq_handler
-                        addq $24, %rsp
-                        popq %rbp
-                        popq %r12
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l13
@@ -1221,57 +1185,188 @@ l13:                    ## true branch
                         popq %rbp
 .globl l15
 l15:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -16(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $24, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $42, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $56, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $74, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
                         movq 24(%r13), %r13
                         cmpq $0, %r13
 			jne l16
 .globl l17
 l17:                    ## false branch
-                        ## out_int(...)
-                        pushq %r12
-                        pushq %rbp
-                        ## a
-                        movq 0(%rbp), %r13
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
+                        ## new Bool
                         pushq %rbp
                         pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $3, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq -8(%rbp), %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
-                        ## new Int
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
+                        movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
+                        jmp l18
+.globl l16
+l16:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l18
+l18:                    ## end of if conditional
                         movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        movq %r14, %rax
-			subq %r13, %rax
-			movq %rax, %r13
-                        movq %r13, -8(%rbp)
+                        cmpq $0, %r13
+			jne l19
+.globl l20
+l20:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l21
+.globl l19
+l19:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l21
+l21:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -24(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1279,25 +1374,1646 @@ l17:                    ## false branch
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -8(%rbp), %r14
+                        movq $31, %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
-                        ## obtain vtable for self object of type Main
-                        movq 16(%r12), %r14
-                        ## look up out_int() at offset 7 in vtable
-                        movq 56(%r14), %r14
-                        call *%r14
-                        addq $16, %rsp
+                        call lt_handler
+                        addq $24, %rsp
                         popq %rbp
                         popq %r12
-                        ## out_int(...)
+                        pushq %r13
                         pushq %r12
                         pushq %rbp
                         ## a
                         movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $53, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $69, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $91, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
                         movq 24(%r13), %r13
-                        movq %r13, -8(%rbp)
+                        cmpq $0, %r13
+			jne l22
+.globl l23
+l23:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l24
+.globl l22
+l22:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l24
+l24:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l25
+.globl l26
+l26:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l27
+.globl l25
+l25:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l27
+l27:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -32(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $38, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $12, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $28, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l28
+.globl l29
+l29:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l30
+.globl l28
+l28:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l30
+l30:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l31
+.globl l32
+l32:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l33
+.globl l31
+l31:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l33
+l33:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -40(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $45, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $15, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $25, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $45, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l34
+.globl l35
+l35:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l36
+.globl l34
+l34:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l36
+l36:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l37
+.globl l38
+l38:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l39
+.globl l37
+l37:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l39
+l39:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l40
+.globl l41
+l41:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l42
+.globl l40
+l40:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l42
+l42:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -48(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $7, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $26, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $38, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $62, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l43
+.globl l44
+l44:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l45
+.globl l43
+l43:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l45
+l45:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l46
+.globl l47
+l47:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l48
+.globl l46
+l46:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l48
+l48:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -56(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $14, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $37, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $51, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $79, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l49
+.globl l50
+l50:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l51
+.globl l49
+l49:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l51
+l51:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l52
+.globl l53
+l53:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l54
+.globl l52
+l52:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l54
+l54:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -64(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $21, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $48, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $64, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $16, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l55
+.globl l56
+l56:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l57
+.globl l55
+l55:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l57
+l57:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l58
+.globl l59
+l59:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l60
+.globl l58
+l58:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l60
+l60:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -72(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $28, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $59, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $7, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $33, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l61
+.globl l62
+l62:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l63
+.globl l61
+l61:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l63
+l63:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l64
+.globl l65
+l65:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l66
+.globl l64
+l64:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l66
+l66:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -80(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $35, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $20, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $50, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l67
+.globl l68
+l68:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l69
+.globl l67
+l67:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l69
+l69:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l70
+.globl l71
+l71:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l72
+.globl l70
+l70:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l72
+l72:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -88(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $42, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $21, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $33, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $67, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l73
+.globl l74
+l74:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l75
+.globl l73
+l73:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l75
+l75:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l76
+.globl l77
+l77:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l78
+.globl l76
+l76:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l78
+l78:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -96(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $49, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $46, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $4, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l79
+.globl l80
+l80:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l81
+.globl l79
+l79:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l81
+l81:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l82
+.globl l83
+l83:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l84
+.globl l82
+l82:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l84
+l84:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -104(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $6, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1307,10 +3023,26 @@ l17:                    ## false branch
                         popq %rbp
                         movq $43, %r14
                         movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq -8(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -8(%rbp)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -1318,7 +3050,2321 @@ l17:                    ## false branch
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq -8(%rbp), %r14
+                        movq $59, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $21, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l85
+.globl l86
+l86:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l87
+.globl l85
+l85:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l87
+l87:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l88
+.globl l89
+l89:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l90
+.globl l88
+l88:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l90
+l90:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -112(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $13, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $54, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $2, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $38, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l91
+.globl l92
+l92:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l93
+.globl l91
+l91:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l93
+l93:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l94
+.globl l95
+l95:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l96
+.globl l94
+l94:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l96
+l96:                    ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -120(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $20, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $15, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $55, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l97
+.globl l98
+l98:                    ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l99
+.globl l97
+l97:                    ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l99
+l99:                    ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l100
+.globl l101
+l101:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l102
+.globl l100
+l100:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l102
+l102:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -128(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $27, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $16, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $28, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $72, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l103
+.globl l104
+l104:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l105
+.globl l103
+l103:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l105
+l105:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l106
+.globl l107
+l107:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l108
+.globl l106
+l106:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l108
+l108:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -136(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $34, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $27, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $41, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l109
+.globl l110
+l110:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l111
+.globl l109
+l109:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l111
+l111:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l112
+.globl l113
+l113:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l114
+.globl l112
+l112:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l114
+l114:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -144(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $41, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $38, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $54, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $26, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l115
+.globl l116
+l116:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l117
+.globl l115
+l115:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l117
+l117:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l118
+.globl l119
+l119:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l120
+.globl l118
+l118:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l120
+l120:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -152(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $48, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $49, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $67, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $43, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l121
+.globl l122
+l122:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l123
+.globl l121
+l121:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l123
+l123:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l124
+.globl l125
+l125:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l126
+.globl l124
+l124:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l126
+l126:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -160(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $5, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $60, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l127
+.globl l128
+l128:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l129
+.globl l127
+l127:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l129
+l129:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l130
+.globl l131
+l131:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l132
+.globl l130
+l130:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l132
+l132:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -168(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $12, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $23, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $77, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l133
+.globl l134
+l134:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l135
+.globl l133
+l133:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l135
+l135:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l136
+.globl l137
+l137:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l138
+.globl l136
+l136:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l138
+l138:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -176(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $19, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $22, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $36, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $14, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l139
+.globl l140
+l140:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l141
+.globl l139
+l139:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l141
+l141:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l142
+.globl l143
+l143:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l144
+.globl l142
+l142:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l144
+l144:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -184(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $26, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $33, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $49, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $31, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l145
+.globl l146
+l146:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l147
+.globl l145
+l145:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l147
+l147:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l148
+.globl l149
+l149:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l150
+.globl l148
+l148:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l150
+l150:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -192(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $33, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call lt_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $44, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $62, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $48, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        call le_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l151
+.globl l152
+l152:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l153
+.globl l151
+l151:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l153
+l153:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l154
+.globl l155
+l155:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l156
+.globl l154
+l154:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l156
+l156:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -200(%rbp)
+                        ## fp[-26] holds local chain1_val (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -208(%rbp)
+                        ## fp[-27] holds local chain2_val (Bool)
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq %r13, -216(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        ## c_0
+                        movq -8(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_1
+                        movq -16(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_2
+                        movq -24(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_3
+                        movq -32(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_4
+                        movq -40(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_5
+                        movq -48(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_6
+                        movq -56(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_7
+                        movq -64(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_8
+                        movq -72(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_9
+                        movq -80(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_10
+                        movq -88(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_11
+                        movq -96(%rbp), %r13
+                        pushq %r13
+                        ## c_12
+                        movq -104(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -208(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        ## c_13
+                        movq -112(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_14
+                        movq -120(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_15
+                        movq -128(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_16
+                        movq -136(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_17
+                        movq -144(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_18
+                        movq -152(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_19
+                        movq -160(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_20
+                        movq -168(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_21
+                        movq -176(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_22
+                        movq -184(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        pushq %rbp
+                        ## c_23
+                        movq -192(%rbp), %r13
+                        pushq %r13
+                        ## c_24
+                        movq -200(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq %r13, -216(%rbp)
+                        pushq %r12
+                        pushq %rbp
+                        ## chain1_val
+                        movq -208(%rbp), %r13
+                        pushq %r13
+                        ## chain2_val
+                        movq -216(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l157
+.globl l158
+l158:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l159
+.globl l157
+l157:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l159
+l159:                   ## end of if conditional
+                        pushq %r13
+                        pushq %r12
+                        call eq_handler
+                        addq $24, %rsp
+                        popq %rbp
+                        popq %r12
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l160
+.globl l161
+l161:                   ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l162
+.globl l160
+l160:                   ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l162
+l162:                   ## end of if conditional
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l163
+.globl l164
+l164:                   ## false branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds "Value of 'a' is: "
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string12 holds "Another arbitrary op..."
+                        movq $string12, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, -224(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $999, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq -224(%rbp), %r14
+                        movq %r14, %rax
+			subq %r13, %rax
+			movq %rax, %r13
+                        movq %r13, -224(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -224(%rbp), %r14
                         movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
@@ -1330,6 +5376,52 @@ l17:                    ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string13 holds "Repeating 'a' for em..."
+                        movq $string13, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
@@ -1345,9 +5437,55 @@ l17:                    ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l18
-.globl l16
-l16:                    ## true branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        jmp l165
+.globl l163
+l163:                   ## true branch
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string10 holds "Value of 'a' is: "
+                        movq $string10, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
@@ -1363,8 +5501,116 @@ l16:                    ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l18
-l18:                    ## end of if conditional
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string14 holds "Let's do something a..."
+                        movq $string14, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_int(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## a
+                        movq 0(%rbp), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, -224(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $777, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq -224(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -224(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq -224(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_int() at offset 7 in vtable
+                        movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string11 holds "\n"
+                        movq $string11, %r14
+                        movq %r14, 24(%r13)
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+.globl l165
+l165:                   ## end of if conditional
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -1476,8 +5722,8 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l19
-                        movq $string9, %r13
+			jne l166
+                        movq $string15, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -1486,8 +5732,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l19
-l19:                    movq %r13, 24(%r15)
+.globl l166
+l166:                   movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -1577,7 +5823,43 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "ERROR: 6: Exception: division by zero\\n"
+string8:                # "Enter an integer value for 'a': "
+.byte  69 # 'E'
+.byte 110 # 'n'
+.byte 116 # 't'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte 110 # 'n'
+.byte  32 # ' '
+.byte 105 # 'i'
+.byte 110 # 'n'
+.byte 116 # 't'
+.byte 101 # 'e'
+.byte 103 # 'g'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte 118 # 'v'
+.byte  97 # 'a'
+.byte 108 # 'l'
+.byte 117 # 'u'
+.byte 101 # 'e'
+.byte  32 # ' '
+.byte 102 # 'f'
+.byte 111 # 'o'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte  39 # '\''
+.byte  97 # 'a'
+.byte  39 # '\''
+.byte  58 # ':'
+.byte  32 # ' '
+.byte 0
+
+.globl string9
+string9:                # "ERROR: 6: Exception: division by zero\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'
@@ -1619,8 +5901,154 @@ string8:                # "ERROR: 6: Exception: division by zero\\n"
 .byte 110 # 'n'
 .byte 0
 
-.globl string9
-string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
+.globl string10
+string10:               # "Value of 'a' is: "
+.byte  86 # 'V'
+.byte  97 # 'a'
+.byte 108 # 'l'
+.byte 117 # 'u'
+.byte 101 # 'e'
+.byte  32 # ' '
+.byte 111 # 'o'
+.byte 102 # 'f'
+.byte  32 # ' '
+.byte  39 # '\''
+.byte  97 # 'a'
+.byte  39 # '\''
+.byte  32 # ' '
+.byte 105 # 'i'
+.byte 115 # 's'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte 0
+
+.globl string11
+string11:               # "\\n"
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string12
+string12:               # "Another arbitrary operation: a - 999 = "
+.byte  65 # 'A'
+.byte 110 # 'n'
+.byte 111 # 'o'
+.byte 116 # 't'
+.byte 104 # 'h'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte 114 # 'r'
+.byte  98 # 'b'
+.byte 105 # 'i'
+.byte 116 # 't'
+.byte 114 # 'r'
+.byte  97 # 'a'
+.byte 114 # 'r'
+.byte 121 # 'y'
+.byte  32 # ' '
+.byte 111 # 'o'
+.byte 112 # 'p'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte  97 # 'a'
+.byte 116 # 't'
+.byte 105 # 'i'
+.byte 111 # 'o'
+.byte 110 # 'n'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte  32 # ' '
+.byte  45 # '-'
+.byte  32 # ' '
+.byte  57 # '9'
+.byte  57 # '9'
+.byte  57 # '9'
+.byte  32 # ' '
+.byte  61 # '='
+.byte  32 # ' '
+.byte 0
+
+.globl string13
+string13:               # "Repeating 'a' for emphasis: "
+.byte  82 # 'R'
+.byte 101 # 'e'
+.byte 112 # 'p'
+.byte 101 # 'e'
+.byte  97 # 'a'
+.byte 116 # 't'
+.byte 105 # 'i'
+.byte 110 # 'n'
+.byte 103 # 'g'
+.byte  32 # ' '
+.byte  39 # '\''
+.byte  97 # 'a'
+.byte  39 # '\''
+.byte  32 # ' '
+.byte 102 # 'f'
+.byte 111 # 'o'
+.byte 114 # 'r'
+.byte  32 # ' '
+.byte 101 # 'e'
+.byte 109 # 'm'
+.byte 112 # 'p'
+.byte 104 # 'h'
+.byte  97 # 'a'
+.byte 115 # 's'
+.byte 105 # 'i'
+.byte 115 # 's'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte 0
+
+.globl string14
+string14:               # "Let's do something arbitrary: a + 777 = "
+.byte  76 # 'L'
+.byte 101 # 'e'
+.byte 116 # 't'
+.byte  39 # '\''
+.byte 115 # 's'
+.byte  32 # ' '
+.byte 100 # 'd'
+.byte 111 # 'o'
+.byte  32 # ' '
+.byte 115 # 's'
+.byte 111 # 'o'
+.byte 109 # 'm'
+.byte 101 # 'e'
+.byte 116 # 't'
+.byte 104 # 'h'
+.byte 105 # 'i'
+.byte 110 # 'n'
+.byte 103 # 'g'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte 114 # 'r'
+.byte  98 # 'b'
+.byte 105 # 'i'
+.byte 116 # 't'
+.byte 114 # 'r'
+.byte  97 # 'a'
+.byte 114 # 'r'
+.byte 121 # 'y'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte  97 # 'a'
+.byte  32 # ' '
+.byte  43 # '+'
+.byte  32 # ' '
+.byte  55 # '7'
+.byte  55 # '7'
+.byte  55 # '7'
+.byte  32 # ' '
+.byte  61 # '='
+.byte  32 # ' '
+.byte 0
+
+.globl string15
+string15:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

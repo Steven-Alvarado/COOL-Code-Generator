@@ -186,7 +186,9 @@ let tac_instr_to_str x =
     | TAC_Return x -> "return " ^ x ^ "\n"
     | TAC_Call (result, method_name, args) ->
         result ^ " <- call " ^ method_name ^ " " ^ String.concat ", " args ^ "\n"
-    | _ -> "ERROR: unhandled TAC Instruction\n"
+    (* | TAC_Assign_IsVoid( x, y) -> _ *)
+
+    (* | _ -> "ERROR: unhandled TAC Instruction\n" *)
 
 let tac_instr_name instr =
     match instr with
@@ -409,74 +411,78 @@ let get_type_from_ast ast_node =
 let rec convert (current_class : string) (current_method : string) (env : env) 
     (context : context) (a : exp) : tac_instr list * tac_expr * env * context =
     match a.exp_kind with
-    | AST_Identifier var_name ->
-    let var_name_str = snd var_name in
-    
-    if var_name_str = "self" then
-        ([], TAC_Variable "self", env, context) 
-    else 
-        (* First try to find in temp_vars - local variables take precedence *)
-        let location_option = List.assoc_opt var_name_str context.temp_vars in
-        if location_option <> None then
-            (* Handle temp var case - local variable found *)
-            let var_location = Option.get location_option in
-            let result_var = fresh_variable () in
-            
-            (* Use the offset directly for consistent variable naming *)
-            let source_var_name = Printf.sprintf "t$%d" var_location.offset in
-            
-            (* Add result var to context with same location *)
-            let final_context = { 
-                context with 
-                temp_vars = (result_var, var_location) :: context.temp_vars 
-            } in
-            
-            ([ TAC_Assign_Variable (result_var, source_var_name) ],
-                TAC_Variable result_var,
-                env,
-                final_context)
-        else
-            (* Check if the identifier is a class attribute *)
-            let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-            if is_class_attr then
-                (* Create a fresh variable for the attribute access *)
+    | AST_Identifier var_name ->(
+        let var_name_str = snd var_name in
+
+        if var_name_str = "self" then
+            (* Direct reference to self - no lookup needed *)
+            ([], TAC_Variable "self", env, context) 
+        else 
+            (* Step 1: Look up the location (l) for the identifier in environment E *)
+            let lookup_result = 
+                (* First check in local variables (temp_vars) *)
+                match List.assoc_opt var_name_str context.temp_vars with
+                | Some location -> `Local location
+                | None ->
+                    (* Check if it's a class attribute *)
+                    match List.find_opt (fun (name, _, _) -> name = var_name_str) context.class_attributes with
+                    | Some (_, attr_type, attr_idx) -> `Field (attr_type, attr_idx)
+                    | None ->
+                        (* Check if it's a parameter *)
+                        match List.assoc_opt var_name_str context.params with
+                        | Some offset -> `Param offset
+                        | None ->
+                            failwith (Printf.sprintf "Variable not found: %s in %s.%s" 
+                                var_name_str current_class current_method)
+            in
+
+            (* Step 2: Create a reference to the value at that location (emulating S(l)) *)
+            match lookup_result with
+            | `Local location ->
+                (* For implementation purposes, we need to create a fresh variable to hold the value *)
                 let result_var = fresh_variable () in
-                (* Get the attribute info *)
-                let (_, attr_type, attr_idx) = List.find (fun (name, _, _) -> name = var_name_str) context.class_attributes in
-                
-                (* Create proper type information for the variable *)
+                let source_var_name = Printf.sprintf "t$%d" location.offset in
+
+                (* Add result_var to context to track it *)
+                let updated_context = { 
+                    context with 
+                    temp_vars = (result_var, location) :: context.temp_vars 
+                } in
+
+                (* Generate TAC to load the value - this emulates retrieving S(l) *)
+                ([ TAC_Assign_Variable (result_var, source_var_name) ],
+                    TAC_Variable result_var,
+                    env,
+                    updated_context)
+
+            | `Field (attr_type, attr_idx) ->
+                (* Handle class attribute reference *)
+                let result_var = fresh_variable () in
                 let var_location = { offset = newloc (); var_type = attr_type } in
                 let updated_context = { 
                     context with 
                     temp_vars = (result_var, var_location) :: context.temp_vars 
                 } in
-                
-                (* Generate TAC to access the attribute - just use the attribute name directly *)
+
+                (* Use attribute name in TAC for clarity *)
                 ([ TAC_Assign_Variable (result_var, var_name_str) ],
                     TAC_Variable result_var,
                     env,
                     updated_context)
-            else
-                (* Try to find in params *)
-                let param_loc_opt = List.assoc_opt var_name_str context.params in
-                if param_loc_opt <> None then
-                    (* Handle param case *)
-                    let param_offset = Option.get param_loc_opt in
-                    let result_var = fresh_variable () in
-                    let var_location = { offset = newloc (); var_type = "Object" } in
-                    let updated_context = { 
-                        context with 
-                        temp_vars = (result_var, var_location) :: context.temp_vars 
-                    } in
-                    let source_var_name = Printf.sprintf "param%d" param_offset in
-                    ([ TAC_Assign_Variable (result_var, source_var_name) ],
-                        TAC_Variable result_var,
-                        env,
-                        updated_context)
-                else
-                    (* Not found anywhere *)
-                    failwith (Printf.sprintf "AST_Identifier: Variable not found: %s" var_name_str)
 
+            | `Param offset ->
+                (* Handle parameter reference *)
+                let result_var = fresh_variable () in
+                let var_location = { offset = newloc (); var_type = "Object" } in
+                let updated_context = { 
+                    context with 
+                    temp_vars = (result_var, var_location) :: context.temp_vars 
+                } in
+
+                ([ TAC_Assign_Variable (result_var, var_name_str) ],
+                    TAC_Variable result_var,
+                    env,
+                    updated_context))
     | AST_Integer i ->
         let new_var = fresh_variable () in
         let type_str = "Int" in  (* Explicitly set type *)
@@ -620,51 +626,59 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             env3, ctx3)
 
     | AST_Assign (var_name, expr) ->(
-    let instrs, expr_val, env1, ctx1 =
-        convert current_class current_method env context expr
-    in
-    
-    let var_name_str = snd var_name in
-    
-    (* Check if this is a class attribute *)
-    let is_class_attr = List.exists (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes in
-    
-    if is_class_attr then
-        (* Handle class attribute assignment *)
-        let result_var = fresh_variable () in
-        let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
-        let final_copy = TAC_Assign_Variable (result_var, var_name_str) in
-        
-        (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
-    else
-        (* Handle local variable assignment *)
-        let var_loc_opt = List.assoc_opt var_name_str ctx1.temp_vars in
-        
-        match var_loc_opt with
-        | Some location -> 
-            (* Create temp var name from offset *)
-            let temp_var_name = Printf.sprintf "t$%d" location.offset in
-            
-            (* Generate assignment instruction *)
+        (* Step 1: Evaluate the right-hand side expression *)
+        let expr_instrs, expr_val, env1, ctx1 =
+            convert current_class current_method env context expr
+        in
+
+        let var_name_str = snd var_name in
+
+        (* Step 2: Find the location for the identifier *)
+        (* We need to check if it's a local, parameter, or field *)
+
+        (* Generate the assignment TAC instruction and return the proper value *)
+        (* First try locals (temp_vars) *)
+        match List.assoc_opt var_name_str ctx1.temp_vars with
+        | Some loc ->
+            (* It's a local variable *)
+            let var_loc_offset = loc.offset in
+            let temp_var_name = Printf.sprintf "t$%d" var_loc_offset in
+
+            (* Step 3: Generate the assignment instruction *)
             let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
-            
-            (* Create result var for return value *)
-            let result_var = fresh_variable () in
-            let final_copy = TAC_Assign_Variable (result_var, temp_var_name) in
-            
-            (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
+
+            (* According to the semantics, the assignment expression returns the assigned value, 
+           not a reference to the variable. So we should return expr_val directly. *)
+            (expr_instrs @ [assign_instr], expr_val, env1, ctx1)
+
         | None ->
-            (* If variable not found, check for params or fail *)
-            let param_loc_opt = List.assoc_opt var_name_str ctx1.params in
-            match param_loc_opt with
-            | Some offset -> 
-                let param_name = Printf.sprintf "param%d" offset in
-                let assign_instr = TAC_Assign_Variable (param_name, tac_expr_to_string expr_val) in
-                let result_var = fresh_variable () in
-                let final_copy = TAC_Assign_Variable (result_var, param_name) in
-                (instrs @ [assign_instr; final_copy], TAC_Variable result_var, env1, ctx1)
+            (* Check if it's a class attribute *)
+            match List.find_opt (fun (name, _, _) -> name = var_name_str) ctx1.class_attributes with
+            | Some (_, _, idx) ->
+                (* It's a class attribute *)
+                let attr_name = var_name_str in  (* Use the actual attribute name for clarity *)
+
+                (* Step 3: Generate the assignment instruction *)
+                let assign_instr = TAC_Assign_Variable (attr_name, tac_expr_to_string expr_val) in
+
+                (* Return the assigned value directly *)
+                (expr_instrs @ [assign_instr], expr_val, env1, ctx1)
+
             | None ->
-                failwith (Printf.sprintf "AST_Assign: Variable not found: %s" var_name_str))
+                (* Check if it's a parameter *)
+                match List.assoc_opt var_name_str ctx1.params with
+                | Some _ ->
+                    (* It's a parameter - in most languages, parameters shouldn't be reassigned,
+                   but for completeness we'll implement it *)
+                    let assign_instr = TAC_Assign_Variable (var_name_str, tac_expr_to_string expr_val) in
+
+                    (* Return the assigned value directly *)
+                    (expr_instrs @ [assign_instr], expr_val, env1, ctx1)
+
+                | None ->
+                    (* Identifier not found anywhere *)
+                    failwith (Printf.sprintf "Assignment to undefined variable: %s in %s.%s" 
+                        var_name_str current_class current_method))
     | AST_Block exprs ->
         let rec process_block exprs env_acc ctx_acc =
             match exprs with
@@ -681,83 +695,111 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         in
         process_block exprs env context
 
-| AST_While (cond, body) ->
-    let loop_start = fresh_label current_class current_method in
-    let loop_pred = fresh_label current_class current_method in
-    let loop_exit = fresh_label current_class current_method in
-    let loop_body = fresh_label current_class current_method in
-    
-    (* Convert condition and body *)
-    let cond_instrs, cond_expr, env1, ctx1 =
-        convert current_class current_method env context cond
-    in
-    let body_instrs, body_expr, env2, ctx2 =
-        convert current_class current_method env1 ctx1 body
-    in
-    
-    (* Variable for condition *)
-    let cond_var = fresh_variable () in
-    
-    let tac_instrs = [
-        (* Start and jump to predicate *)
-        TAC_Comment "start";
-        TAC_Label loop_start;
-        TAC_Jump loop_pred;
-        
-        (* While predicate *)
-        TAC_Comment "while-pred";
-        TAC_Label loop_pred;
-    ] 
-    @ cond_instrs 
-    @ [
-        (* Store condition result *)
-        TAC_Assign (cond_var, cond_expr);
-        
-        (* Branch to body if condition is true *)
-        TAC_ConditionalJump (cond_var, loop_body);
-        
-        (* exit if not taken *)
-        TAC_Jump loop_exit;
-        
-        (* While body *)
-        TAC_Comment "while-body";
-        TAC_Label loop_body;
-    ]
-    @ body_instrs
-    @ [
-        (* Jump back to condition check *)
-        TAC_Jump loop_pred;
-        
-        (* Exit path *)
-        TAC_Comment "while-join";
-        TAC_Label loop_exit;
-        TAC_Assign_Default ("t$0", "Object");
-        TAC_Return "t$0";
-    ]
-    
-    in
-    (tac_instrs, TAC_Variable "t$0", env2, ctx2) 
+    | AST_While (cond, body) ->
+        let loop_start = fresh_label current_class current_method in
+        let loop_pred = fresh_label current_class current_method in
+        let loop_exit = fresh_label current_class current_method in
+        let loop_body = fresh_label current_class current_method in
+
+        (* Convert condition and body *)
+        let cond_instrs, cond_expr, env1, ctx1 =
+            convert current_class current_method env context cond
+        in
+        let body_instrs, body_expr, env2, ctx2 =
+            convert current_class current_method env1 ctx1 body
+        in
+
+        (* Variable for condition *)
+        let cond_var = fresh_variable () in
+
+        let tac_instrs = [
+            (* Start and jump to predicate *)
+            TAC_Comment "start";
+            TAC_Label loop_start;
+            TAC_Jump loop_pred;
+
+            (* While predicate *)
+            TAC_Comment "while-pred";
+            TAC_Label loop_pred;
+        ] 
+            @ cond_instrs 
+            @ [
+                (* Store condition result *)
+                TAC_Assign (cond_var, cond_expr);
+
+                (* Branch to body if condition is true *)
+                TAC_ConditionalJump (cond_var, loop_body);
+
+                (* exit if not taken *)
+                TAC_Jump loop_exit;
+
+                (* While body *)
+                TAC_Comment "while-body";
+                TAC_Label loop_body;
+            ]
+            @ body_instrs
+            @ [
+                (* Jump back to condition check *)
+                TAC_Jump loop_pred;
+
+                (* Exit path *)
+                TAC_Comment "while-join";
+                TAC_Label loop_exit;
+                TAC_Assign_Default ("t$0", "Object");
+                TAC_Return "t$0";
+            ]
+
+        in
+        (tac_instrs, TAC_Variable "t$0", env2, ctx2) 
     | AST_DynamicDispatch (obj, method_name, args) ->
+        (* Step 1: Evaluate the receiver object *)
         let obj_instrs, obj_expr, env1, ctx1 =
             convert current_class current_method env context obj
         in
-        let rec process_args remaining_args env_acc ctx_acc instrs_acc exprs_acc =
+
+        (* Step 2: Evaluate each argument in sequence *)
+        let rec evaluate_args remaining_args env_acc ctx_acc instrs_acc exprs_acc =
             match remaining_args with
-            | [] -> (List.rev instrs_acc, List.rev exprs_acc, env_acc, ctx_acc)
+            | [] -> (List.concat (List.rev instrs_acc), List.rev exprs_acc, env_acc, ctx_acc)
             | arg :: rest ->
+                (* Evaluate this argument *)
                 let arg_instrs, arg_expr, env_updated, ctx_updated =
                     convert current_class current_method env_acc ctx_acc arg
                 in
+
+                (* Add this argument to our accumulator *)
                 let expr_str = tac_expr_to_string arg_expr in
-                process_args rest env_updated ctx_updated 
+                evaluate_args rest env_updated ctx_updated 
                     (arg_instrs :: instrs_acc) (expr_str :: exprs_acc)
         in
-        let (arg_instrs_rev, arg_exprs, final_env, final_ctx) = 
-            process_args args env1 ctx1 [] []
+
+        (* Process all arguments *)
+        let (arg_instrs, arg_exprs, final_env, final_ctx) = 
+            evaluate_args args env1 ctx1 [] []
         in
-        let arg_instrs = List.concat (List.rev arg_instrs_rev) in
-        let call_instr = TAC_Call ("t$0", snd method_name, arg_exprs) in
-        (obj_instrs @ arg_instrs @ [ call_instr ], TAC_Variable "t$0", final_env, final_ctx)
+
+        (* Step 3: Generate a fresh variable for the result and register it in the context *)
+        let result_var = fresh_variable () in
+        let result_loc = { offset = newloc (); var_type = "Object" } in
+        let updated_context = {
+            final_ctx with
+            temp_vars = (result_var, result_loc) :: final_ctx.temp_vars
+        } in
+
+        (* Get the object expression as a string *)
+        let obj_str = tac_expr_to_string obj_expr in
+
+        (* Generate a comment or special instruction to indicate the receiver object *)
+        let set_receiver = TAC_Comment (Printf.sprintf "receiver: %s" obj_str) in
+
+        (* Create TAC for method call - without adding object as an explicit argument *)
+        let call_instr = TAC_Call (result_var, snd method_name, arg_exprs) in
+
+        (* Return the instructions, result expression, and updated environment/context *)
+        (obj_instrs @ arg_instrs @ [set_receiver; call_instr], 
+            TAC_Variable result_var, 
+            final_env, 
+            updated_context) 
 
     | AST_StaticDispatch (obj, type_name, method_name, args) ->
         (* Convert the object expression *)
@@ -829,73 +871,85 @@ let rec convert (current_class : string) (current_method : string) (env : env)
         let new_var = fresh_variable () in
         ([ TAC_Call (new_var, s, []) ], TAC_Variable new_var, env, context)
 
-| AST_Let (bindings, body_exp) ->
+   | AST_Let (bindings, body_exp) ->
     let rec process_bindings remaining_bindings current_env current_ctx acc_instrs =
         match remaining_bindings with
         | [] ->
+            (* Evaluate body expression in the extended environment *)
             let body_instrs, body_expr, final_env, final_ctx =
                 convert current_class current_method current_env current_ctx body_exp
             in
             (acc_instrs @ body_instrs, body_expr, final_env, final_ctx)
+            
         | (var_id, type_id, init_opt) :: rest ->
-            (* Allocate a new location for the variable *)
-            let var_offset = newloc () in
-            let var_type_str = snd type_id in
             let var_name = snd var_id in
+            let var_type_str = snd type_id in
+            
+            (* STEP 1: Evaluate the initialization expression e1 *)
+            let (init_instrs, init_expr, env1, ctx1) =
+                match init_opt with
+                | Some exp ->
+                    convert current_class current_method current_env current_ctx exp
+                | None ->
+                    (* Default initialization - create a completely fresh temp *)
+                    let default_temp = fresh_variable () in
+                    let default_loc = { offset = newloc (); var_type = var_type_str } in
+                    
+                    (* Register in context *)
+                    let ctx_with_temp = {
+                        current_ctx with
+                        temp_vars = (default_temp, default_loc) :: current_ctx.temp_vars
+                    } in
+                    
+                    ([TAC_Assign_Default (default_temp, var_type_str)],
+                     TAC_Variable default_temp,
+                     current_env,
+                     ctx_with_temp)
+            in
+            
+            (* STEP 2: Create a completely unique name for the init result *)
+            let init_result_temp = fresh_variable () in
+            let init_result_loc = { offset = newloc(); var_type = var_type_str } in
+            
+            (* Create a copy instruction to avoid reusing the same temporary *)
+            let copy_to_init_result = TAC_Assign_Variable (
+                init_result_temp, 
+                tac_expr_to_string init_expr
+            ) in
+            
+            (* STEP 3: Allocate a new location for the variable *)
+            let var_offset = newloc () in
             let var_temp_loc = { offset = var_offset; var_type = var_type_str } in
+            
+            (* Create a deterministic temp name based on offset *)
+            let var_temp_name = Printf.sprintf "t$%d" var_offset in
             
             (* Add debug comment *)
             let var_comment = TAC_Comment (Printf.sprintf "fp[%d] holds local %s (%s)" 
-                                          var_offset var_name var_type_str) in
+                                         var_offset var_name var_type_str) in
             
-            (* Create temp var name from offset *)
-            let temp_var_name = Printf.sprintf "t$%d" var_offset in
+            (* Generate assignment to store value at the variable's location *)
+            let assign_to_var = TAC_Assign_Variable (
+                var_temp_name, 
+                init_result_temp
+            ) in
             
-            (* Create initial context with the variable registered *)
-            let ctx_with_var = { 
-                current_ctx with 
-                temp_vars = (var_name, var_temp_loc) :: current_ctx.temp_vars 
+            (* Merge all contexts together to ensure all temps are preserved *)
+            let merged_ctx = {
+                ctx1 with
+                temp_vars = 
+                    (var_name, var_temp_loc) :: 
+                    (var_temp_name, var_temp_loc) ::
+                    (init_result_temp, init_result_loc) ::
+                    ctx1.temp_vars
             } in
             
-            (* Handle initializer *)
-            let (init_instrs, updated_ctx) =
-                match init_opt with
-                | Some exp ->
-                    (* Process initializer *)
-                    let instrs, expr_val, _, ctx1 = 
-                        convert current_class current_method current_env current_ctx exp
-                    in
-                    
-                    (* Assign initializer result to the variable *)
-                    let assign_instr = TAC_Assign_Variable (temp_var_name, tac_expr_to_string expr_val) in
-                    
-                    (* Update context with both variable name and temp var name *)
-                    let ctx_with_both = {
-                        ctx1 with
-                        temp_vars = (var_name, var_temp_loc) :: 
-                                   (temp_var_name, var_temp_loc) ::
-                                   ctx1.temp_vars
-                    } in
-                    
-                    (instrs @ [assign_instr], ctx_with_both)
-                | None ->
-                    (* Default initialization *)
-                    let default_instr = TAC_Assign_Default (temp_var_name, var_type_str) in
-                    
-                    (* Update context with both variable name and temp var name *)
-                    let ctx_with_both = {
-                        ctx_with_var with
-                        temp_vars = (temp_var_name, var_temp_loc) :: ctx_with_var.temp_vars
-                    } in
-                    
-                    ([default_instr], ctx_with_both)
-            in
-            
             (* Process remaining bindings *)
-            process_bindings rest current_env updated_ctx 
-                (acc_instrs @ [var_comment] @ init_instrs)
+            process_bindings rest env1 merged_ctx 
+                (acc_instrs @ [var_comment] @ init_instrs @ [copy_to_init_result; assign_to_var])
     in
     process_bindings bindings env context []
+
 let identify_leaders (instructions : tac_instr list) : int list =
     let rec find_leaders acc index instrs =
         match instrs with
@@ -1988,7 +2042,7 @@ let lookup_variable_location context var =
                     let (_, _, index) = List.find (fun (fname, _, _) -> fname = var) context.class_attributes in 
                     `Field (index * 8)
                 with Not_found -> 
-                    failwith ( "no variable found: " ^ var)
+                    failwith ( "no variable found in codegen lookup: " ^ var)
 
 let codegen context tac =
     let class_name = context.class_name in
@@ -2001,149 +2055,149 @@ let codegen context tac =
     | TAC_Label label -> [ ".globl " ^ label; label ^ ":" ]
 
     | TAC_Assign_Variable (dest, src) ->
-          (* First check if source is a class attribute name *)
-    let is_src_attr = List.exists (fun (name, _, _) -> name = src) context.class_attributes in
-    
-    if is_src_attr then
-        (* It's a class attribute - get its offset *)
-        let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = src) context.class_attributes in
-        let attr_offset = attr_idx * 8 in
-        
-        (* Lookup destination *)
-        let dest_loc = lookup_temp_location context dest in
-        
-        [
-            Printf.sprintf "                        ## %s <- self.%s (attr%d)" dest src attr_idx;
-            Printf.sprintf "                        movq %d(%%r12), %%r13" attr_offset;
-            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
-        ]
-    else
-        (* Check if destination is a class attribute *)
-        let is_dest_attr = List.exists (fun (name, _, _) -> name = dest) context.class_attributes in
-        
-        if is_dest_attr then
-            (* Handle assignment to attribute *)
-            let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = dest) context.class_attributes in
+        (* First check if source is a class attribute name *)
+        let is_src_attr = List.exists (fun (name, _, _) -> name = src) context.class_attributes in
+
+        if is_src_attr then
+            (* It's a class attribute - get its offset *)
+            let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = src) context.class_attributes in
             let attr_offset = attr_idx * 8 in
-            
-            (* Get source location - could be another variable or a literal *)
-            if is_temp src then
-                let src_loc = lookup_temp_location context src in
-                [
-                    Printf.sprintf "                        ## self.%s (attr%d) <- %s" dest attr_idx src;
-                    Printf.sprintf "                        movq %d(%%rbp), %%r13" src_loc.offset;
-                    Printf.sprintf "                        movq %%r13, %d(%%r12)" attr_offset;
-                ]
-            else
-                (* Other source types - handle as needed *)
-                [
-                    Printf.sprintf "                        ## self.%s (attr%d) <- %s" dest attr_idx src;
-                    (* Add appropriate code for other source types *)
-                ]
-        else
-        (* First, let's use our lookup_variable_location function to determine source and destination *)
-        let src_location = lookup_variable_location context src in
-        let dest_location = lookup_variable_location context dest in
 
-        (* Helper function to generate move instruction *)
-        let generate_move comment src_offset dest_offset =
+            (* Lookup destination *)
+            let dest_loc = lookup_temp_location context dest in
+
             [
-                Printf.sprintf "                        ## %s: %s <- %s" comment dest src;
-                Printf.sprintf "                        movq %d(%%rbp), %%r13" src_offset;
-                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_offset;
+                Printf.sprintf "                        ## %s <- self.%s (attr%d)" dest src attr_idx;
+                Printf.sprintf "                        movq %d(%%r12), %%r13" attr_offset;
+                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
             ]
-        in
-
-        (* Case 1: t$n <- t$m *)
-        if is_temp src && is_temp dest then
-            let dest_loc = lookup_temp_location context dest in
-            let src_loc = lookup_temp_location context src in
-            generate_move "(temp <- temp)" src_loc.offset dest_loc.offset
-
-        (* Case 2: t$n <- x (where x could be a attribute, local, or param) *)
-        else if is_temp dest then
-            let dest_loc = lookup_temp_location context dest in
-            (match src_location with
-                | `Field field_offset ->
-                    (* Load from object field and store to temp *)
-                    [
-                        Printf.sprintf "                        ## (temp <- field): %s <- self[%d]" dest (field_offset / 8 + 3);
-                        Printf.sprintf "                        movq %d(%%r12), %%r13" field_offset; (* Load field value *)
-                        Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset; (* Store to temp *)
-                    ]
-                | `Local local_loc ->
-                    (* Load from local and store to temp *)
-                    generate_move "(temp <- local)" local_loc.offset dest_loc.offset
-                | `Param param_offset ->
-                    (* Load from parameter and store to temp *)
-                    generate_move "(temp <- param)" param_offset dest_loc.offset
-                | `Temp _ -> failwith "Unexpected temp in non-temp case")
-
-        (* Case 3: x <- t$n (where x could be a field, local, or param) *)
-        else if is_temp src then
-            let src_loc = lookup_temp_location context src in
-            (match dest_location with
-                | `Field field_offset ->
-                    (* Load from temp and store to object field *)
-                    [
-                        Printf.sprintf "                        ## (field <- temp): self[%d] <- %s" (field_offset / 8 + 3) dest;
-                        Printf.sprintf "                        movq %d(%%rbp), %%r13" src_loc.offset; (* Load temp value *)
-                        Printf.sprintf "                        movq %%r13, %d(%%r12)" field_offset; (* Store to field *)
-                    ]
-                | `Local local_loc ->
-                    (* Load from temp and store to local *)
-                    generate_move "(local <- temp)" src_loc.offset local_loc.offset
-                | `Param _ ->
-                    failwith "Cannot assign to a parameter"
-                | `Temp _ ->
-                    failwith "Unexpected temp in non-temp case")
-
-        (* Else fallback case: x <- y (neither is a temp) *)
         else
-            (match (dest_location, src_location) with
-                | (`Field dest_offset, `Field src_offset) ->
-                    (* Field <- Field *)
+            (* Check if destination is a class attribute *)
+            let is_dest_attr = List.exists (fun (name, _, _) -> name = dest) context.class_attributes in
+
+            if is_dest_attr then
+                (* Handle assignment to attribute *)
+                let (_, _, attr_idx) = List.find (fun (name, _, _) -> name = dest) context.class_attributes in
+                let attr_offset = attr_idx * 8 in
+
+                (* Get source location - could be another variable or a literal *)
+                if is_temp src then
+                    let src_loc = lookup_temp_location context src in
                     [
-                        Printf.sprintf "          ## (field <- field): self[%d] <- self[%d]" (dest_offset / 8 + 3) (src_offset / 8 + 3);
-                        Printf.sprintf "          movq %d(%%r12), %%r13" src_offset;
-                        Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                        Printf.sprintf "                        ## self.%s (attr%d) <- %s" dest attr_idx src;
+                        Printf.sprintf "                        movq %d(%%rbp), %%r13" src_loc.offset;
+                        Printf.sprintf "                        movq %%r13, %d(%%r12)" attr_offset;
                     ]
-                | (`Field dest_offset, `Local src_loc) ->
-                    (* Field <- Local *)
+                else
+                    (* Other source types - handle as needed *)
                     [
-                        Printf.sprintf "          ## (field <- local): self[%d] <- %s" (dest_offset / 8 + 3) src;
-                        Printf.sprintf "          movq %d(%%rbp), %%r13" src_loc.offset;
-                        Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                        Printf.sprintf "                        ## self.%s (attr%d) <- %s" dest attr_idx src;
+                        (* Add appropriate code for other source types *)
                     ]
-                | (`Field dest_offset, `Param src_offset) ->
-                    (* Field <- Param *)
+            else
+                (* First, let's use our lookup_variable_location function to determine source and destination *)
+                let src_location = lookup_variable_location context src in
+                let dest_location = lookup_variable_location context dest in
+
+                (* Helper function to generate move instruction *)
+                let generate_move comment src_offset dest_offset =
                     [
-                        Printf.sprintf "          ## (field <- param): self[%d] <- %s" (dest_offset / 8 + 3) src;
-                        Printf.sprintf "          movq %d(%%rbp), %%r13" src_offset;
-                        Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                        Printf.sprintf "                        ## %s: %s <- %s" comment dest src;
+                        Printf.sprintf "                        movq %d(%%rbp), %%r13" src_offset;
+                        Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_offset;
                     ]
-                | (`Local dest_loc, `Field src_offset) ->
-                    (* Local <- Field *)
-                    [
-                        Printf.sprintf "          ## (local <- field): %s <- self[%d]" dest (src_offset / 8 + 3);
-                        Printf.sprintf "          movq %d(%%r12), %%r13" src_offset;
-                        Printf.sprintf "          movq %%r13, %d(%%rbp)" dest_loc.offset;
-                    ]
-                | (`Local dest_loc, `Local src_loc) ->
-                    (* Local <- Local *)
-                    generate_move "(local <- local)" src_loc.offset dest_loc.offset
-                | (`Local dest_loc, `Param src_offset) ->
-                    (* Local <- Param *)
-                    [
-                        Printf.sprintf "          ## (local <- param): %s <- %s" dest src;
-                        Printf.sprintf "          movq %d(%%rbp), %%r13" src_offset;
-                        Printf.sprintf "          movq %%r13, %d(%%rbp)" dest_loc.offset;
-                    ]
-                | (`Param _, _) ->
-                    failwith "Cannot assign to a parameter"
-                | (_, `Temp _) ->
-                    failwith "Unexpected temp in non-temp case"
-                | _ -> failwith "Error in variable assignment")    
+                in
+
+                (* Case 1: t$n <- t$m *)
+                if is_temp src && is_temp dest then
+                    let dest_loc = lookup_temp_location context dest in
+                    let src_loc = lookup_temp_location context src in
+                    generate_move "(temp <- temp)" src_loc.offset dest_loc.offset
+
+                (* Case 2: t$n <- x (where x could be a attribute, local, or param) *)
+                else if is_temp dest then
+                    let dest_loc = lookup_temp_location context dest in
+                    (match src_location with
+                        | `Field field_offset ->
+                            (* Load from object field and store to temp *)
+                            [
+                                Printf.sprintf "                        ## (temp <- field): %s <- self[%d]" dest (field_offset / 8 + 3);
+                                Printf.sprintf "                        movq %d(%%r12), %%r13" field_offset; (* Load field value *)
+                                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset; (* Store to temp *)
+                            ]
+                        | `Local local_loc ->
+                            (* Load from local and store to temp *)
+                            generate_move "(temp <- local)" local_loc.offset dest_loc.offset
+                        | `Param param_offset ->
+                            (* Load from parameter and store to temp *)
+                            generate_move "(temp <- param)" param_offset dest_loc.offset
+                        | `Temp _ -> failwith "Unexpected temp in non-temp case")
+
+                (* Case 3: x <- t$n (where x could be a field, local, or param) *)
+                else if is_temp src then
+                    let src_loc = lookup_temp_location context src in
+                    (match dest_location with
+                        | `Field field_offset ->
+                            (* Load from temp and store to object field *)
+                            [
+                                Printf.sprintf "                        ## (field <- temp): self[%d] <- %s" (field_offset / 8 + 3) dest;
+                                Printf.sprintf "                        movq %d(%%rbp), %%r13" src_loc.offset; (* Load temp value *)
+                                Printf.sprintf "                        movq %%r13, %d(%%r12)" field_offset; (* Store to field *)
+                            ]
+                        | `Local local_loc ->
+                            (* Load from temp and store to local *)
+                            generate_move "(local <- temp)" src_loc.offset local_loc.offset
+                        | `Param _ ->
+                            failwith "Cannot assign to a parameter"
+                        | `Temp _ ->
+                            failwith "Unexpected temp in non-temp case")
+
+                (* Else fallback case: x <- y (neither is a temp) *)
+                else
+                    (match (dest_location, src_location) with
+                        | (`Field dest_offset, `Field src_offset) ->
+                            (* Field <- Field *)
+                            [
+                                Printf.sprintf "          ## (field <- field): self[%d] <- self[%d]" (dest_offset / 8 + 3) (src_offset / 8 + 3);
+                                Printf.sprintf "          movq %d(%%r12), %%r13" src_offset;
+                                Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                            ]
+                        | (`Field dest_offset, `Local src_loc) ->
+                            (* Field <- Local *)
+                            [
+                                Printf.sprintf "          ## (field <- local): self[%d] <- %s" (dest_offset / 8 + 3) src;
+                                Printf.sprintf "          movq %d(%%rbp), %%r13" src_loc.offset;
+                                Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                            ]
+                        | (`Field dest_offset, `Param src_offset) ->
+                            (* Field <- Param *)
+                            [
+                                Printf.sprintf "          ## (field <- param): self[%d] <- %s" (dest_offset / 8 + 3) src;
+                                Printf.sprintf "          movq %d(%%rbp), %%r13" src_offset;
+                                Printf.sprintf "          movq %%r13, %d(%%r12)" dest_offset;
+                            ]
+                        | (`Local dest_loc, `Field src_offset) ->
+                            (* Local <- Field *)
+                            [
+                                Printf.sprintf "          ## (local <- field): %s <- self[%d]" dest (src_offset / 8 + 3);
+                                Printf.sprintf "          movq %d(%%r12), %%r13" src_offset;
+                                Printf.sprintf "          movq %%r13, %d(%%rbp)" dest_loc.offset;
+                            ]
+                        | (`Local dest_loc, `Local src_loc) ->
+                            (* Local <- Local *)
+                            generate_move "(local <- local)" src_loc.offset dest_loc.offset
+                        | (`Local dest_loc, `Param src_offset) ->
+                            (* Local <- Param *)
+                            [
+                                Printf.sprintf "          ## (local <- param): %s <- %s" dest src;
+                                Printf.sprintf "          movq %d(%%rbp), %%r13" src_offset;
+                                Printf.sprintf "          movq %%r13, %d(%%rbp)" dest_loc.offset;
+                            ]
+                        | (`Param _, _) ->
+                            failwith "Cannot assign to a parameter"
+                        | (_, `Temp _) ->
+                            failwith "Unexpected temp in non-temp case"
+                        | _ -> failwith "Error in variable assignment")    
     | TAC_Assign_Int (dest, value) ->
         let loc = lookup_temp_location context dest in
 
@@ -2606,7 +2660,7 @@ let codegen context tac =
             "                        popq %r12";
             "                        popq %rbp";
             "                        movq $0, %r14";
-"                        movq %r14, 24(%r13)";
+            "                        movq %r14, 24(%r13)";
             Printf.sprintf ".globl %s" end_label;
             end_label ^ ":            ## end of if conditional";                                
             Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_locs.offset
@@ -2626,35 +2680,35 @@ let codegen context tac =
     ]
 
 
-  | TAC_Assign_New (dest, class_name) ->
-    let dest_loc = lookup_temp_location context dest in
-    let class_name_str = tac_expr_to_string class_name in
-    
-    if class_name_str = "SELF_TYPE" then
-        [
-            "                        ## " ^ dest ^ " <- new SELF_TYPE";
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        ## obtain vtable for self object";
-            "                        movq 16(%r12), %r14";
-            "                        ## look up constructor at offset 1 in vtable";
-            "                        movq 8(%r14), %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
-        ]
-    else
-        [
-            "                        ## " ^ dest ^ " <- new " ^ class_name_str;
-            "                        pushq %rbp";
-            "                        pushq %r12";
-            "                        movq $" ^ class_name_str ^ "..new, %r14";
-            "                        call *%r14";
-            "                        popq %r12";
-            "                        popq %rbp";
-            (* Store object pointer into temp variable *)
-            Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
+    | TAC_Assign_New (dest, class_name) ->
+        let dest_loc = lookup_temp_location context dest in
+        let class_name_str = tac_expr_to_string class_name in
+
+        if class_name_str = "SELF_TYPE" then
+            [
+                "                        ## " ^ dest ^ " <- new SELF_TYPE";
+                "                        pushq %rbp";
+                "                        pushq %r12";
+                "                        ## obtain vtable for self object";
+                "                        movq 16(%r12), %r14";
+                "                        ## look up constructor at offset 1 in vtable";
+                "                        movq 8(%r14), %r14";
+                "                        call *%r14";
+                "                        popq %r12";
+                "                        popq %rbp";
+                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
+            ]
+        else
+            [
+                "                        ## " ^ dest ^ " <- new " ^ class_name_str;
+                "                        pushq %rbp";
+                "                        pushq %r12";
+                "                        movq $" ^ class_name_str ^ "..new, %r14";
+                "                        call *%r14";
+                "                        popq %r12";
+                "                        popq %rbp";
+                (* Store object pointer into temp variable *)
+                Printf.sprintf "                        movq %%r13, %d(%%rbp)" dest_loc.offset;
             ]    (*             ]      *)
 
     | TAC_Assign (dest, expr) ->(
@@ -2672,45 +2726,45 @@ let codegen context tac =
 
         | TAC_Int value ->
             info @ [
-            "pushq %rbp";
-            "pushq %r12";
-            "movq $Int..new, %r14";
-            "call *%r14";
-            "popq %r12";
-            "popq %rbp";
-            Printf.sprintf "movq $%d, 24(%%r13)" value;
-            Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
-        ]
-        
-    | TAC_Bool b ->
-        let v = if b then 1 else 0 in
-        info @ [
-            "pushq %rbp";
-            "pushq %r12";
-            "movq $Bool..new, %r14";
-            "call *%r14";
-            "popq %r12";
-            "popq %rbp";
-            Printf.sprintf "movq $%d, 24(%%r13)" v;
-            Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
-        ]
-        
-    | TAC_String lit ->
-        let str_lbl = get_string_label lit in
-        info @ [
-            "pushq %rbp";
-            "pushq %r12";
-            "movq $String..new, %r14";
-            "call *%r14";
-            "popq %r12";
-            "popq %rbp";
-            Printf.sprintf "movq $%s, %%r14" str_lbl;
-            "movq %r14, 24(%r13)";
-            Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
-        ]
-        
-    | _ ->
-        failwith ("TAC_Assign not implemented for: " ^ tac_expr_to_string expr))
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $Int..new, %r14";
+                "call *%r14";
+                "popq %r12";
+                "popq %rbp";
+                Printf.sprintf "movq $%d, 24(%%r13)" value;
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
+            ]
+
+        | TAC_Bool b ->
+            let v = if b then 1 else 0 in
+            info @ [
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $Bool..new, %r14";
+                "call *%r14";
+                "popq %r12";
+                "popq %rbp";
+                Printf.sprintf "movq $%d, 24(%%r13)" v;
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
+            ]
+
+        | TAC_String lit ->
+            let str_lbl = get_string_label lit in
+            info @ [
+                "pushq %rbp";
+                "pushq %r12";
+                "movq $String..new, %r14";
+                "call *%r14";
+                "popq %r12";
+                "popq %rbp";
+                Printf.sprintf "movq $%s, %%r14" str_lbl;
+                "movq %r14, 24(%r13)";
+                Printf.sprintf "movq %%r13, %d(%%rbp)" dest_locs.offset;
+            ]
+
+        | _ ->
+            failwith ("TAC_Assign not implemented for: " ^ tac_expr_to_string expr))
     (*     | TAC_Assign (dest, expr) ->( *)
     (*         let info = ["                      ##  Assign " ^dest^ " <- " ^ tac_expr_to_string expr ;] in *)
     (*         info @ *)
@@ -3000,36 +3054,36 @@ let generate_custom_constructor class_map class_name
 
     reset_temp_var_counter ();
 
-  let tac_for_initializers =
-    List.mapi
-        (fun idx (attr_name, attr_type, init_opt) ->
-            match init_opt with
-            | None -> (idx, [], TAC_Variable "dummy", 0)
-            | Some expr ->
-                let initial_env = Hashtbl.create 10 in
-                reset_temp_var_counter ();
-                
-                (* Make sure we're use the full attributes list *)
-                let initial_context = {
-                    class_attributes = attributes_with_index;  
-                    temp_vars = [];
-                    params = [];
-                    class_name = class_name;
-                    method_name = "init";
-                } in
-                
-                (* Debug the context *)
-                Printf.printf "DEBUG: Initializing attribute %s with context attributes: %s\n"
-                    attr_name
-                    (String.concat ", " (List.map (fun (name, _, _) -> name) attributes_with_index));
-                
-                (* Convert the initializer expression *)
-                let tac_instrs, tac_result, _, final_context =
-                    convert class_name "init" initial_env initial_context expr
-                in
-                let temp_count = get_temp_var_count () in
-                (idx, tac_instrs, tac_result, temp_count))
-        attributes    in
+    let tac_for_initializers =
+        List.mapi
+            (fun idx (attr_name, attr_type, init_opt) ->
+                match init_opt with
+                | None -> (idx, [], TAC_Variable "dummy", 0)
+                | Some expr ->
+                    let initial_env = Hashtbl.create 10 in
+                    reset_temp_var_counter ();
+
+                    (* Make sure we're use the full attributes list *)
+                    let initial_context = {
+                        class_attributes = attributes_with_index;  
+                        temp_vars = [];
+                        params = [];
+                        class_name = class_name;
+                        method_name = "init";
+                    } in
+
+                    (* Debug the context *)
+                    Printf.printf "DEBUG: Initializing attribute %s with context attributes: %s\n"
+                        attr_name
+                        (String.concat ", " (List.map (fun (name, _, _) -> name) attributes_with_index));
+
+                    (* Convert the initializer expression *)
+                    let tac_instrs, tac_result, _, final_context =
+                        convert class_name "init" initial_env initial_context expr
+                    in
+                    let temp_count = get_temp_var_count () in
+                    (idx, tac_instrs, tac_result, temp_count))
+            attributes    in
     (* Get max stack space needed from all initializers *)
     let max_temp_count =
         List.fold_left (fun acc (_, _, _, tc) -> max acc tc) 0 tac_for_initializers
@@ -3151,9 +3205,9 @@ let rec get_class_attributes
     (class_map : (string, (string * string * exp option) list * 'a) Hashtbl.t)
     (parent_map : (string, string) Hashtbl.t) (class_name : string) :
     (string * string * int) list =
-        (* Printf.printf "DEBUG: Getting attributes for class: %s\n" class_name; *)
+    (* Printf.printf "DEBUG: Getting attributes for class: %s\n" class_name; *)
     (* Get inherited attributes, if any *)
-     let inherited =
+    let inherited =
         match Hashtbl.find_opt parent_map class_name with
         | Some parent -> 
             (* Printf.printf "DEBUG: Found parent %s for class %s\n" parent class_name; *)
@@ -3162,10 +3216,10 @@ let rec get_class_attributes
             (* Printf.printf "DEBUG: No parent found for class %s\n" class_name; *)
             []
     in
-    
+
     (* Printf.printf "DEBUG: Inherited attributes for %s: %s\n" class_name *)
-        (* (String.concat ", " (List.map (fun (name, _, _) -> name) inherited)); *)
-    
+    (* (String.concat ", " (List.map (fun (name, _, _) -> name) inherited)); *)
+
     (* Build a set/list of inherited attribute names to avoid duplicates *)
     let inherited_names = List.map (fun (name, _, _) -> name) inherited in
     (* For the direct attributes of this class, filter out ones that are inherited *)
@@ -3237,19 +3291,19 @@ let rec get_class_attributes
 (*         List.rev !sorted_blocks *)
 
 let sort_cfg_blocks (cfg : cfg) : string list =
-  (* Collect all block IDs *)
-  let ids = Hashtbl.fold (fun id _ acc -> id :: acc) cfg [] in
-  
-  (* Simple numeric sort *)
-  let id_to_num id =
-    try
-      let prefix_len = 2 in (* Assuming "BB" prefix *)
-      let num_str = String.sub id prefix_len (String.length id - prefix_len) in
-      int_of_string num_str
-    with _ -> 0
-  in
-  
-  List.sort (fun a b -> compare (id_to_num a) (id_to_num b)) ids
+    (* Collect all block IDs *)
+    let ids = Hashtbl.fold (fun id _ acc -> id :: acc) cfg [] in
+
+    (* Simple numeric sort *)
+    let id_to_num id =
+        try
+            let prefix_len = 2 in (* Assuming "BB" prefix *)
+            let num_str = String.sub id prefix_len (String.length id - prefix_len) in
+            int_of_string num_str
+        with _ -> 0
+    in
+
+    List.sort (fun a b -> compare (id_to_num a) (id_to_num b)) ids
 
 (* Generate method definition assembly code *)
 let generate_method_definition class_name method_name params return_type body
@@ -3259,9 +3313,9 @@ let generate_method_definition class_name method_name params return_type body
     let attributes = get_class_attributes class_map parent_map class_name in
 
     (* Printf.printf "DEBUG: Method %s.%s attributes: %s\n"  *)
-        (* class_name method_name *)
-        (* (String.concat ", " (List.map (fun (name, _, idx) ->  *)
-        (*     Printf.sprintf "%s(idx:%d)" name idx) attributes)); *)
+    (* class_name method_name *)
+    (* (String.concat ", " (List.map (fun (name, _, idx) ->  *)
+    (*     Printf.sprintf "%s(idx:%d)" name idx) attributes)); *)
 
     (* Retrieve the attributes for the class dynamically.
      The get_class_attributes function returns a list of (field_name, field_type, index)
@@ -3423,23 +3477,23 @@ let generate_method_definition class_name method_name params return_type body
     in
     let sorted_blocks = sort_cfg_blocks cfg in
     (* Generate assembly for each basic block *)
-  let body_asm =
-    List.concat_map (fun block_id ->
-        let block = Hashtbl.find cfg block_id in
-        let block_comment = [ "                        ## Basic block: " ^ block_id ] in
-        Printf.printf "## %s\n" block_id;
-        flush stdout;
-        
-        (* Debug each instruction before codegen *)
-        let block_code = List.concat_map (fun instr ->
-            Printf.printf "%s" (tac_instr_to_str instr);
+    let body_asm =
+        List.concat_map (fun block_id ->
+            let block = Hashtbl.find cfg block_id in
+            let block_comment = [ "                        ## Basic block: " ^ block_id ] in
+            Printf.printf "## %s\n" block_id;
             flush stdout;
-            codegen context instr
-        ) block.instructions in
-        
-        block_comment @ block_code
-    ) sorted_blocks
-in
+
+            (* Debug each instruction before codegen *)
+            let block_code = List.concat_map (fun instr ->
+                Printf.printf "%s" (tac_instr_to_str instr);
+                flush stdout;
+                codegen context instr
+            ) block.instructions in
+
+            block_comment @ block_code
+        ) sorted_blocks
+    in
     (* Method epilogue *)
     let epilogue =
         [

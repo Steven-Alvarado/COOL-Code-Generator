@@ -232,7 +232,7 @@ Main..new:              ## constructor for Main
                         movq $1, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 24(%r12)
-                        ## self[4] here initializer <- false
+                        ## self[4] here initializer <- not false
                         ## new Bool
                         pushq %rbp
                         pushq %r12
@@ -240,6 +240,32 @@ Main..new:              ## constructor for Main
                         call *%r14
                         popq %r12
                         popq %rbp
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l1
+.globl l2
+l2:                     ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l3
+.globl l1
+l1:                     ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l3
+l3:                     ## end of if conditional
                         movq %r13, 32(%r12)
                         ## self[5] x initializer <- 4
                         ## new Int
@@ -467,9 +493,9 @@ Object.copy:            ## method definition
 			call calloc
 			movq %rax, %r13
                         pushq %r13
-.globl l1
-l1:                     cmpq $0, %r14
-			je l2
+.globl l4
+l4:                     cmpq $0, %r14
+			je l5
                         movq 0(%r12), %r15
                         movq %r15, 0(%r13)
                         movq $8, %r15
@@ -477,9 +503,9 @@ l1:                     cmpq $0, %r14
                         addq %r15, %r13
                         movq $1, %r15
                         subq %r15, %r14
-                        jmp l1
-.globl l2
-l2:                     ## done with Object.copy loop
+                        jmp l4
+.globl l5
+l5:                     ## done with Object.copy loop
                         popq %r13
 .globl Object.copy.end
 Object.copy.end:        ## method body ends
@@ -655,14 +681,40 @@ Main.main:              ## method definition
                         call *%r14
                         popq %r12
                         popq %rbp
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+			jne l6
+.globl l7
+l7:                     ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp l8
+.globl l6
+l6:                     ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+.globl l8
+l8:                     ## end of if conditional
                         movq %r13, 32(%r12)
                         ## here
                         movq 32(%r12), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-			jne l3
-.globl l4
-l4:                     ## false branch
+			jne l9
+.globl l10
+l10:                    ## false branch
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
@@ -686,14 +738,81 @@ l4:                     ## false branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-                        jmp l5
-.globl l3
-l3:                     ## true branch
+                        jmp l11
+.globl l9
+l9:                     ## true branch
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
                         ## y
                         movq 56(%r12), %r13
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $2, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $8, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r14
+                        cmpq $0, %r14
+			jne l12
+                        movq $string9, %r13
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movq %r13, %rdi
+			call cooloutstr
+                        ## guarantee 16-byte alignment before call
+			andq $0xFFFFFFFFFFFFFFF0, %rsp
+			movl $0, %edi
+			call exit
+.globl l12
+l12:                    ## division is OK
+                        movq 24(%r13), %r13
+                        movq 0(%rbp), %r14
+                        
+movq $0, %rdx
+movq %r14, %rax
+cdq 
+idivl %r13d
+movq %rax, %r13
+                        movq %r13, 0(%rbp)
+                        ## new Int
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq 0(%rbp), %r14
+                        movq %r14, 24(%r13)
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -704,8 +823,8 @@ l3:                     ## true branch
                         addq $16, %rsp
                         popq %rbp
                         popq %r12
-.globl l5
-l5:                     ## end of if conditional
+.globl l11
+l11:                    ## end of if conditional
 .globl Main.main.end
 Main.main.end:          ## method body ends
                         ## return address handling
@@ -817,8 +936,8 @@ String.substr:          ## method definition
 			call coolsubstr
 			movq %rax, %r13
                         cmpq $0, %r13
-			jne l6
-                        movq $string9, %r13
+			jne l13
+                        movq $string10, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -827,8 +946,8 @@ String.substr:          ## method definition
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movl $0, %edi
 			call exit
-.globl l6
-l6:                     movq %r13, 24(%r15)
+.globl l13
+l13:                    movq %r13, 24(%r15)
                         movq %r15, %r13
 .globl String.substr.end
 String.substr.end:      ## method body ends
@@ -927,7 +1046,51 @@ string8:                # "false"
 .byte 0
 
 .globl string9
-string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
+string9:                # "ERROR: 11: Exception: division by zero\\n"
+.byte  69 # 'E'
+.byte  82 # 'R'
+.byte  82 # 'R'
+.byte  79 # 'O'
+.byte  82 # 'R'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte  49 # '1'
+.byte  49 # '1'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte  69 # 'E'
+.byte 120 # 'x'
+.byte  99 # 'c'
+.byte 101 # 'e'
+.byte 112 # 'p'
+.byte 116 # 't'
+.byte 105 # 'i'
+.byte 111 # 'o'
+.byte 110 # 'n'
+.byte  58 # ':'
+.byte  32 # ' '
+.byte 100 # 'd'
+.byte 105 # 'i'
+.byte 118 # 'v'
+.byte 105 # 'i'
+.byte 115 # 's'
+.byte 105 # 'i'
+.byte 111 # 'o'
+.byte 110 # 'n'
+.byte  32 # ' '
+.byte  98 # 'b'
+.byte 121 # 'y'
+.byte  32 # ' '
+.byte 122 # 'z'
+.byte 101 # 'e'
+.byte 114 # 'r'
+.byte 111 # 'o'
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string10
+string10:               # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

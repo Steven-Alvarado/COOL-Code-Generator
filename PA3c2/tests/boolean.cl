@@ -17,7 +17,7 @@ class Main {
                 result <- result + y;
             } fi;
             
-            (new IO).out_int(result);
+            out_int(result);
         }
     };
 };

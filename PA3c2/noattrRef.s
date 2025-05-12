@@ -457,8 +457,8 @@ Main.main:              ## method definition
                         pushq %rbp
                         movq %rsp, %rbp
                         movq 16(%rbp), %r12
-                        ## stack room for temporaries: 2
-                        movq $16, %r14
+                        ## stack room for temporaries: 4
+                        movq $32, %r14
                         subq %r14, %rsp
                         ## return address handling
                         ## method body begins
@@ -473,6 +473,18 @@ Main.main:              ## method definition
                         movq $5, %r14
                         movq %r14, 24(%r13)
                         movq %r13, 0(%rbp)
+                        ## fp[-1] holds local y (String)
+                        ## new String
+                        pushq %rbp
+                        pushq %r12
+                        movq $String..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        ## string8 holds "hi\n"
+                        movq $string8, %r14
+                        movq %r14, 24(%r13)
+                        movq %r13, -8(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
@@ -484,6 +496,21 @@ Main.main:              ## method definition
                         movq 16(%r12), %r14
                         ## look up out_int() at offset 7 in vtable
                         movq 56(%r14), %r14
+                        call *%r14
+                        addq $16, %rsp
+                        popq %rbp
+                        popq %r12
+                        ## out_string(...)
+                        pushq %r12
+                        pushq %rbp
+                        ## y
+                        movq -8(%rbp), %r13
+                        pushq %r13
+                        pushq %r12
+                        ## obtain vtable for self object of type Main
+                        movq 16(%r12), %r14
+                        ## look up out_string() at offset 8 in vtable
+                        movq 64(%r14), %r14
                         call *%r14
                         addq $16, %rsp
                         popq %rbp
@@ -600,7 +627,7 @@ String.substr:          ## method definition
 			movq %rax, %r13
                         cmpq $0, %r13
 			jne l3
-                        movq $string8, %r13
+                        movq $string9, %r13
                         ## guarantee 16-byte alignment before call
 			andq $0xFFFFFFFFFFFFFFF0, %rsp
 			movq %r13, %rdi
@@ -700,7 +727,15 @@ string7:                # "abort\\n"
 .byte 0
 
 .globl string8
-string8:                # "ERROR: 0: Exception: String.substr out of range\\n"
+string8:                # "hi\\n"
+.byte 104 # 'h'
+.byte 105 # 'i'
+.byte  92 # '\\'
+.byte 110 # 'n'
+.byte 0
+
+.globl string9
+string9:                # "ERROR: 0: Exception: String.substr out of range\\n"
 .byte  69 # 'E'
 .byte  82 # 'R'
 .byte  82 # 'R'

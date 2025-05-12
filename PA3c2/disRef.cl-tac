@@ -1,0 +1,4 @@
+comment start
+label Foo_foo_0
+t$0 <- x
+return t$0

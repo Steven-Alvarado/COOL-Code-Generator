@@ -458,14 +458,14 @@ Main.main:              ## method definition
 						pushq %rbp
 						movq %rsp, %rbp
 						movq 16(%rbp), %r12
-						## stack room for temporaries: 18
-						movq $144, %r14
+						## stack room for temporaries: 27
+						movq $224, %r14
 						subq %r14, %rsp
 						## return address handling
 						## method body begins
                         ## Basic block: BB0
-                        ## fp[1] holds local x (Int)
-                        ##t$1 <- Default Int
+                        ## fp[3] holds local x (Int)
+                        ##t$0 <- Default Int
                         pushq %rbp
                         pushq %r12
                         movq $Int..new, %r14
@@ -475,8 +475,14 @@ Main.main:              ## method definition
                         movq $0, %r14
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
+                        movq %r13, -8(%rbp)
+                        ## (temp <- temp): t$1 <- t$0
+                        movq -8(%rbp), %r13
                         movq %r13, -16(%rbp)
-                        ## fp[2] holds local y (Int)
+                        ## (temp <- temp): t$3 <- t$1
+                        movq -16(%rbp), %r13
+                        movq %r13, -32(%rbp)
+                        ## fp[6] holds local y (Int)
                         ##t$2 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -488,16 +494,28 @@ Main.main:              ## method definition
                         movq %r14, 24(%r13)
                         movq 24(%r13), %r13
                         movq %r13, -24(%rbp)
-                        ## fp[3] holds local z (Bool)
-                        ##t$3 <- Default Bool
+                        ## (temp <- temp): t$3 <- t$2
+                        movq -24(%rbp), %r13
+                        movq %r13, -32(%rbp)
+                        ## (temp <- temp): t$6 <- t$3
+                        movq -32(%rbp), %r13
+                        movq %r13, -56(%rbp)
+                        ## fp[9] holds local z (Bool)
+                        ##t$4 <- Default Bool
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq %r13, -32(%rbp)
-                        ## new Bool t$0 <- false
+                        movq %r13, -40(%rbp)
+                        ## (temp <- temp): t$5 <- t$4
+                        movq -40(%rbp), %r13
+                        movq %r13, -48(%rbp)
+                        ## (temp <- temp): t$9 <- t$5
+                        movq -48(%rbp), %r13
+                        movq %r13, -80(%rbp)
+                        ## new Bool t$6 <- false
                         pushq %rbp
                         pushq %r12
                         movq $Bool..new, %r14
@@ -506,120 +524,14 @@ Main.main:              ## method definition
                         popq %rbp
                         movq $0, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -8(%rbp)
-                        ## (temp <- temp): t$3 <- t$0
-                        movq -8(%rbp), %r13
-                        movq %r13, -32(%rbp)
-                        ## (temp <- temp): t$1 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -16(%rbp)
-                        ## new int t$2 <- 9
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $9, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -24(%rbp)
-                        ## (temp <- temp): t$3 <- t$2
-                        movq -24(%rbp), %r13
-                        movq %r13, -32(%rbp)
-                        ## t$4 <- t$2 + t$3
-                        movq -24(%rbp), %r13
-                        movq -32(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -40(%rbp)
-                        ## new int t$5 <- 32
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $32, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -48(%rbp)
-                        ## new int t$6 <- 23
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $23, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
                         movq %r13, -56(%rbp)
-                        ## t$7 <- t$5 / t$6
+                        ## t$7 <- not t$6
                         movq -56(%rbp), %r13
-                        cmpq $0, %r13
-           jne main_l3_div_ok
-                        movq $string10, %r13
-                        ## division by zero detected
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movq %r13, %rdi
-           call cooloutstr
-                        ## guarantee 16-byte alignment before call
-           andq $0xFFFFFFFFFFFFFFF0, %rsp
-           movl $0, %edi
-           call exit
-.global main_l3_div_ok
-main_l3_div_ok:        ## division is okay 
-                        movq -48(%rbp), %r14
-movq $0, %rdx
-movq %r14, %rax
-cdq
-idivl %r13d
-movq %rax, %r13
-                        movq %r13, -64(%rbp)
-                        ## t$8 <- t$4 - t$7
-                        movq -40(%rbp), %r13
-                        movq -64(%rbp), %r14
-                        subq %r14, %r13
-                        movq %r13, -72(%rbp)
-                        ## new int t$9 <- 32
-                        pushq %rbp
-                        pushq %r12
-                        movq $Int..new, %r14
-                        call *%r14
-                        popq %r12
-                        popq %rbp
-                        movq $32, %r14
-                        movq %r14, 24(%r13)
-                        movq 24(%r13), %r13
-                        movq %r13, -80(%rbp)
-                        ## t$10 <- -t$9
-                        movq -80(%rbp), %r13
-movq %r13, %rax
-negq %rax
-movq %rax, %r13 
-                        movq %r13, -88(%rbp)
-                        ## t$11 <- t$8 + t$10
-                        movq -72(%rbp), %r13
-                        movq -88(%rbp), %r14
-                        addq %r14, %r13
-                        movq %r13, -96(%rbp)
-                        ## (temp <- temp): t$1 <- t$11
-                        movq -96(%rbp), %r13
-                        movq %r13, -16(%rbp)
-                        ## (temp <- temp): t$12 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -104(%rbp)
-                        ## (temp <- temp): t$13 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -112(%rbp)
-                        ## t$14 <- not t$13
-                        movq -112(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
-                        jne main_l4_true
-.globl main_l5_false
-main_l5_false:
+                        jne main_l3_true
+.globl main_l4_false
+main_l4_false:
                         ## false branch
                         ## new Bool
                         pushq %rbp
@@ -630,9 +542,9 @@ main_l5_false:
                         popq %rbp
                         movq $1, %r14
                         movq %r14, 24(%r13)
-                        jmp main_l6_end
-.globl main_l4_true
-main_l4_true:
+                        jmp main_l5_end
+.globl main_l3_true
+main_l3_true:
                         ## true branch
                         ## new Bool
                         pushq %rbp
@@ -643,17 +555,216 @@ main_l4_true:
                         popq %rbp
                         movq $0, %r14
                         movq %r14, 24(%r13)
-.globl main_l6_end
-main_l6_end:            ## end of if conditional
+.globl main_l5_end
+main_l5_end:            ## end of if conditional
+                        movq %r13, -64(%rbp)
+                        ## t$8 <- not t$7
+                        movq -64(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l6_true
+.globl main_l7_false
+main_l7_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l8_end
+.globl main_l6_true
+main_l6_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+.globl main_l8_end
+main_l8_end:            ## end of if conditional
+                        movq %r13, -72(%rbp)
+                        ## t$9 <- not t$8
+                        movq -72(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l9_true
+.globl main_l10_false
+main_l10_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l11_end
+.globl main_l9_true
+main_l9_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+.globl main_l11_end
+main_l11_end:            ## end of if conditional
+                        movq %r13, -80(%rbp)
+                        ## (temp <- temp): t$9 <- t$9
+                        movq -80(%rbp), %r13
+                        movq %r13, -80(%rbp)
+                        ## new int t$10 <- 9
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $9, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -88(%rbp)
+                        ## (temp <- temp): t$11 <- t$6
+                        movq -56(%rbp), %r13
+                        movq %r13, -96(%rbp)
+                        ## t$12 <- t$10 + t$11
+                        movq -88(%rbp), %r13
+                        movq -96(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -104(%rbp)
+                        ## new int t$13 <- 32
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -112(%rbp)
+                        ## new int t$14 <- 23
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $23, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
                         movq %r13, -120(%rbp)
-                        ## if t$14 jump to main_l1
+                        ## t$15 <- t$13 / t$14
                         movq -120(%rbp), %r13
+                        cmpq $0, %r13
+           jne main_l12_div_ok
+                        movq $string10, %r13
+                        ## division by zero detected
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movq %r13, %rdi
+           call cooloutstr
+                        ## guarantee 16-byte alignment before call
+           andq $0xFFFFFFFFFFFFFFF0, %rsp
+           movl $0, %edi
+           call exit
+.global main_l12_div_ok
+main_l12_div_ok:        ## division is okay 
+                        movq -112(%rbp), %r14
+movq $0, %rdx
+movq %r14, %rax
+cdq
+idivl %r13d
+movq %rax, %r13
+                        movq %r13, -128(%rbp)
+                        ## t$16 <- t$12 - t$15
+                        movq -104(%rbp), %r13
+                        movq -128(%rbp), %r14
+                        subq %r14, %r13
+                        movq %r13, -136(%rbp)
+                        ## new int t$17 <- 32
+                        pushq %rbp
+                        pushq %r12
+                        movq $Int..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $32, %r14
+                        movq %r14, 24(%r13)
+                        movq 24(%r13), %r13
+                        movq %r13, -144(%rbp)
+                        ## t$18 <- -t$17
+                        movq -144(%rbp), %r13
+movq %r13, %rax
+negq %rax
+movq %rax, %r13 
+                        movq %r13, -152(%rbp)
+                        ## t$19 <- t$16 + t$18
+                        movq -136(%rbp), %r13
+                        movq -152(%rbp), %r14
+                        addq %r14, %r13
+                        movq %r13, -160(%rbp)
+                        ## (temp <- temp): t$3 <- t$19
+                        movq -160(%rbp), %r13
+                        movq %r13, -32(%rbp)
+                        ## (temp <- temp): t$20 <- t$9
+                        movq -80(%rbp), %r13
+                        movq %r13, -168(%rbp)
+                        ## t$21 <- not t$20
+                        movq -168(%rbp), %r13
+                        movq 24(%r13), %r13
+                        cmpq $0, %r13
+                        jne main_l13_true
+.globl main_l14_false
+main_l14_false:
+                        ## false branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $1, %r14
+                        movq %r14, 24(%r13)
+                        jmp main_l15_end
+.globl main_l13_true
+main_l13_true:
+                        ## true branch
+                        ## new Bool
+                        pushq %rbp
+                        pushq %r12
+                        movq $Bool..new, %r14
+                        call *%r14
+                        popq %r12
+                        popq %rbp
+                        movq $0, %r14
+                        movq %r14, 24(%r13)
+.globl main_l15_end
+main_l15_end:            ## end of if conditional
+                        movq %r13, -176(%rbp)
+                        ## if t$21 jump to main_l1
+                        movq -176(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l1
                         ## Basic block: BB1
-                        ## if t$13 jump to main_l0
-                        movq -112(%rbp), %r13
+                        ## if t$20 jump to main_l0
+                        movq -168(%rbp), %r13
                         movq 24(%r13), %r13
                         cmpq $0, %r13
                         jne main_l0
@@ -662,9 +773,10 @@ main_l6_end:            ## end of if conditional
                         ## Basic block: BB3
 .globl main_l0
 main_l0:
-                        ## (temp <- temp): t$15 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -128(%rbp)
+                        ## (temp <- temp): t$22 <- t$3
+                        movq -32(%rbp), %r13
+                        movq %r13, -184(%rbp)
+                        ## receiver: self
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -672,13 +784,13 @@ main_l0:
                         call *%r14
                         popq %r12
                         popq %rbp
-                        movq  -128(%rbp), %r14
+                        movq  -184(%rbp), %r14
                         movq %r14, 24(%r13)
                         movq %r13,       0(%rbp)
                         ## out_int(...)
                         pushq %r12
                         pushq %rbp
-                        ## t$15
+                        ## t$22
                         movq 0(%rbp), %r13
                         pushq %r13
                         pushq %r12
@@ -690,9 +802,9 @@ main_l0:
                         addq  $16, %rsp
                         popq  %rbp
                         popq  %r12
-                        ## (temp <- temp): t$17 <- t$0
-                        movq -8(%rbp), %r13
-                        movq %r13, -144(%rbp)
+                        ## (temp <- temp): t$26 <- t$23
+                        movq -192(%rbp), %r13
+                        movq %r13, -216(%rbp)
                         ## unconditional jump to main_l2
                         jmp main_l2
                         ## Basic block: BB4
@@ -700,7 +812,7 @@ main_l0:
                         ## Basic block: BB5
 .globl main_l1
 main_l1:
-                        ## new String t$16 <- "wrong\n"
+                        ## new String t$24 <- "wrong\n"
                         pushq %rbp
                         pushq %r12
                         movq $String..new, %r14
@@ -710,12 +822,13 @@ main_l1:
                         ## string8 holds "wrong\n"
                         movq $string8, %r14
                         movq %r14, 24(%r13)
-                        movq %r13, -136(%rbp)
+                        movq %r13, -200(%rbp)
+                        ## receiver: self
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$16 (pointer)
-                        movq -136(%rbp), %r13
+                        ## arg t$24 (pointer)
+                        movq -200(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -727,10 +840,10 @@ main_l1:
                         popq %rbp
                         popq %r12
                         movq 24(%r13), %r14
-                        movq %r14, -8(%rbp)
-                        ## (temp <- temp): t$17 <- t$0
-                        movq -8(%rbp), %r13
-                        movq %r13, -144(%rbp)
+                        movq %r14, -208(%rbp)
+                        ## (temp <- temp): t$26 <- t$25
+                        movq -208(%rbp), %r13
+                        movq %r13, -216(%rbp)
                         ## unconditional jump to main_l2
                         jmp main_l2
                         ## Basic block: BB6
