@@ -881,74 +881,44 @@ let rec convert (current_class : string) (current_method : string) (env : env)
             in
             (acc_instrs @ body_instrs, body_expr, final_env, final_ctx)
             
-        | (var_id, type_id, init_opt) :: rest ->
-            let var_name = snd var_id in
-            let var_type_str = snd type_id in
+       | (var_id, type_id, init_opt) :: rest ->
+                (* Process the initialization expression if it exists *)
+                let init_instrs, init_expr, env_after_init, ctx_after_init =
+                    match init_opt with
+                    | Some exp ->
+                        convert current_class current_method current_env current_ctx exp
+                    | None ->
+                        let temp = fresh_variable () in
+                        ([ TAC_Assign_Default (temp, snd type_id) ],
+                            TAC_Variable temp,
+                            current_env,
+                            current_ctx)
+                in
+ 
+          (* Allocate a new location for the local variable *)
+                let var_offset = newloc () in
+                let var_type_str = snd type_id in
+                let var_temp_loc = { offset = var_offset; var_type = var_type_str } in
+
+                (* Create a proper temporary variable using fresh_variable *)
+                let temp_var_name = fresh_variable () in
+
+                (* Register the temp_var_name in the context with the proper location *)
+                let updated_ctx = { 
+                    ctx_after_init with 
+                    temp_vars = (temp_var_name, var_temp_loc) :: 
+                        (snd var_id, var_temp_loc) :: 
+                        ctx_after_init.temp_vars 
+                } in
+
+                (* Create assignment instruction from init expression to the temporary variable *)
+                let assign_instr = [TAC_Assign_Variable (temp_var_name, tac_expr_to_string init_expr)] in
+
             
-            (* STEP 1: Evaluate the initialization expression e1 *)
-            let (init_instrs, init_expr, env1, ctx1) =
-                match init_opt with
-                | Some exp ->
-                    convert current_class current_method current_env current_ctx exp
-                | None ->
-                    (* Default initialization - create a completely fresh temp *)
-                    let default_temp = fresh_variable () in
-                    let default_loc = { offset = newloc (); var_type = var_type_str } in
-                    
-                    (* Register in context *)
-                    let ctx_with_temp = {
-                        current_ctx with
-                        temp_vars = (default_temp, default_loc) :: current_ctx.temp_vars
-                    } in
-                    
-                    ([TAC_Assign_Default (default_temp, var_type_str)],
-                     TAC_Variable default_temp,
-                     current_env,
-                     ctx_with_temp)
-            in
-            
-            (* STEP 2: Create a completely unique name for the init result *)
-            let init_result_temp = fresh_variable () in
-            let init_result_loc = { offset = newloc(); var_type = var_type_str } in
-            
-            (* Create a copy instruction to avoid reusing the same temporary *)
-            let copy_to_init_result = TAC_Assign_Variable (
-                init_result_temp, 
-                tac_expr_to_string init_expr
-            ) in
-            
-            (* STEP 3: Allocate a new location for the variable *)
-            let var_offset = newloc () in
-            let var_temp_loc = { offset = var_offset; var_type = var_type_str } in
-            
-            (* Create a deterministic temp name based on offset *)
-            let var_temp_name = Printf.sprintf "t$%d" var_offset in
-            
-            (* Add debug comment *)
-            let var_comment = TAC_Comment (Printf.sprintf "fp[%d] holds local %s (%s)" 
-                                         var_offset var_name var_type_str) in
-            
-            (* Generate assignment to store value at the variable's location *)
-            let assign_to_var = TAC_Assign_Variable (
-                var_temp_name, 
-                init_result_temp
-            ) in
-            
-            (* Merge all contexts together to ensure all temps are preserved *)
-            let merged_ctx = {
-                ctx1 with
-                temp_vars = 
-                    (var_name, var_temp_loc) :: 
-                    (var_temp_name, var_temp_loc) ::
-                    (init_result_temp, init_result_loc) ::
-                    ctx1.temp_vars
-            } in
-            
-            (* Process remaining bindings *)
-            process_bindings rest env1 merged_ctx 
-                (acc_instrs @ [var_comment] @ init_instrs @ [copy_to_init_result; assign_to_var])
-    in
-    process_bindings bindings env context []
+          (* Process remaining bindings *)
+                process_bindings rest env_after_init updated_ctx (acc_instrs @ init_instrs @ assign_instr)
+        in
+        process_bindings bindings env context []
 
 let identify_leaders (instructions : tac_instr list) : int list =
     let rec find_leaders acc index instrs =

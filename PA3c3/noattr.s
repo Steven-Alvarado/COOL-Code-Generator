@@ -458,8 +458,8 @@ Main.main:              ## method definition
 						pushq %rbp
 						movq %rsp, %rbp
 						movq 16(%rbp), %r12
-						## stack room for temporaries: 8
-						movq $64, %r14
+						## stack room for temporaries: 6
+						movq $48, %r14
 						subq %r14, %rsp
 						## return address handling
 						## method body begins
@@ -495,7 +495,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$4 <- t$2
                         movq -24(%rbp), %r13
                         movq %r13, -40(%rbp)
-                        ## receiver: self
                         ## new Int
                         pushq %rbp
                         pushq %r12
@@ -521,15 +520,14 @@ Main.main:              ## method definition
                         addq  $16, %rsp
                         popq  %rbp
                         popq  %r12
-                        ## (temp <- temp): t$6 <- t$3
+                        ## (temp <- temp): t$5 <- t$3
                         movq -32(%rbp), %r13
-                        movq %r13, -56(%rbp)
-                        ## receiver: self
+                        movq %r13, -48(%rbp)
                         ## out_string(...)
                         pushq %r12
                         pushq %rbp
-                        ## arg t$6 (pointer)
-                        movq -56(%rbp), %r13
+                        ## arg t$5 (pointer)
+                        movq -48(%rbp), %r13
                         pushq %r13
                         pushq %r12
                         ## obtain vtable for self object of type Main
@@ -541,7 +539,7 @@ Main.main:              ## method definition
                         popq %rbp
                         popq %r12
                         movq 24(%r13), %r14
-                        movq %r14, -64(%rbp)
+                        movq %r14, -8(%rbp)
 
 .globl Main.main.end
 Main.main.end:          ## method body ends

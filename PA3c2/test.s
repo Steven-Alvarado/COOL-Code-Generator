@@ -464,7 +464,6 @@ Main.main:              ## method definition
 						## return address handling
 						## method body begins
                         ## Basic block: BB0
-                        ## fp[3] holds local x (Int)
                         ##t$0 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -479,10 +478,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$1 <- t$0
                         movq -8(%rbp), %r13
                         movq %r13, -16(%rbp)
-                        ## (temp <- temp): t$3 <- t$1
-                        movq -16(%rbp), %r13
-                        movq %r13, -32(%rbp)
-                        ## fp[6] holds local y (Int)
                         ##t$2 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -497,10 +492,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$3 <- t$2
                         movq -24(%rbp), %r13
                         movq %r13, -32(%rbp)
-                        ## (temp <- temp): t$6 <- t$3
-                        movq -32(%rbp), %r13
-                        movq %r13, -56(%rbp)
-                        ## fp[9] holds local z (Int)
                         ##t$4 <- Default Int
                         pushq %rbp
                         pushq %r12
@@ -515,10 +506,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$5 <- t$4
                         movq -40(%rbp), %r13
                         movq %r13, -48(%rbp)
-                        ## (temp <- temp): t$9 <- t$5
-                        movq -48(%rbp), %r13
-                        movq %r13, -80(%rbp)
-                        ## fp[12] holds local input_str (String)
                         ##t$6 <- Default String
                         pushq %rbp
                         pushq %r12
@@ -533,10 +520,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$7 <- t$6
                         movq -56(%rbp), %r13
                         movq %r13, -64(%rbp)
-                        ## (temp <- temp): t$12 <- t$7
-                        movq -64(%rbp), %r13
-                        movq %r13, -104(%rbp)
-                        ## fp[15] holds local b1 (Bool)
                         ##t$8 <- Default Bool
                         pushq %rbp
                         pushq %r12
@@ -548,10 +531,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$9 <- t$8
                         movq -72(%rbp), %r13
                         movq %r13, -80(%rbp)
-                        ## (temp <- temp): t$15 <- t$9
-                        movq -80(%rbp), %r13
-                        movq %r13, -128(%rbp)
-                        ## fp[18] holds local b2 (Bool)
                         ##t$10 <- Default Bool
                         pushq %rbp
                         pushq %r12
@@ -563,10 +542,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$11 <- t$10
                         movq -88(%rbp), %r13
                         movq %r13, -96(%rbp)
-                        ## (temp <- temp): t$18 <- t$11
-                        movq -96(%rbp), %r13
-                        movq %r13, -152(%rbp)
-                        ## fp[21] holds local b3 (Bool)
                         ##t$12 <- Default Bool
                         pushq %rbp
                         pushq %r12
@@ -578,9 +553,6 @@ Main.main:              ## method definition
                         ## (temp <- temp): t$13 <- t$12
                         movq -104(%rbp), %r13
                         movq %r13, -112(%rbp)
-                        ## (temp <- temp): t$21 <- t$13
-                        movq -112(%rbp), %r13
-                        movq %r13, -176(%rbp)
                         ## new String t$14 <- "Enter an integer value for x: "
                         pushq %rbp
                         pushq %r12
@@ -625,9 +597,9 @@ Main.main:              ## method definition
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -136(%rbp)
-                        ## (temp <- temp): t$3 <- t$16
+                        ## (temp <- temp): t$1 <- t$16
                         movq -136(%rbp), %r13
-                        movq %r13, -32(%rbp)
+                        movq %r13, -16(%rbp)
                         ## new String t$17 <- "Enter an integer value for y: "
                         pushq %rbp
                         pushq %r12
@@ -672,9 +644,9 @@ Main.main:              ## method definition
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -160(%rbp)
-                        ## (temp <- temp): t$6 <- t$19
+                        ## (temp <- temp): t$2 <- t$19
                         movq -160(%rbp), %r13
-                        movq %r13, -56(%rbp)
+                        movq %r13, -24(%rbp)
                         ## new String t$20 <- "Enter a string: "
                         pushq %rbp
                         pushq %r12
@@ -718,14 +690,14 @@ Main.main:              ## method definition
                         popq %rbp
                         popq %r12
                         movq %r14, -184(%rbp)
-                        ## (temp <- temp): t$12 <- t$22
+                        ## (temp <- temp): t$4 <- t$22
                         movq -184(%rbp), %r13
-                        movq %r13, -104(%rbp)
-                        ## (temp <- temp): t$23 <- t$3
-                        movq -32(%rbp), %r13
+                        movq %r13, -40(%rbp)
+                        ## (temp <- temp): t$23 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -192(%rbp)
-                        ## (temp <- temp): t$24 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$24 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -200(%rbp)
                         ## t$25 <- t$23 * t$24
                         movq -192(%rbp), %r13
@@ -742,11 +714,11 @@ movq %r13, %rax
 negq %rax
 movq %rax, %r13 
                         movq %r13, -216(%rbp)
-                        ## (temp <- temp): t$27 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$27 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -224(%rbp)
-                        ## (temp <- temp): t$28 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$28 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -232(%rbp)
                         ## t$29 <- t$27 / t$28
                         movq -232(%rbp), %r13
@@ -771,11 +743,11 @@ cdq
 idivl %r13d
 movq %rax, %r13
                         movq %r13, -240(%rbp)
-                        ## (temp <- temp): t$30 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$30 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -248(%rbp)
-                        ## (temp <- temp): t$31 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$31 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -256(%rbp)
                         ## t$32 <- t$30 - t$31
                         movq -248(%rbp), %r13
@@ -796,14 +768,14 @@ movl %eax, %r13d
                         movq -272(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -280(%rbp)
-                        ## (temp <- temp): t$9 <- t$34
+                        ## (temp <- temp): t$3 <- t$34
                         movq -280(%rbp), %r13
-                        movq %r13, -80(%rbp)
-                        ## (temp <- temp): t$35 <- t$3
-                        movq -32(%rbp), %r13
+                        movq %r13, -32(%rbp)
+                        ## (temp <- temp): t$35 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -288(%rbp)
-                        ## (temp <- temp): t$36 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$36 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -296(%rbp)
                         ## t$37 <- t$35 < t$36 
                         pushq %r12
@@ -867,25 +839,25 @@ main_l37_true:
 .globl main_l39_end
 main_l39_end:            ## end of if conditional
                         movq %r13, -312(%rbp)
-                        ## (temp <- temp): t$15 <- t$38
+                        ## (temp <- temp): t$5 <- t$38
                         movq -312(%rbp), %r13
-                        movq %r13, -128(%rbp)
-                        ## (temp <- temp): t$39 <- t$3
-                        movq -32(%rbp), %r13
+                        movq %r13, -48(%rbp)
+                        ## (temp <- temp): t$39 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -320(%rbp)
-                        ## (temp <- temp): t$40 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$40 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -328(%rbp)
                         ## t$41 <- t$39 + t$40
                         movq -320(%rbp), %r13
                         movq -328(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -336(%rbp)
-                        ## (temp <- temp): t$42 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$42 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -344(%rbp)
-                        ## (temp <- temp): t$43 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$43 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -352(%rbp)
                         ## t$44 <- t$42 * t$43
                         movq -344(%rbp), %r13
@@ -925,14 +897,14 @@ movl %eax, %r13d
                         movq %r13, -368(%rbp)
                         popq %rbp
                         popq %r12
-                        ## (temp <- temp): t$18 <- t$45
+                        ## (temp <- temp): t$6 <- t$45
                         movq -368(%rbp), %r13
-                        movq %r13, -152(%rbp)
-                        ## (temp <- temp): t$46 <- t$3
-                        movq -32(%rbp), %r13
+                        movq %r13, -56(%rbp)
+                        ## (temp <- temp): t$46 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -376(%rbp)
-                        ## (temp <- temp): t$47 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$47 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -384(%rbp)
                         ## t$48 <- t$46 = t$47 
                         pushq %r12
@@ -1029,9 +1001,9 @@ main_l43_true:
 .globl main_l45_end
 main_l45_end:            ## end of if conditional
                         movq %r13, -408(%rbp)
-                        ## (temp <- temp): t$21 <- t$50
+                        ## (temp <- temp): t$7 <- t$50
                         movq -408(%rbp), %r13
-                        movq %r13, -176(%rbp)
+                        movq %r13, -64(%rbp)
                         ## new String t$51 <- "You entered: "
                         pushq %rbp
                         pushq %r12
@@ -1061,8 +1033,8 @@ main_l45_end:            ## end of if conditional
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -424(%rbp)
-                        ## (temp <- temp): t$53 <- t$12
-                        movq -104(%rbp), %r13
+                        ## (temp <- temp): t$53 <- t$4
+                        movq -40(%rbp), %r13
                         movq %r13, -432(%rbp)
                         ## receiver: self
                         ## out_string(...)
@@ -1111,8 +1083,8 @@ main_l45_end:            ## end of if conditional
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -456(%rbp)
-                        ## (temp <- temp): t$57 <- t$15
-                        movq -128(%rbp), %r13
+                        ## (temp <- temp): t$57 <- t$5
+                        movq -48(%rbp), %r13
                         movq %r13, -464(%rbp)
                         ## t$58 <- not t$57
                         movq -464(%rbp), %r13
@@ -1163,8 +1135,8 @@ main_l48_end:            ## end of if conditional
                         ## Basic block: BB3
 .globl main_l0
 main_l0:
-                        ## (temp <- temp): t$59 <- t$18
-                        movq -152(%rbp), %r13
+                        ## (temp <- temp): t$59 <- t$6
+                        movq -56(%rbp), %r13
                         movq %r13, -480(%rbp)
                         ## t$60 <- not t$59
                         movq -480(%rbp), %r13
@@ -1293,8 +1265,8 @@ main_l4:
                         ## Basic block: BB10
 .globl main_l5
 main_l5:
-                        ## (temp <- temp): t$66 <- t$21
-                        movq -176(%rbp), %r13
+                        ## (temp <- temp): t$66 <- t$7
+                        movq -64(%rbp), %r13
                         movq %r13, -536(%rbp)
                         ## t$67 <- not t$66
                         movq -536(%rbp), %r13
@@ -1378,8 +1350,8 @@ main_l57_end:            ## end of if conditional
                         ## Basic block: BB13
 .globl main_l6
 main_l6:
-                        ## (temp <- temp): t$69 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$69 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -560(%rbp)
                         ## new int t$70 <- 2
                         pushq %rbp
@@ -1411,8 +1383,8 @@ movl %eax, %r13d
                         ## Basic block: BB15
 .globl main_l7
 main_l7:
-                        ## (temp <- temp): t$72 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$72 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -584(%rbp)
                         ## new int t$73 <- 1
                         pushq %rbp
@@ -1440,9 +1412,9 @@ main_l7:
                         ## Basic block: BB17
 .globl main_l8
 main_l8:
-                        ## (temp <- temp): t$3 <- t$75
+                        ## (temp <- temp): t$1 <- t$75
                         movq -608(%rbp), %r13
-                        movq %r13, -32(%rbp)
+                        movq %r13, -16(%rbp)
                         ## (temp <- temp): t$93 <- t$75
                         movq -608(%rbp), %r13
                         movq %r13, -752(%rbp)
@@ -1453,8 +1425,8 @@ main_l8:
                         ## Basic block: BB19
 .globl main_l1
 main_l1:
-                        ## (temp <- temp): t$76 <- t$18
-                        movq -152(%rbp), %r13
+                        ## (temp <- temp): t$76 <- t$6
+                        movq -56(%rbp), %r13
                         movq %r13, -616(%rbp)
                         ## t$77 <- not t$76
                         movq -616(%rbp), %r13
@@ -1616,8 +1588,8 @@ main_l10:
                         ## Basic block: BB26
 .globl main_l11
 main_l11:
-                        ## (temp <- temp): t$84 <- t$21
-                        movq -176(%rbp), %r13
+                        ## (temp <- temp): t$84 <- t$7
+                        movq -64(%rbp), %r13
                         movq %r13, -680(%rbp)
                         ## t$85 <- not t$84
                         movq -680(%rbp), %r13
@@ -1668,8 +1640,8 @@ main_l66_end:            ## end of if conditional
                         ## Basic block: BB29
 .globl main_l12
 main_l12:
-                        ## (temp <- temp): t$86 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$86 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -696(%rbp)
                         ## new int t$87 <- 3
                         pushq %rbp
@@ -1701,8 +1673,8 @@ movl %eax, %r13d
                         ## Basic block: BB31
 .globl main_l13
 main_l13:
-                        ## (temp <- temp): t$89 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$89 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -720(%rbp)
                         ## new int t$90 <- 2
                         pushq %rbp
@@ -1730,9 +1702,9 @@ main_l13:
                         ## Basic block: BB33
 .globl main_l14
 main_l14:
-                        ## (temp <- temp): t$6 <- t$92
+                        ## (temp <- temp): t$2 <- t$92
                         movq -744(%rbp), %r13
-                        movq %r13, -56(%rbp)
+                        movq %r13, -24(%rbp)
                         ## (temp <- temp): t$93 <- t$92
                         movq -744(%rbp), %r13
                         movq %r13, -752(%rbp)
@@ -1743,11 +1715,11 @@ main_l14:
                         ## Basic block: BB35
 .globl main_l2
 main_l2:
-                        ## (temp <- temp): t$94 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$94 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -760(%rbp)
-                        ## (temp <- temp): t$95 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$95 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -768(%rbp)
                         ## t$96 <- -t$95
                         movq -768(%rbp), %r13
@@ -1764,8 +1736,8 @@ shlq $32, %rax
 shrq $32, %rax   
 movl %eax, %r13d 
                         movq %r13, -784(%rbp)
-                        ## (temp <- temp): t$98 <- t$15
-                        movq -128(%rbp), %r13
+                        ## (temp <- temp): t$98 <- t$5
+                        movq -48(%rbp), %r13
                         movq %r13, -792(%rbp)
                         ## t$99 <- not t$98
                         movq -792(%rbp), %r13
@@ -1816,8 +1788,8 @@ main_l69_end:            ## end of if conditional
                         ## Basic block: BB38
 .globl main_l15
 main_l15:
-                        ## (temp <- temp): t$100 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$100 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -808(%rbp)
                         ## (temp <- temp): t$102 <- t$100
                         movq -808(%rbp), %r13
@@ -1829,8 +1801,8 @@ main_l15:
                         ## Basic block: BB40
 .globl main_l16
 main_l16:
-                        ## (temp <- temp): t$101 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$101 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -816(%rbp)
                         ## (temp <- temp): t$102 <- t$101
                         movq -816(%rbp), %r13
@@ -1847,9 +1819,9 @@ main_l17:
                         movq -824(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -832(%rbp)
-                        ## (temp <- temp): t$9 <- t$103
+                        ## (temp <- temp): t$3 <- t$103
                         movq -832(%rbp), %r13
-                        movq %r13, -80(%rbp)
+                        movq %r13, -32(%rbp)
                         ## new String t$104 <- "Final values:\n"
                         pushq %rbp
                         pushq %r12
@@ -1908,8 +1880,8 @@ main_l17:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -864(%rbp)
-                        ## (temp <- temp): t$108 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$108 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -872(%rbp)
                         ## receiver: self
                         ## new Int
@@ -1995,8 +1967,8 @@ main_l17:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -912(%rbp)
-                        ## (temp <- temp): t$114 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$114 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -920(%rbp)
                         ## receiver: self
                         ## new Int
@@ -2082,8 +2054,8 @@ main_l17:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -960(%rbp)
-                        ## (temp <- temp): t$120 <- t$9
-                        movq -80(%rbp), %r13
+                        ## (temp <- temp): t$120 <- t$3
+                        movq -32(%rbp), %r13
                         movq %r13, -968(%rbp)
                         ## receiver: self
                         ## new Int
@@ -2140,8 +2112,8 @@ main_l17:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -992(%rbp)
-                        ## (temp <- temp): t$124 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$124 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -1000(%rbp)
                         ## new int t$125 <- 10
                         pushq %rbp
@@ -2232,8 +2204,8 @@ main_l72_end:            ## end of if conditional
                         ## Basic block: BB45
 .globl main_l18
 main_l18:
-                        ## (temp <- temp): t$128 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$128 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -1032(%rbp)
                         ## new int t$129 <- 5
                         pushq %rbp
@@ -2324,11 +2296,11 @@ main_l75_end:            ## end of if conditional
                         ## Basic block: BB48
 .globl main_l21
 main_l21:
-                        ## (temp <- temp): t$132 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$132 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -1064(%rbp)
-                        ## (temp <- temp): t$133 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$133 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -1072(%rbp)
                         ## t$134 <- t$132 * t$133
                         movq -1064(%rbp), %r13
@@ -2349,11 +2321,11 @@ movl %eax, %r13d
                         ## Basic block: BB50
 .globl main_l22
 main_l22:
-                        ## (temp <- temp): t$135 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$135 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -1088(%rbp)
-                        ## (temp <- temp): t$136 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$136 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -1096(%rbp)
                         ## t$137 <- t$135 + t$136
                         movq -1088(%rbp), %r13
@@ -2380,11 +2352,11 @@ main_l23:
                         ## Basic block: BB54
 .globl main_l19
 main_l19:
-                        ## (temp <- temp): t$139 <- t$15
-                        movq -128(%rbp), %r13
+                        ## (temp <- temp): t$139 <- t$5
+                        movq -48(%rbp), %r13
                         movq %r13, -1120(%rbp)
-                        ## (temp <- temp): t$140 <- t$18
-                        movq -152(%rbp), %r13
+                        ## (temp <- temp): t$140 <- t$6
+                        movq -56(%rbp), %r13
                         movq %r13, -1128(%rbp)
                         ## t$141 <- t$139 = t$140 
                         pushq %r12
@@ -2450,11 +2422,11 @@ main_l78_end:            ## end of if conditional
                         ## Basic block: BB57
 .globl main_l24
 main_l24:
-                        ## (temp <- temp): t$143 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$143 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -1152(%rbp)
-                        ## (temp <- temp): t$144 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$144 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -1160(%rbp)
                         ## t$145 <- t$143 - t$144
                         movq -1152(%rbp), %r13
@@ -2471,11 +2443,11 @@ main_l24:
                         ## Basic block: BB59
 .globl main_l25
 main_l25:
-                        ## (temp <- temp): t$146 <- t$3
-                        movq -32(%rbp), %r13
+                        ## (temp <- temp): t$146 <- t$1
+                        movq -16(%rbp), %r13
                         movq %r13, -1176(%rbp)
-                        ## (temp <- temp): t$147 <- t$6
-                        movq -56(%rbp), %r13
+                        ## (temp <- temp): t$147 <- t$2
+                        movq -24(%rbp), %r13
                         movq %r13, -1184(%rbp)
                         ## t$148 <- t$146 / t$147
                         movq -1184(%rbp), %r13
@@ -2520,8 +2492,8 @@ main_l26:
                         ## Basic block: BB63
 .globl main_l20
 main_l20:
-                        ## (temp <- temp): t$151 <- t$21
-                        movq -176(%rbp), %r13
+                        ## (temp <- temp): t$151 <- t$7
+                        movq -64(%rbp), %r13
                         movq %r13, -1216(%rbp)
                         ## t$152 <- not t$151
                         movq -1216(%rbp), %r13
@@ -2619,9 +2591,9 @@ main_l29:
                         movq -1248(%rbp), %r14
                         addq %r14, %r13
                         movq %r13, -1256(%rbp)
-                        ## (temp <- temp): t$9 <- t$156
+                        ## (temp <- temp): t$3 <- t$156
                         movq -1256(%rbp), %r13
-                        movq %r13, -80(%rbp)
+                        movq %r13, -32(%rbp)
                         ## new String t$157 <- "New z value: "
                         pushq %rbp
                         pushq %r12
@@ -2651,8 +2623,8 @@ main_l29:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -1272(%rbp)
-                        ## (temp <- temp): t$159 <- t$9
-                        movq -80(%rbp), %r13
+                        ## (temp <- temp): t$159 <- t$3
+                        movq -32(%rbp), %r13
                         movq %r13, -1280(%rbp)
                         ## receiver: self
                         ## new Int
@@ -2709,8 +2681,8 @@ main_l29:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -1304(%rbp)
-                        ## (temp <- temp): t$163 <- t$15
-                        movq -128(%rbp), %r13
+                        ## (temp <- temp): t$163 <- t$5
+                        movq -48(%rbp), %r13
                         movq %r13, -1312(%rbp)
                         ## t$164 <- not t$163
                         movq -1312(%rbp), %r13
@@ -2761,8 +2733,8 @@ main_l85_end:            ## end of if conditional
                         ## Basic block: BB73
 .globl main_l30
 main_l30:
-                        ## (temp <- temp): t$165 <- t$18
-                        movq -152(%rbp), %r13
+                        ## (temp <- temp): t$165 <- t$6
+                        movq -56(%rbp), %r13
                         movq %r13, -1328(%rbp)
                         ## t$166 <- not t$165
                         movq -1328(%rbp), %r13
@@ -2807,8 +2779,8 @@ main_l88_end:            ## end of if conditional
                         ## Basic block: BB75
 .globl main_l31
 main_l31:
-                        ## (temp <- temp): t$167 <- t$21
-                        movq -176(%rbp), %r13
+                        ## (temp <- temp): t$167 <- t$7
+                        movq -64(%rbp), %r13
                         movq %r13, -1344(%rbp)
                         ## (temp <- temp): t$168 <- t$167
                         movq -1344(%rbp), %r13
@@ -2898,8 +2870,8 @@ main_l33:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -1376(%rbp)
-                        ## (temp <- temp): t$172 <- t$12
-                        movq -104(%rbp), %r13
+                        ## (temp <- temp): t$172 <- t$4
+                        movq -40(%rbp), %r13
                         movq %r13, -1384(%rbp)
                         ## receiver: self
                         ## out_string(...)
@@ -2958,8 +2930,8 @@ main_l34:
                         popq %r12
                         movq 24(%r13), %r14
                         movq %r14, -1408(%rbp)
-                        ## (temp <- temp): t$176 <- t$12
-                        movq -104(%rbp), %r13
+                        ## (temp <- temp): t$176 <- t$4
+                        movq -40(%rbp), %r13
                         movq %r13, -1416(%rbp)
                         ## receiver: self
                         ## out_string(...)

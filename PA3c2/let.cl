@@ -1,6 +1,9 @@
 class Main inherits IO {
-    main () : Object{
-        let a : Bool, b : Bool, c : Int, d : Int  in {
+    e : Int <- 43 * 4;
+    main () : Object{{
+        out_int(e);
+
+        let a : Bool, b : Bool, c : Int, d : Int , e : Int in {
             c <- in_int();
             d <- in_int();
             if not c = d then a <- true else a <- false fi;
@@ -11,8 +14,10 @@ class Main inherits IO {
                     if not not not not not not a = b then out_string("hi\n") else out_string("bye\n") fi;
                     if b then out_string("b\n") else out_string("no\n") fi;
                     if x then out_string("x\n") else out_string("no\n") fi;
+                    out_int(e * 4343 /4 - 43 + ~3);
                 };
             };
-        }
+        };
+    }
     };
 };

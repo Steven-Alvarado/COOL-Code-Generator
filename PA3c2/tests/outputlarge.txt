@@ -1,0 +1,8757 @@
+=== Testing 0 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- int 0
+    return t$2
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Bazz, Method: printh
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Bazz, Method: printh
+
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- int 0
+return t$2
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    t$1 <- t$0
+    t$2 <- h
+    t$3 <- int 2
+    t$4 <- + t$2 t$3
+    h <- t$4
+    t$5 <- t$2
+    return t$5
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: doh
+Class attributes (5):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+  [6] a: Razz
+  [7] b: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: doh
+
+Class attributes (5):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+  [6] a: Razz
+  [7] b: Int
+
+Temp variables (6):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+t$1 <- t$0
+t$2 <- h
+t$3 <- int 2
+t$4 <- + t$2 t$3
+h <- t$4
+t$5 <- t$2
+return t$5
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    t$1 <- t$0
+    t$2 <- h
+    t$3 <- int 1
+    t$4 <- + t$2 t$3
+    h <- t$4
+    t$5 <- t$2
+    return t$5
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Bazz, Method: doh
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Bazz, Method: doh
+
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+
+Temp variables (6):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+t$1 <- t$0
+t$2 <- h
+t$3 <- int 1
+t$4 <- + t$2 t$3
+h <- t$4
+t$5 <- t$2
+return t$5
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    t$2 <- string
+do nothing
+    return t$2
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] a: Bazz
+  [4] b: Foo
+  [5] c: Razz
+  [6] d: Bar
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] a: Bazz
+  [4] b: Foo
+  [5] c: Razz
+  [6] d: Bar
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+\n
+comment receiver: self
+t$1 <- call out_string t$0
+t$2 <- string
+do nothing
+return t$2
+DEBUG: Initializing attribute h with context attributes: h, g, i, a, b, e, f, c, d
+DEBUG: Initializing attribute g with context attributes: h, g, i, a, b, e, f, c, d
+Your code generator failed for 0
+=== Testing 11 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 2
+    return t$0
+    TAC_Assign_Int    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Child, Method: f
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Child, Method: f
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 2
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new Child
+    t$1 <- t$0
+    t$2 <- t$1
+    t$3 <- call f 
+    return t$3
+    TAC_Assign_New    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (4):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new Child
+t$1 <- t$0
+t$2 <- t$1
+t$3 <- call f 
+Your code generator failed for 11
+=== Testing 15_18 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+hello world\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    return t$1
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+hello world\n
+comment receiver: self
+t$1 <- call out_string t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: 15_18.s
+15_18: PASS
+=== Testing 16 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: SELF_TYPE
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: SELF_TYPE
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+return t$0
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: 16.s
+GCC failed for test assembly of 16
+=== Testing 1 ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 fact_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label fact_l0
+    t$4 <- int 1
+    t$11 <- t$4
+    jmp fact_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label fact_l2
+    return t$11
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label fact_l1
+    t$5 <- n
+    t$6 <- n
+    t$7 <- int 1
+    t$8 <- - t$6 t$7
+    comment receiver: self
+    t$9 <- call fact t$8
+    t$10 <- * t$5 t$9
+    t$11 <- t$10
+    jmp fact_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Assign_Times    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- n
+    t$1 <- int 0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 fact_l1
+    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Factorial, Method: fact
+Class attributes (0):
+Parameters (1):
+  n: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Factorial, Method: fact
+
+Class attributes (0):
+
+Temp variables (12):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Int
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+
+Parameters (1):
+  n: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- n
+t$1 <- int 0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 fact_l1
+## BB1
+bt t$2 fact_l0
+## BB2
+comment then branch
+## BB3
+label fact_l0
+t$4 <- int 1
+t$11 <- t$4
+jmp fact_l2
+## BB4
+comment else branch
+## BB5
+label fact_l1
+t$5 <- n
+t$6 <- n
+t$7 <- int 1
+t$8 <- - t$6 t$7
+comment receiver: self
+t$9 <- call fact t$8
+t$10 <- * t$5 t$9
+t$11 <- t$10
+jmp fact_l2
+## BB6
+comment if-join
+## BB7
+label fact_l2
+return t$11
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new Factorial
+    t$1 <- int 5
+    comment receiver: t$0
+    t$2 <- call fact t$1
+    return t$2
+    TAC_Assign_New    TAC_Assign_Int    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new Factorial
+t$1 <- int 5
+comment receiver: t$0
+t$2 <- call fact t$1
+Your code generator failed for 1
+=== Testing 20 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 4
+    t$1 <- int 0
+    t$2 <- / t$0 t$1
+    return t$2
+    TAC_Assign_Int    TAC_Assign_Int    TAC_Assign_Divide    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (3):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 4
+t$1 <- int 0
+t$2 <- / t$0 t$1
+return t$2
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: 20.s
+20: PASS
+=== Testing 2 ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 factorial_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label factorial_l0
+    t$4 <- int 1
+    t$11 <- t$4
+    jmp factorial_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label factorial_l2
+    return t$11
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label factorial_l1
+    t$5 <- n
+    t$6 <- n
+    t$7 <- int 1
+    t$8 <- - t$6 t$7
+    comment receiver: self
+    t$9 <- call factorial t$8
+    t$10 <- * t$5 t$9
+    t$11 <- t$10
+    jmp factorial_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Assign_Times    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- n
+    t$1 <- int 0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 factorial_l1
+    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: factorial
+Class attributes (0):
+Parameters (1):
+  n: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: factorial
+
+Class attributes (0):
+
+Temp variables (12):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Int
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+
+Parameters (1):
+  n: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- n
+t$1 <- int 0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 factorial_l1
+## BB1
+bt t$2 factorial_l0
+## BB2
+comment then branch
+## BB3
+label factorial_l0
+t$4 <- int 1
+t$11 <- t$4
+jmp factorial_l2
+## BB4
+comment else branch
+## BB5
+label factorial_l1
+t$5 <- n
+t$6 <- n
+t$7 <- int 1
+t$8 <- - t$6 t$7
+comment receiver: self
+t$9 <- call factorial t$8
+t$10 <- * t$5 t$9
+t$11 <- t$10
+jmp factorial_l2
+## BB6
+comment if-join
+## BB7
+label factorial_l2
+return t$11
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new IO
+    t$1 <- string
+Enter a number: 
+    comment receiver: t$0
+    t$2 <- call out_string t$1
+    t$3 <- new IO
+    comment receiver: t$3
+    t$4 <- call in_int 
+    t$5 <- t$4
+    t$6 <- t$3
+    comment receiver: self
+    t$7 <- call factorial t$6
+    return t$7
+    TAC_Assign_New    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_New    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (8):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new IO
+t$1 <- string
+Enter a number: 
+comment receiver: t$0
+t$2 <- call out_string t$1
+Your code generator failed for 2
+=== Testing 3_10 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 5
+    return t$0
+    TAC_Assign_Int    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: f
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: f
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 5
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- default A
+    t$1 <- t$0
+    t$2 <- t$1
+    comment receiver: t$2
+    t$3 <- call f 
+    return t$3
+    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (4):
+  t$0: offset=-8, type=A
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- default A
+t$1 <- t$0
+t$2 <- t$1
+comment receiver: t$2
+t$3 <- call f 
+Your code generator failed for 3_10
+=== Testing 4 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new SELF_TYPE
+    return t$0
+    TAC_Assign_New    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: f
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: f
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new SELF_TYPE
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new B
+    t$1 <- t$0
+    t$2 <- t$1
+    comment receiver: t$2
+    t$3 <- call f 
+    return t$3
+    TAC_Assign_New    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (4):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new B
+t$1 <- t$0
+t$2 <- t$1
+comment receiver: t$2
+t$3 <- call f 
+Your code generator failed for 4
+=== Testing 5 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new A
+    return t$0
+    TAC_Assign_New    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new A
+return t$0
+DEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: 5.s
+Warning: Reference executable timed out or crashed for 5
+=== Testing 9 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new Object
+    comment receiver: t$0
+    t$1 <- call type_name 
+    t$2 <- int 4
+    t$3 <- int 1
+    comment receiver: t$1
+    t$4 <- call substr t$2, t$3
+    comment receiver: self
+    t$5 <- call out_string t$4
+Your code generator failed for 9
+=== Testing aid ===
+Control Flow Graph:
+Block BB20:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB21
+
+Block BB13:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB14
+
+Block BB14:
+  Predecessors: BB13, BB12, BB10
+  Instructions:
+    label main_l5
+    comment receiver: self
+    t$18 <- call out_int t$17
+    t$19 <- string
+\n= comparison (Object =): 
+    comment receiver: self
+    t$20 <- call out_string t$19
+    t$21 <- obj1
+    t$22 <- obj1
+    t$23 <- = t$21 t$22
+    t$24 <- not t$23
+    bt t$24 main_l7
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB15, BB19
+
+Block BB16:
+  Predecessors: BB15
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB17
+
+Block BB9:
+  Predecessors: BB8
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB8
+  Instructions:
+    label main_l3
+    t$15 <- int 1
+    t$17 <- t$15
+    jmp main_l5
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    t$7 <- new Object
+    obj1 <- t$7
+    t$8 <- new Object
+    obj2 <- t$8
+    t$9 <- string
+\n= comparison (Object !=): 
+    comment receiver: self
+    t$10 <- call out_string t$9
+    t$11 <- obj1
+    t$12 <- obj2
+    t$13 <- = t$11 t$12
+    t$14 <- not t$13
+    bt t$14 main_l4
+    TAC_Label    TAC_Assign_New    TAC_Assign_Variable    TAC_Assign_New    TAC_Assign_Variable    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB8, BB12
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$4 <- string
+actually true\n
+    comment receiver: self
+    t$5 <- call out_string t$4
+    t$6 <- t$5
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB17:
+  Predecessors: BB16, BB15
+  Instructions:
+    label main_l6
+    t$25 <- int 1
+    t$27 <- t$25
+    jmp main_l8
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB19:
+  Predecessors: BB18, BB14
+  Instructions:
+    label main_l7
+    t$26 <- int 0
+    t$27 <- t$26
+    jmp main_l8
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB12:
+  Predecessors: BB11, BB7
+  Instructions:
+    label main_l4
+    t$16 <- int 0
+    t$17 <- t$16
+    jmp main_l5
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB11:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB12
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$0 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$2 <- string
+not true\n
+    comment receiver: self
+    t$3 <- call out_string t$2
+    t$6 <- t$3
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB18:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB19
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB21:
+  Predecessors: BB20, BB19, BB17
+  Instructions:
+    label main_l8
+    comment receiver: self
+    t$28 <- call out_int t$27
+    return t$28
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+Block BB8:
+  Predecessors: BB7
+  Instructions:
+    bt t$13 main_l3
+    TAC_ConditionalJump  Successors: BB9, BB10
+
+Block BB15:
+  Predecessors: BB14
+  Instructions:
+    bt t$23 main_l6
+    TAC_ConditionalJump  Successors: BB16, BB17
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- y
+    t$1 <- not t$0
+    bt t$1 main_l1
+    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] x: Int
+  [4] y: Bool
+  [5] obj1: Object
+  [6] obj2: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] x: Int
+  [4] y: Bool
+  [5] obj1: Object
+  [6] obj2: Object
+
+Temp variables (29):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Int
+  t$16: offset=-136, type=Int
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Object
+  t$25: offset=-208, type=Int
+  t$26: offset=-216, type=Int
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- y
+t$1 <- not t$0
+bt t$1 main_l1
+## BB1
+bt t$0 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$2 <- string
+not true\n
+comment receiver: self
+t$3 <- call out_string t$2
+t$6 <- t$3
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$4 <- string
+actually true\n
+comment receiver: self
+t$5 <- call out_string t$4
+t$6 <- t$5
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+t$7 <- new Object
+obj1 <- t$7
+t$8 <- new Object
+obj2 <- t$8
+t$9 <- string
+\n= comparison (Object !=): 
+comment receiver: self
+t$10 <- call out_string t$9
+t$11 <- obj1
+t$12 <- obj2
+t$13 <- = t$11 t$12
+t$14 <- not t$13
+bt t$14 main_l4
+## BB8
+bt t$13 main_l3
+## BB9
+comment then branch
+## BB10
+label main_l3
+t$15 <- int 1
+t$17 <- t$15
+jmp main_l5
+## BB11
+comment else branch
+## BB12
+label main_l4
+t$16 <- int 0
+t$17 <- t$16
+jmp main_l5
+## BB13
+comment if-join
+## BB14
+label main_l5
+comment receiver: self
+t$18 <- call out_int t$17
+t$19 <- string
+\n= comparison (Object =): 
+comment receiver: self
+t$20 <- call out_string t$19
+t$21 <- obj1
+t$22 <- obj1
+t$23 <- = t$21 t$22
+t$24 <- not t$23
+bt t$24 main_l7
+## BB15
+bt t$23 main_l6
+## BB16
+comment then branch
+## BB17
+label main_l6
+t$25 <- int 1
+t$27 <- t$25
+jmp main_l8
+## BB18
+comment else branch
+## BB19
+label main_l7
+t$26 <- int 0
+t$27 <- t$26
+jmp main_l8
+## BB20
+comment if-join
+## BB21
+label main_l8
+comment receiver: self
+t$28 <- call out_int t$27
+return t$28
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x, y, obj1, obj2
+DEBUG: Initializing attribute y with context attributes: x, y, obj1, obj2
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: aid.s
+aid: PASS
+=== Testing all ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$4 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$6 <- string
+true\n
+    comment receiver: self
+    t$7 <- call out_string t$6
+    t$10 <- t$7
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    t$11 <- int 4
+    return t$11
+    TAC_Label    TAC_Assign_Int    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$8 <- string
+false\n
+    comment receiver: self
+    t$9 <- call out_string t$8
+    t$10 <- t$9
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- w
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- q
+    comment receiver: self
+    t$3 <- call out_string t$2
+    t$4 <- e
+    t$5 <- not t$4
+    bt t$5 main_l1
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (10):
+  [3] x: String
+  [4] y: Int
+  [5] z: Bool
+  [6] a: Object
+  [7] b: IO
+  [8] q: String
+  [9] w: Int
+  [10] e: Bool
+  [11] r: Object
+  [12] s: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (10):
+  [3] x: String
+  [4] y: Int
+  [5] z: Bool
+  [6] a: Object
+  [7] b: IO
+  [8] q: String
+  [9] w: Int
+  [10] e: Bool
+  [11] r: Object
+  [12] s: Int
+
+Temp variables (12):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- w
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- q
+comment receiver: self
+t$3 <- call out_string t$2
+t$4 <- e
+t$5 <- not t$4
+bt t$5 main_l1
+## BB1
+bt t$4 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$6 <- string
+true\n
+comment receiver: self
+t$7 <- call out_string t$6
+t$10 <- t$7
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$8 <- string
+false\n
+comment receiver: self
+t$9 <- call out_string t$8
+t$10 <- t$9
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+t$11 <- int 4
+return t$11
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute q with context attributes: x, y, z, a, b, q, w, e, r, s
+DEBUG: Initializing attribute w with context attributes: x, y, z, a, b, q, w, e, r, s
+DEBUG: Initializing attribute e with context attributes: x, y, z, a, b, q, w, e, r, s
+DEBUG: Initializing attribute r with context attributes: x, y, z, a, b, q, w, e, r, s
+DEBUG: Initializing attribute s with context attributes: x, y, z, a, b, q, w, e, r, s
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: all.s
+all: PASS
+=== Testing ari ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- y
+    t$1 <- x
+    t$2 <- * t$0 t$1
+    z <- t$2
+    t$3 <- x
+    t$4 <- z
+    t$5 <- - t$3 t$4
+    y <- t$5
+    t$6 <- x
+    t$7 <- z
+    t$8 <- - t$6 t$7
+    t$9 <- y
+    t$10 <- int 89
+    t$11 <- * t$9 t$10
+    t$12 <- int 3
+    t$13 <- * t$11 t$12
+    t$14 <- int 4335
+    t$15 <- * t$13 t$14
+    t$16 <- int 232342
+    t$17 <- * t$15 t$16
+    t$18 <- + t$8 t$17
+    t$19 <- z
+    t$20 <- - t$18 t$19
+    x <- t$20
+    t$21 <- x
+    comment receiver: self
+    t$22 <- call out_int t$21
+    t$23 <- string
+\n
+    comment receiver: self
+    t$24 <- call out_string t$23
+    return t$24
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Times    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Times    TAC_Assign_Int    TAC_Assign_Times    TAC_Assign_Int    TAC_Assign_Times    TAC_Assign_Int    TAC_Assign_Times    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+  [6] d: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+  [6] d: Int
+
+Temp variables (25):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Int
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Int
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Int
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Int
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- y
+t$1 <- x
+t$2 <- * t$0 t$1
+z <- t$2
+t$3 <- x
+t$4 <- z
+t$5 <- - t$3 t$4
+y <- t$5
+t$6 <- x
+t$7 <- z
+t$8 <- - t$6 t$7
+t$9 <- y
+t$10 <- int 89
+t$11 <- * t$9 t$10
+t$12 <- int 3
+t$13 <- * t$11 t$12
+t$14 <- int 4335
+t$15 <- * t$13 t$14
+t$16 <- int 232342
+t$17 <- * t$15 t$16
+t$18 <- + t$8 t$17
+t$19 <- z
+t$20 <- - t$18 t$19
+x <- t$20
+t$21 <- x
+comment receiver: self
+t$22 <- call out_int t$21
+t$23 <- string
+\n
+comment receiver: self
+t$24 <- call out_string t$23
+return t$24
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x, y, z, d
+DEBUG: Initializing attribute y with context attributes: x, y, z, d
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: ari.s
+ari: PASS
+=== Testing arith ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- var
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: value
+Class attributes (1):
+  [3] var: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: value
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- var
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- num
+    var <- t$0
+    return self
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: set_var
+Class attributes (1):
+  [3] var: Int
+Parameters (1):
+  num: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: set_var
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (1):
+  num: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- num
+var <- t$0
+return self
+Control Flow Graph:
+=== DEBUG CONTEXT ===
+Class: A, Method: method1
+Class attributes (1):
+  [3] var: Int
+Parameters (1):
+  num: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: method1
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (0):
+
+Parameters (1):
+  num: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- default Int
+    t$1 <- t$0
+    t$2 <- num1
+    t$3 <- num2
+    t$4 <- + t$2 t$3
+    t$3 <- t$4
+    t$5 <- new B
+    t$6 <- t$3
+    comment receiver: t$5
+    t$7 <- call set_var t$6
+    return t$7
+    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: method2
+Class attributes (1):
+  [3] var: Int
+Parameters (2):
+  num1: offset 1
+  num2: offset 2
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: method2
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (8):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+
+Parameters (2):
+  num1: offset=1
+  num2: offset=2
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- default Int
+t$1 <- t$0
+t$2 <- num1
+t$3 <- num2
+t$4 <- + t$2 t$3
+t$3 <- t$4
+t$5 <- new B
+t$6 <- t$3
+comment receiver: t$5
+t$7 <- call set_var t$6
+return t$7
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- default Int
+    t$1 <- t$0
+    t$2 <- num
+    t$3 <- ~ t$2
+    t$2 <- t$3
+    t$4 <- new C
+    t$5 <- t$2
+    comment receiver: t$4
+    t$6 <- call set_var t$5
+    return t$6
+    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Negate    TAC_Assign_Variable    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: A, Method: method3
+Class attributes (1):
+  [3] var: Int
+Parameters (1):
+  num: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: method3
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (7):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+
+Parameters (1):
+  num: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- default Int
+t$1 <- t$0
+t$2 <- num
+t$3 <- ~ t$2
+t$2 <- t$3
+t$4 <- new C
+t$5 <- t$2
+comment receiver: t$4
+t$6 <- call set_var t$5
+return t$6
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 method4_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label method4_l0
+    t$4 <- default Int
+    t$5 <- t$4
+    t$6 <- num1
+    t$7 <- num2
+    t$8 <- - t$6 t$7
+    t$5 <- t$8
+    t$9 <- new D
+    t$10 <- t$5
+    comment receiver: t$9
+    t$11 <- call set_var t$10
+    t$20 <- t$11
+    jmp method4_l2
+    TAC_Label    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label method4_l2
+    return t$20
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label method4_l1
+    t$12 <- default Int
+    t$13 <- t$12
+    t$14 <- num2
+    t$15 <- num1
+    t$16 <- - t$14 t$15
+    t$9 <- t$16
+    t$17 <- new D
+    t$18 <- t$9
+    comment receiver: t$17
+    t$19 <- call set_var t$18
+    t$20 <- t$19
+    jmp method4_l2
+    TAC_Label    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- num2
+    t$1 <- num1
+    t$2 <- < t$0 t$1
+    t$3 <- not t$2
+    bt t$3 method4_l1
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Lt    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: A, Method: method4
+Class attributes (1):
+  [3] var: Int
+Parameters (2):
+  num1: offset 1
+  num2: offset 2
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: method4
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (21):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Int
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+
+Parameters (2):
+  num1: offset=1
+  num2: offset=2
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- num2
+t$1 <- num1
+t$2 <- < t$0 t$1
+t$3 <- not t$2
+bt t$3 method4_l1
+## BB1
+bt t$2 method4_l0
+## BB2
+comment then branch
+## BB3
+label method4_l0
+t$4 <- default Int
+t$5 <- t$4
+t$6 <- num1
+t$7 <- num2
+t$8 <- - t$6 t$7
+t$5 <- t$8
+t$9 <- new D
+t$10 <- t$5
+comment receiver: t$9
+t$11 <- call set_var t$10
+t$20 <- t$11
+jmp method4_l2
+## BB4
+comment else branch
+## BB5
+label method4_l1
+t$12 <- default Int
+t$13 <- t$12
+t$14 <- num2
+t$15 <- num1
+t$16 <- - t$14 t$15
+t$9 <- t$16
+t$17 <- new D
+t$18 <- t$9
+comment receiver: t$17
+t$19 <- call set_var t$18
+t$20 <- t$19
+jmp method4_l2
+## BB6
+comment if-join
+## BB7
+label method4_l2
+return t$20
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    label method5_l0
+    jmp method5_l1
+    TAC_Label    TAC_Jump  Successors: BB3
+
+Block BB6:
+  Predecessors: BB5, BB3
+  Instructions:
+    label method5_l3
+    t$7 <- t$3
+    t$8 <- t$5
+    t$9 <- * t$7 t$8
+    t$3 <- t$9
+    t$10 <- t$5
+    t$11 <- int 1
+    t$12 <- + t$10 t$11
+    t$5 <- t$12
+    jmp method5_l1
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Times    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Jump  Successors: BB3
+
+Block BB3:
+  Predecessors: BB6, BB2, BB1
+  Instructions:
+    label method5_l1
+    t$4 <- t$5
+    t$5 <- num
+    t$6 <- <= t$4 t$5
+    t$13 <- t$6
+    bt t$13 method5_l3
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Le    TAC_Assign    TAC_ConditionalJump  Successors: BB4, BB6
+
+Block BB2:
+  Predecessors: 
+  Instructions:
+    comment while-pred
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: BB3
+  Instructions:
+    jmp method5_l2
+    TAC_Jump  Successors: BB8
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    t$14 <- new E
+    t$15 <- t$3
+    comment receiver: t$14
+    t$16 <- call set_var t$15
+    return t$16
+    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+Block BB7:
+  Predecessors: 
+  Instructions:
+    comment while-join
+    TAC_Comment  Successors: BB8
+
+Block BB8:
+  Predecessors: BB7, BB4
+  Instructions:
+    label method5_l2
+    t$0 <- default Object
+    return t$0
+    TAC_Label    TAC_Assign_Default    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: 
+  Instructions:
+    comment while-body
+    TAC_Comment  Successors: BB6
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 1
+    t$1 <- t$0
+    t$2 <- int 1
+    t$3 <- t$2
+    comment start
+    TAC_Assign_Int    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Comment  Successors: BB1
+
+=== DEBUG CONTEXT ===
+Class: A, Method: method5
+Class attributes (1):
+  [3] var: Int
+Parameters (1):
+  num: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A, Method: method5
+
+Class attributes (1):
+  [3] var: Int
+
+Temp variables (17):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Int
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+
+Parameters (1):
+  num: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 1
+t$1 <- t$0
+t$2 <- int 1
+t$3 <- t$2
+comment start
+## BB1
+label method5_l0
+jmp method5_l1
+## BB2
+comment while-pred
+## BB3
+label method5_l1
+t$4 <- t$5
+t$5 <- num
+t$6 <- <= t$4 t$5
+t$13 <- t$6
+bt t$13 method5_l3
+## BB4
+jmp method5_l2
+## BB5
+comment while-body
+## BB6
+label method5_l3
+t$7 <- t$3
+t$8 <- t$5
+t$9 <- * t$7 t$8
+t$3 <- t$9
+t$10 <- t$5
+t$11 <- int 1
+t$12 <- + t$10 t$11
+t$5 <- t$12
+jmp method5_l1
+## BB7
+comment while-join
+## BB8
+label method5_l2
+t$0 <- default Object
+return t$0
+## BB9
+t$14 <- new E
+t$15 <- t$3
+comment receiver: t$14
+t$16 <- call set_var t$15
+return t$16
+Control Flow Graph:
+Block BB50:
+  Predecessors: BB49, BB45
+  Instructions:
+    label c2i_l28
+    comment receiver: self
+    t$50 <- call abort 
+    t$51 <- int 0
+    t$52 <- t$51
+    jmp c2i_l29
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB32:
+  Predecessors: BB31
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB33
+
+Block BB55:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB56
+
+Block BB16:
+  Predecessors: BB15
+  Instructions:
+    bt t$17 c2i_l9
+    TAC_ConditionalJump  Successors: BB17, BB18
+
+Block BB29:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB30
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB19:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB20
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB39:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB40
+
+Block BB35:
+  Predecessors: BB34, BB30
+  Instructions:
+    label c2i_l19
+    t$35 <- char
+    t$36 <- string
+7
+    t$37 <- = t$35 t$36
+    t$38 <- not t$37
+    bt t$38 c2i_l22
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB36, BB40
+
+Block BB30:
+  Predecessors: BB29, BB25
+  Instructions:
+    label c2i_l16
+    t$30 <- char
+    t$31 <- string
+6
+    t$32 <- = t$30 t$31
+    t$33 <- not t$32
+    bt t$33 c2i_l19
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB31, BB35
+
+Block BB66:
+  Predecessors: BB65, BB64, BB13
+  Instructions:
+    label c2i_l8
+    t$60 <- t$59
+    jmp c2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB42:
+  Predecessors: BB41
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB43
+
+Block BB21:
+  Predecessors: BB20
+  Instructions:
+    bt t$22 c2i_l12
+    TAC_ConditionalJump  Successors: BB22, BB23
+
+Block BB51:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB52
+
+Block BB31:
+  Predecessors: BB30
+  Instructions:
+    bt t$32 c2i_l18
+    TAC_ConditionalJump  Successors: BB32, BB33
+
+Block BB45:
+  Predecessors: BB44, BB40
+  Instructions:
+    label c2i_l25
+    t$45 <- char
+    t$46 <- string
+9
+    t$47 <- = t$45 t$46
+    t$48 <- not t$47
+    bt t$48 c2i_l28
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB46, BB50
+
+Block BB37:
+  Predecessors: BB36
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB38
+
+Block BB67:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB68
+
+Block BB33:
+  Predecessors: BB32, BB31
+  Instructions:
+    label c2i_l18
+    t$34 <- int 6
+    t$55 <- t$34
+    jmp c2i_l20
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+Block BB43:
+  Predecessors: BB42, BB41
+  Instructions:
+    label c2i_l24
+    t$44 <- int 8
+    t$53 <- t$44
+    jmp c2i_l26
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB44:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB45
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label c2i_l4
+    t$10 <- char
+    t$11 <- string
+2
+    t$12 <- = t$10 t$11
+    t$13 <- not t$12
+    bt t$13 c2i_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB23:
+  Predecessors: BB22, BB21
+  Instructions:
+    label c2i_l12
+    t$24 <- int 4
+    t$57 <- t$24
+    jmp c2i_l14
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB17:
+  Predecessors: BB16
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB18
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 c2i_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB18:
+  Predecessors: BB17, BB16
+  Instructions:
+    label c2i_l9
+    t$19 <- int 3
+    t$58 <- t$19
+    jmp c2i_l11
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB58:
+  Predecessors: BB57, BB56, BB33
+  Instructions:
+    label c2i_l20
+    t$56 <- t$55
+    jmp c2i_l17
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB26:
+  Predecessors: BB25
+  Instructions:
+    bt t$27 c2i_l15
+    TAC_ConditionalJump  Successors: BB27, BB28
+
+Block BB34:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB35
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label c2i_l3
+    t$9 <- int 1
+    t$60 <- t$9
+    jmp c2i_l5
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB62:
+  Predecessors: BB61, BB60, BB23
+  Instructions:
+    label c2i_l14
+    t$58 <- t$57
+    jmp c2i_l11
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB52:
+  Predecessors: BB51, BB50, BB48
+  Instructions:
+    label c2i_l29
+    t$53 <- t$52
+    jmp c2i_l26
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB70:
+  Predecessors: BB69, BB68, BB3
+  Instructions:
+    label c2i_l2
+    return t$61
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB47:
+  Predecessors: BB46
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB48
+
+Block BB54:
+  Predecessors: BB53, BB52, BB43
+  Instructions:
+    label c2i_l26
+    t$54 <- t$53
+    jmp c2i_l23
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB38:
+  Predecessors: BB37, BB36
+  Instructions:
+    label c2i_l21
+    t$39 <- int 7
+    t$54 <- t$39
+    jmp c2i_l23
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB65:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB66
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB60:
+  Predecessors: BB59, BB58, BB28
+  Instructions:
+    label c2i_l17
+    t$57 <- t$56
+    jmp c2i_l14
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB36:
+  Predecessors: BB35
+  Instructions:
+    bt t$37 c2i_l21
+    TAC_ConditionalJump  Successors: BB37, BB38
+
+Block BB24:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB25
+
+Block BB59:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB60
+
+Block BB53:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB54
+
+Block BB25:
+  Predecessors: BB24, BB20
+  Instructions:
+    label c2i_l13
+    t$25 <- char
+    t$26 <- string
+5
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 c2i_l16
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB26, BB30
+
+Block BB57:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB58
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$12 c2i_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB41:
+  Predecessors: BB40
+  Instructions:
+    bt t$42 c2i_l24
+    TAC_ConditionalJump  Successors: BB42, BB43
+
+Block BB28:
+  Predecessors: BB27, BB26
+  Instructions:
+    label c2i_l15
+    t$29 <- int 5
+    t$56 <- t$29
+    jmp c2i_l17
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$7 c2i_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB64:
+  Predecessors: BB63, BB62, BB18
+  Instructions:
+    label c2i_l11
+    t$59 <- t$58
+    jmp c2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB61:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB62
+
+Block BB46:
+  Predecessors: BB45
+  Instructions:
+    bt t$47 c2i_l27
+    TAC_ConditionalJump  Successors: BB47, BB48
+
+Block BB68:
+  Predecessors: BB67, BB66, BB8
+  Instructions:
+    label c2i_l5
+    t$61 <- t$60
+    jmp c2i_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB22:
+  Predecessors: BB21
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB23
+
+Block BB27:
+  Predecessors: BB26
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB28
+
+Block BB63:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB64
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- char
+    t$1 <- string
+0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 c2i_l1
+    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+Block BB20:
+  Predecessors: BB19, BB15
+  Instructions:
+    label c2i_l10
+    t$20 <- char
+    t$21 <- string
+4
+    t$22 <- = t$20 t$21
+    t$23 <- not t$22
+    bt t$23 c2i_l13
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB21, BB25
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label c2i_l6
+    t$14 <- int 2
+    t$59 <- t$14
+    jmp c2i_l8
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB49:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB50
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB69:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB70
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label c2i_l1
+    t$5 <- char
+    t$6 <- string
+1
+    t$7 <- = t$5 t$6
+    t$8 <- not t$7
+    bt t$8 c2i_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB40:
+  Predecessors: BB39, BB35
+  Instructions:
+    label c2i_l22
+    t$40 <- char
+    t$41 <- string
+8
+    t$42 <- = t$40 t$41
+    t$43 <- not t$42
+    bt t$43 c2i_l25
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB41, BB45
+
+Block BB48:
+  Predecessors: BB47, BB46
+  Instructions:
+    label c2i_l27
+    t$49 <- int 9
+    t$52 <- t$49
+    jmp c2i_l29
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label c2i_l0
+    t$4 <- int 0
+    t$61 <- t$4
+    jmp c2i_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label c2i_l7
+    t$15 <- char
+    t$16 <- string
+3
+    t$17 <- = t$15 t$16
+    t$18 <- not t$17
+    bt t$18 c2i_l10
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB16, BB20
+
+Block BB56:
+  Predecessors: BB55, BB54, BB38
+  Instructions:
+    label c2i_l23
+    t$55 <- t$54
+    jmp c2i_l20
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: c2i
+Class attributes (0):
+Parameters (1):
+  char: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: c2i
+
+Class attributes (0):
+
+Temp variables (62):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Int
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Int
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Int
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Int
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Object
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Int
+  t$30: offset=-248, type=Object
+  t$31: offset=-256, type=Object
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Object
+  t$34: offset=-280, type=Int
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Object
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Int
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Object
+  t$42: offset=-344, type=Object
+  t$43: offset=-352, type=Object
+  t$44: offset=-360, type=Int
+  t$45: offset=-368, type=Object
+  t$46: offset=-376, type=Object
+  t$47: offset=-384, type=Object
+  t$48: offset=-392, type=Object
+  t$49: offset=-400, type=Int
+  t$50: offset=-408, type=Object
+  t$51: offset=-416, type=Int
+  t$52: offset=-424, type=Object
+  t$53: offset=-432, type=Object
+  t$54: offset=-440, type=Object
+  t$55: offset=-448, type=Object
+  t$56: offset=-456, type=Object
+  t$57: offset=-464, type=Object
+  t$58: offset=-472, type=Object
+  t$59: offset=-480, type=Object
+  t$60: offset=-488, type=Object
+  t$61: offset=-496, type=Object
+
+Parameters (1):
+  char: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- char
+t$1 <- string
+0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 c2i_l1
+## BB1
+bt t$2 c2i_l0
+## BB2
+comment then branch
+## BB3
+label c2i_l0
+t$4 <- int 0
+t$61 <- t$4
+jmp c2i_l2
+## BB4
+comment else branch
+## BB5
+label c2i_l1
+t$5 <- char
+t$6 <- string
+1
+t$7 <- = t$5 t$6
+t$8 <- not t$7
+bt t$8 c2i_l4
+## BB6
+bt t$7 c2i_l3
+## BB7
+comment then branch
+## BB8
+label c2i_l3
+t$9 <- int 1
+t$60 <- t$9
+jmp c2i_l5
+## BB9
+comment else branch
+## BB10
+label c2i_l4
+t$10 <- char
+t$11 <- string
+2
+t$12 <- = t$10 t$11
+t$13 <- not t$12
+bt t$13 c2i_l7
+## BB11
+bt t$12 c2i_l6
+## BB12
+comment then branch
+## BB13
+label c2i_l6
+t$14 <- int 2
+t$59 <- t$14
+jmp c2i_l8
+## BB14
+comment else branch
+## BB15
+label c2i_l7
+t$15 <- char
+t$16 <- string
+3
+t$17 <- = t$15 t$16
+t$18 <- not t$17
+bt t$18 c2i_l10
+## BB16
+bt t$17 c2i_l9
+## BB17
+comment then branch
+## BB18
+label c2i_l9
+t$19 <- int 3
+t$58 <- t$19
+jmp c2i_l11
+## BB19
+comment else branch
+## BB20
+label c2i_l10
+t$20 <- char
+t$21 <- string
+4
+t$22 <- = t$20 t$21
+t$23 <- not t$22
+bt t$23 c2i_l13
+## BB21
+bt t$22 c2i_l12
+## BB22
+comment then branch
+## BB23
+label c2i_l12
+t$24 <- int 4
+t$57 <- t$24
+jmp c2i_l14
+## BB24
+comment else branch
+## BB25
+label c2i_l13
+t$25 <- char
+t$26 <- string
+5
+t$27 <- = t$25 t$26
+t$28 <- not t$27
+bt t$28 c2i_l16
+## BB26
+bt t$27 c2i_l15
+## BB27
+comment then branch
+## BB28
+label c2i_l15
+t$29 <- int 5
+t$56 <- t$29
+jmp c2i_l17
+## BB29
+comment else branch
+## BB30
+label c2i_l16
+t$30 <- char
+t$31 <- string
+6
+t$32 <- = t$30 t$31
+t$33 <- not t$32
+bt t$33 c2i_l19
+## BB31
+bt t$32 c2i_l18
+## BB32
+comment then branch
+## BB33
+label c2i_l18
+t$34 <- int 6
+t$55 <- t$34
+jmp c2i_l20
+## BB34
+comment else branch
+## BB35
+label c2i_l19
+t$35 <- char
+t$36 <- string
+7
+t$37 <- = t$35 t$36
+t$38 <- not t$37
+bt t$38 c2i_l22
+## BB36
+bt t$37 c2i_l21
+## BB37
+comment then branch
+## BB38
+label c2i_l21
+t$39 <- int 7
+t$54 <- t$39
+jmp c2i_l23
+## BB39
+comment else branch
+## BB40
+label c2i_l22
+t$40 <- char
+t$41 <- string
+8
+t$42 <- = t$40 t$41
+t$43 <- not t$42
+bt t$43 c2i_l25
+## BB41
+bt t$42 c2i_l24
+## BB42
+comment then branch
+## BB43
+label c2i_l24
+t$44 <- int 8
+t$53 <- t$44
+jmp c2i_l26
+## BB44
+comment else branch
+## BB45
+label c2i_l25
+t$45 <- char
+t$46 <- string
+9
+t$47 <- = t$45 t$46
+t$48 <- not t$47
+bt t$48 c2i_l28
+## BB46
+bt t$47 c2i_l27
+## BB47
+comment then branch
+## BB48
+label c2i_l27
+t$49 <- int 9
+t$52 <- t$49
+jmp c2i_l29
+## BB49
+comment else branch
+## BB50
+label c2i_l28
+comment receiver: self
+t$50 <- call abort 
+t$51 <- int 0
+t$52 <- t$51
+jmp c2i_l29
+## BB51
+comment if-join
+## BB52
+label c2i_l29
+t$53 <- t$52
+jmp c2i_l26
+## BB53
+comment if-join
+## BB54
+label c2i_l26
+t$54 <- t$53
+jmp c2i_l23
+## BB55
+comment if-join
+## BB56
+label c2i_l23
+t$55 <- t$54
+jmp c2i_l20
+## BB57
+comment if-join
+## BB58
+label c2i_l20
+t$56 <- t$55
+jmp c2i_l17
+## BB59
+comment if-join
+## BB60
+label c2i_l17
+t$57 <- t$56
+jmp c2i_l14
+## BB61
+comment if-join
+## BB62
+label c2i_l14
+t$58 <- t$57
+jmp c2i_l11
+## BB63
+comment if-join
+## BB64
+label c2i_l11
+t$59 <- t$58
+jmp c2i_l8
+## BB65
+comment if-join
+## BB66
+label c2i_l8
+t$60 <- t$59
+jmp c2i_l5
+## BB67
+comment if-join
+## BB68
+label c2i_l5
+t$61 <- t$60
+jmp c2i_l2
+## BB69
+comment if-join
+## BB70
+label c2i_l2
+return t$61
+Control Flow Graph:
+Block BB50:
+  Predecessors: BB49, BB45
+  Instructions:
+    label i2c_l28
+    comment receiver: self
+    t$50 <- call abort 
+    t$51 <- string
+
+    t$52 <- t$51
+    jmp i2c_l29
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB32:
+  Predecessors: BB31
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB33
+
+Block BB55:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB56
+
+Block BB16:
+  Predecessors: BB15
+  Instructions:
+    bt t$17 i2c_l9
+    TAC_ConditionalJump  Successors: BB17, BB18
+
+Block BB29:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB30
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB19:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB20
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB39:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB40
+
+Block BB35:
+  Predecessors: BB34, BB30
+  Instructions:
+    label i2c_l19
+    t$35 <- i
+    t$36 <- int 7
+    t$37 <- = t$35 t$36
+    t$38 <- not t$37
+    bt t$38 i2c_l22
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB36, BB40
+
+Block BB30:
+  Predecessors: BB29, BB25
+  Instructions:
+    label i2c_l16
+    t$30 <- i
+    t$31 <- int 6
+    t$32 <- = t$30 t$31
+    t$33 <- not t$32
+    bt t$33 i2c_l19
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB31, BB35
+
+Block BB66:
+  Predecessors: BB65, BB64, BB13
+  Instructions:
+    label i2c_l8
+    t$60 <- t$59
+    jmp i2c_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB42:
+  Predecessors: BB41
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB43
+
+Block BB21:
+  Predecessors: BB20
+  Instructions:
+    bt t$22 i2c_l12
+    TAC_ConditionalJump  Successors: BB22, BB23
+
+Block BB51:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB52
+
+Block BB31:
+  Predecessors: BB30
+  Instructions:
+    bt t$32 i2c_l18
+    TAC_ConditionalJump  Successors: BB32, BB33
+
+Block BB45:
+  Predecessors: BB44, BB40
+  Instructions:
+    label i2c_l25
+    t$45 <- i
+    t$46 <- int 9
+    t$47 <- = t$45 t$46
+    t$48 <- not t$47
+    bt t$48 i2c_l28
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB46, BB50
+
+Block BB37:
+  Predecessors: BB36
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB38
+
+Block BB67:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB68
+
+Block BB33:
+  Predecessors: BB32, BB31
+  Instructions:
+    label i2c_l18
+    t$34 <- string
+6
+    t$55 <- t$34
+    jmp i2c_l20
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+Block BB43:
+  Predecessors: BB42, BB41
+  Instructions:
+    label i2c_l24
+    t$44 <- string
+8
+    t$53 <- t$44
+    jmp i2c_l26
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB44:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB45
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label i2c_l4
+    t$10 <- i
+    t$11 <- int 2
+    t$12 <- = t$10 t$11
+    t$13 <- not t$12
+    bt t$13 i2c_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB23:
+  Predecessors: BB22, BB21
+  Instructions:
+    label i2c_l12
+    t$24 <- string
+4
+    t$57 <- t$24
+    jmp i2c_l14
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB17:
+  Predecessors: BB16
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB18
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 i2c_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB18:
+  Predecessors: BB17, BB16
+  Instructions:
+    label i2c_l9
+    t$19 <- string
+3
+    t$58 <- t$19
+    jmp i2c_l11
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB58:
+  Predecessors: BB57, BB56, BB33
+  Instructions:
+    label i2c_l20
+    t$56 <- t$55
+    jmp i2c_l17
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB26:
+  Predecessors: BB25
+  Instructions:
+    bt t$27 i2c_l15
+    TAC_ConditionalJump  Successors: BB27, BB28
+
+Block BB34:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB35
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label i2c_l3
+    t$9 <- string
+1
+    t$60 <- t$9
+    jmp i2c_l5
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB62:
+  Predecessors: BB61, BB60, BB23
+  Instructions:
+    label i2c_l14
+    t$58 <- t$57
+    jmp i2c_l11
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB52:
+  Predecessors: BB51, BB50, BB48
+  Instructions:
+    label i2c_l29
+    t$53 <- t$52
+    jmp i2c_l26
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB70:
+  Predecessors: BB69, BB68, BB3
+  Instructions:
+    label i2c_l2
+    return t$61
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB47:
+  Predecessors: BB46
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB48
+
+Block BB54:
+  Predecessors: BB53, BB52, BB43
+  Instructions:
+    label i2c_l26
+    t$54 <- t$53
+    jmp i2c_l23
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB38:
+  Predecessors: BB37, BB36
+  Instructions:
+    label i2c_l21
+    t$39 <- string
+7
+    t$54 <- t$39
+    jmp i2c_l23
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB65:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB66
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB60:
+  Predecessors: BB59, BB58, BB28
+  Instructions:
+    label i2c_l17
+    t$57 <- t$56
+    jmp i2c_l14
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB36:
+  Predecessors: BB35
+  Instructions:
+    bt t$37 i2c_l21
+    TAC_ConditionalJump  Successors: BB37, BB38
+
+Block BB24:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB25
+
+Block BB59:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB60
+
+Block BB53:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB54
+
+Block BB25:
+  Predecessors: BB24, BB20
+  Instructions:
+    label i2c_l13
+    t$25 <- i
+    t$26 <- int 5
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 i2c_l16
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB26, BB30
+
+Block BB57:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB58
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$12 i2c_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB41:
+  Predecessors: BB40
+  Instructions:
+    bt t$42 i2c_l24
+    TAC_ConditionalJump  Successors: BB42, BB43
+
+Block BB28:
+  Predecessors: BB27, BB26
+  Instructions:
+    label i2c_l15
+    t$29 <- string
+5
+    t$56 <- t$29
+    jmp i2c_l17
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$7 i2c_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB64:
+  Predecessors: BB63, BB62, BB18
+  Instructions:
+    label i2c_l11
+    t$59 <- t$58
+    jmp i2c_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB61:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB62
+
+Block BB46:
+  Predecessors: BB45
+  Instructions:
+    bt t$47 i2c_l27
+    TAC_ConditionalJump  Successors: BB47, BB48
+
+Block BB68:
+  Predecessors: BB67, BB66, BB8
+  Instructions:
+    label i2c_l5
+    t$61 <- t$60
+    jmp i2c_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB22:
+  Predecessors: BB21
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB23
+
+Block BB27:
+  Predecessors: BB26
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB28
+
+Block BB63:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB64
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- i
+    t$1 <- int 0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 i2c_l1
+    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+Block BB20:
+  Predecessors: BB19, BB15
+  Instructions:
+    label i2c_l10
+    t$20 <- i
+    t$21 <- int 4
+    t$22 <- = t$20 t$21
+    t$23 <- not t$22
+    bt t$23 i2c_l13
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB21, BB25
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label i2c_l6
+    t$14 <- string
+2
+    t$59 <- t$14
+    jmp i2c_l8
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB49:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB50
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB69:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB70
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label i2c_l1
+    t$5 <- i
+    t$6 <- int 1
+    t$7 <- = t$5 t$6
+    t$8 <- not t$7
+    bt t$8 i2c_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB40:
+  Predecessors: BB39, BB35
+  Instructions:
+    label i2c_l22
+    t$40 <- i
+    t$41 <- int 8
+    t$42 <- = t$40 t$41
+    t$43 <- not t$42
+    bt t$43 i2c_l25
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB41, BB45
+
+Block BB48:
+  Predecessors: BB47, BB46
+  Instructions:
+    label i2c_l27
+    t$49 <- string
+9
+    t$52 <- t$49
+    jmp i2c_l29
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label i2c_l0
+    t$4 <- string
+0
+    t$61 <- t$4
+    jmp i2c_l2
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label i2c_l7
+    t$15 <- i
+    t$16 <- int 3
+    t$17 <- = t$15 t$16
+    t$18 <- not t$17
+    bt t$18 i2c_l10
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB16, BB20
+
+Block BB56:
+  Predecessors: BB55, BB54, BB38
+  Instructions:
+    label i2c_l23
+    t$55 <- t$54
+    jmp i2c_l20
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: i2c
+Class attributes (0):
+Parameters (1):
+  i: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: i2c
+
+Class attributes (0):
+
+Temp variables (62):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Int
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Int
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Int
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Int
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Object
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Int
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Object
+  t$30: offset=-248, type=Object
+  t$31: offset=-256, type=Int
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Object
+  t$34: offset=-280, type=Object
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Int
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Object
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Int
+  t$42: offset=-344, type=Object
+  t$43: offset=-352, type=Object
+  t$44: offset=-360, type=Object
+  t$45: offset=-368, type=Object
+  t$46: offset=-376, type=Int
+  t$47: offset=-384, type=Object
+  t$48: offset=-392, type=Object
+  t$49: offset=-400, type=Object
+  t$50: offset=-408, type=Object
+  t$51: offset=-416, type=Object
+  t$52: offset=-424, type=Object
+  t$53: offset=-432, type=Object
+  t$54: offset=-440, type=Object
+  t$55: offset=-448, type=Object
+  t$56: offset=-456, type=Object
+  t$57: offset=-464, type=Object
+  t$58: offset=-472, type=Object
+  t$59: offset=-480, type=Object
+  t$60: offset=-488, type=Object
+  t$61: offset=-496, type=Object
+
+Parameters (1):
+  i: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- i
+t$1 <- int 0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 i2c_l1
+## BB1
+bt t$2 i2c_l0
+## BB2
+comment then branch
+## BB3
+label i2c_l0
+t$4 <- string
+0
+t$61 <- t$4
+jmp i2c_l2
+## BB4
+comment else branch
+## BB5
+label i2c_l1
+t$5 <- i
+t$6 <- int 1
+t$7 <- = t$5 t$6
+t$8 <- not t$7
+bt t$8 i2c_l4
+## BB6
+bt t$7 i2c_l3
+## BB7
+comment then branch
+## BB8
+label i2c_l3
+t$9 <- string
+1
+t$60 <- t$9
+jmp i2c_l5
+## BB9
+comment else branch
+## BB10
+label i2c_l4
+t$10 <- i
+t$11 <- int 2
+t$12 <- = t$10 t$11
+t$13 <- not t$12
+bt t$13 i2c_l7
+## BB11
+bt t$12 i2c_l6
+## BB12
+comment then branch
+## BB13
+label i2c_l6
+t$14 <- string
+2
+t$59 <- t$14
+jmp i2c_l8
+## BB14
+comment else branch
+## BB15
+label i2c_l7
+t$15 <- i
+t$16 <- int 3
+t$17 <- = t$15 t$16
+t$18 <- not t$17
+bt t$18 i2c_l10
+## BB16
+bt t$17 i2c_l9
+## BB17
+comment then branch
+## BB18
+label i2c_l9
+t$19 <- string
+3
+t$58 <- t$19
+jmp i2c_l11
+## BB19
+comment else branch
+## BB20
+label i2c_l10
+t$20 <- i
+t$21 <- int 4
+t$22 <- = t$20 t$21
+t$23 <- not t$22
+bt t$23 i2c_l13
+## BB21
+bt t$22 i2c_l12
+## BB22
+comment then branch
+## BB23
+label i2c_l12
+t$24 <- string
+4
+t$57 <- t$24
+jmp i2c_l14
+## BB24
+comment else branch
+## BB25
+label i2c_l13
+t$25 <- i
+t$26 <- int 5
+t$27 <- = t$25 t$26
+t$28 <- not t$27
+bt t$28 i2c_l16
+## BB26
+bt t$27 i2c_l15
+## BB27
+comment then branch
+## BB28
+label i2c_l15
+t$29 <- string
+5
+t$56 <- t$29
+jmp i2c_l17
+## BB29
+comment else branch
+## BB30
+label i2c_l16
+t$30 <- i
+t$31 <- int 6
+t$32 <- = t$30 t$31
+t$33 <- not t$32
+bt t$33 i2c_l19
+## BB31
+bt t$32 i2c_l18
+## BB32
+comment then branch
+## BB33
+label i2c_l18
+t$34 <- string
+6
+t$55 <- t$34
+jmp i2c_l20
+## BB34
+comment else branch
+## BB35
+label i2c_l19
+t$35 <- i
+t$36 <- int 7
+t$37 <- = t$35 t$36
+t$38 <- not t$37
+bt t$38 i2c_l22
+## BB36
+bt t$37 i2c_l21
+## BB37
+comment then branch
+## BB38
+label i2c_l21
+t$39 <- string
+7
+t$54 <- t$39
+jmp i2c_l23
+## BB39
+comment else branch
+## BB40
+label i2c_l22
+t$40 <- i
+t$41 <- int 8
+t$42 <- = t$40 t$41
+t$43 <- not t$42
+bt t$43 i2c_l25
+## BB41
+bt t$42 i2c_l24
+## BB42
+comment then branch
+## BB43
+label i2c_l24
+t$44 <- string
+8
+t$53 <- t$44
+jmp i2c_l26
+## BB44
+comment else branch
+## BB45
+label i2c_l25
+t$45 <- i
+t$46 <- int 9
+t$47 <- = t$45 t$46
+t$48 <- not t$47
+bt t$48 i2c_l28
+## BB46
+bt t$47 i2c_l27
+## BB47
+comment then branch
+## BB48
+label i2c_l27
+t$49 <- string
+9
+t$52 <- t$49
+jmp i2c_l29
+## BB49
+comment else branch
+## BB50
+label i2c_l28
+comment receiver: self
+t$50 <- call abort 
+t$51 <- string
+
+t$52 <- t$51
+jmp i2c_l29
+## BB51
+comment if-join
+## BB52
+label i2c_l29
+t$53 <- t$52
+jmp i2c_l26
+## BB53
+comment if-join
+## BB54
+label i2c_l26
+t$54 <- t$53
+jmp i2c_l23
+## BB55
+comment if-join
+## BB56
+label i2c_l23
+t$55 <- t$54
+jmp i2c_l20
+## BB57
+comment if-join
+## BB58
+label i2c_l20
+t$56 <- t$55
+jmp i2c_l17
+## BB59
+comment if-join
+## BB60
+label i2c_l17
+t$57 <- t$56
+jmp i2c_l14
+## BB61
+comment if-join
+## BB62
+label i2c_l14
+t$58 <- t$57
+jmp i2c_l11
+## BB63
+comment if-join
+## BB64
+label i2c_l11
+t$59 <- t$58
+jmp i2c_l8
+## BB65
+comment if-join
+## BB66
+label i2c_l8
+t$60 <- t$59
+jmp i2c_l5
+## BB67
+comment if-join
+## BB68
+label i2c_l5
+t$61 <- t$60
+jmp i2c_l2
+## BB69
+comment if-join
+## BB70
+label i2c_l2
+return t$61
+Control Flow Graph:
+Block BB20:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB21
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label a2i_l6
+    t$29 <- s
+    t$30 <- int 1
+    t$31 <- s
+    comment receiver: t$31
+    t$32 <- call length 
+    t$33 <- int 1
+    t$34 <- - t$32 t$33
+    comment receiver: t$29
+    t$35 <- call substr t$30, t$34
+    comment receiver: self
+    t$36 <- call a2i_aux t$35
+    t$39 <- t$36
+    jmp a2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB17
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB16:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB17
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label a2i_l4
+    t$22 <- s
+    t$23 <- int 0
+    t$24 <- int 1
+    comment receiver: t$22
+    t$25 <- call substr t$23, t$24
+    t$26 <- string
++
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 a2i_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Int    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label a2i_l1
+    t$6 <- s
+    t$7 <- int 0
+    t$8 <- int 1
+    comment receiver: t$6
+    t$9 <- call substr t$7, t$8
+    t$10 <- string
+-
+    t$11 <- = t$9 t$10
+    t$12 <- not t$11
+    bt t$12 a2i_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Int    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB17:
+  Predecessors: BB16, BB15, BB13
+  Instructions:
+    label a2i_l8
+    t$40 <- t$39
+    jmp a2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB19:
+  Predecessors: BB18, BB17, BB8
+  Instructions:
+    label a2i_l5
+    t$41 <- t$40
+    jmp a2i_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$27 a2i_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$3 a2i_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$11 a2i_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label a2i_l0
+    t$5 <- int 0
+    t$41 <- t$5
+    jmp a2i_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB18:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB19
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB21:
+  Predecessors: BB20, BB19, BB3
+  Instructions:
+    label a2i_l2
+    return t$41
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label a2i_l3
+    t$13 <- s
+    t$14 <- int 1
+    t$15 <- s
+    comment receiver: t$15
+    t$16 <- call length 
+    t$17 <- int 1
+    t$18 <- - t$16 t$17
+    comment receiver: t$13
+    t$19 <- call substr t$14, t$18
+    comment receiver: self
+    t$20 <- call a2i_aux t$19
+    t$21 <- ~ t$20
+    t$40 <- t$21
+    jmp a2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Assign_Negate    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label a2i_l7
+    t$37 <- s
+    comment receiver: self
+    t$38 <- call a2i_aux t$37
+    t$39 <- t$38
+    jmp a2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB17
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- s
+    comment receiver: t$0
+    t$1 <- call length 
+    t$2 <- int 0
+    t$3 <- = t$1 t$2
+    t$4 <- not t$3
+    bt t$4 a2i_l1
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: a2i
+Class attributes (0):
+Parameters (1):
+  s: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: a2i
+
+Class attributes (0):
+
+Temp variables (42):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Int
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Int
+  t$8: offset=-72, type=Int
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Int
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Int
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Int
+  t$24: offset=-200, type=Int
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Object
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Object
+  t$30: offset=-248, type=Int
+  t$31: offset=-256, type=Object
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Int
+  t$34: offset=-280, type=Object
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Object
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Object
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Object
+
+Parameters (1):
+  s: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- s
+comment receiver: t$0
+t$1 <- call length 
+Your code generator failed for arith
+=== Testing atoi ===
+Control Flow Graph:
+Block BB50:
+  Predecessors: BB49, BB45
+  Instructions:
+    label c2i_l28
+    comment receiver: self
+    t$50 <- call abort 
+    t$51 <- int 0
+    t$52 <- t$51
+    jmp c2i_l29
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB32:
+  Predecessors: BB31
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB33
+
+Block BB55:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB56
+
+Block BB16:
+  Predecessors: BB15
+  Instructions:
+    bt t$17 c2i_l9
+    TAC_ConditionalJump  Successors: BB17, BB18
+
+Block BB29:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB30
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB19:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB20
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB39:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB40
+
+Block BB35:
+  Predecessors: BB34, BB30
+  Instructions:
+    label c2i_l19
+    t$35 <- char
+    t$36 <- string
+7
+    t$37 <- = t$35 t$36
+    t$38 <- not t$37
+    bt t$38 c2i_l22
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB36, BB40
+
+Block BB30:
+  Predecessors: BB29, BB25
+  Instructions:
+    label c2i_l16
+    t$30 <- char
+    t$31 <- string
+6
+    t$32 <- = t$30 t$31
+    t$33 <- not t$32
+    bt t$33 c2i_l19
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB31, BB35
+
+Block BB66:
+  Predecessors: BB65, BB64, BB13
+  Instructions:
+    label c2i_l8
+    t$60 <- t$59
+    jmp c2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB42:
+  Predecessors: BB41
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB43
+
+Block BB21:
+  Predecessors: BB20
+  Instructions:
+    bt t$22 c2i_l12
+    TAC_ConditionalJump  Successors: BB22, BB23
+
+Block BB51:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB52
+
+Block BB31:
+  Predecessors: BB30
+  Instructions:
+    bt t$32 c2i_l18
+    TAC_ConditionalJump  Successors: BB32, BB33
+
+Block BB45:
+  Predecessors: BB44, BB40
+  Instructions:
+    label c2i_l25
+    t$45 <- char
+    t$46 <- string
+9
+    t$47 <- = t$45 t$46
+    t$48 <- not t$47
+    bt t$48 c2i_l28
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB46, BB50
+
+Block BB37:
+  Predecessors: BB36
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB38
+
+Block BB67:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB68
+
+Block BB33:
+  Predecessors: BB32, BB31
+  Instructions:
+    label c2i_l18
+    t$34 <- int 6
+    t$55 <- t$34
+    jmp c2i_l20
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+Block BB43:
+  Predecessors: BB42, BB41
+  Instructions:
+    label c2i_l24
+    t$44 <- int 8
+    t$53 <- t$44
+    jmp c2i_l26
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB44:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB45
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label c2i_l4
+    t$10 <- char
+    t$11 <- string
+2
+    t$12 <- = t$10 t$11
+    t$13 <- not t$12
+    bt t$13 c2i_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB23:
+  Predecessors: BB22, BB21
+  Instructions:
+    label c2i_l12
+    t$24 <- int 4
+    t$57 <- t$24
+    jmp c2i_l14
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB17:
+  Predecessors: BB16
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB18
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 c2i_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB18:
+  Predecessors: BB17, BB16
+  Instructions:
+    label c2i_l9
+    t$19 <- int 3
+    t$58 <- t$19
+    jmp c2i_l11
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB58:
+  Predecessors: BB57, BB56, BB33
+  Instructions:
+    label c2i_l20
+    t$56 <- t$55
+    jmp c2i_l17
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB26:
+  Predecessors: BB25
+  Instructions:
+    bt t$27 c2i_l15
+    TAC_ConditionalJump  Successors: BB27, BB28
+
+Block BB34:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB35
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label c2i_l3
+    t$9 <- int 1
+    t$60 <- t$9
+    jmp c2i_l5
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB62:
+  Predecessors: BB61, BB60, BB23
+  Instructions:
+    label c2i_l14
+    t$58 <- t$57
+    jmp c2i_l11
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB52:
+  Predecessors: BB51, BB50, BB48
+  Instructions:
+    label c2i_l29
+    t$53 <- t$52
+    jmp c2i_l26
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB70:
+  Predecessors: BB69, BB68, BB3
+  Instructions:
+    label c2i_l2
+    return t$61
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB47:
+  Predecessors: BB46
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB48
+
+Block BB54:
+  Predecessors: BB53, BB52, BB43
+  Instructions:
+    label c2i_l26
+    t$54 <- t$53
+    jmp c2i_l23
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB38:
+  Predecessors: BB37, BB36
+  Instructions:
+    label c2i_l21
+    t$39 <- int 7
+    t$54 <- t$39
+    jmp c2i_l23
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB65:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB66
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB60:
+  Predecessors: BB59, BB58, BB28
+  Instructions:
+    label c2i_l17
+    t$57 <- t$56
+    jmp c2i_l14
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB36:
+  Predecessors: BB35
+  Instructions:
+    bt t$37 c2i_l21
+    TAC_ConditionalJump  Successors: BB37, BB38
+
+Block BB24:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB25
+
+Block BB59:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB60
+
+Block BB53:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB54
+
+Block BB25:
+  Predecessors: BB24, BB20
+  Instructions:
+    label c2i_l13
+    t$25 <- char
+    t$26 <- string
+5
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 c2i_l16
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB26, BB30
+
+Block BB57:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB58
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$12 c2i_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB41:
+  Predecessors: BB40
+  Instructions:
+    bt t$42 c2i_l24
+    TAC_ConditionalJump  Successors: BB42, BB43
+
+Block BB28:
+  Predecessors: BB27, BB26
+  Instructions:
+    label c2i_l15
+    t$29 <- int 5
+    t$56 <- t$29
+    jmp c2i_l17
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$7 c2i_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB64:
+  Predecessors: BB63, BB62, BB18
+  Instructions:
+    label c2i_l11
+    t$59 <- t$58
+    jmp c2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB61:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB62
+
+Block BB46:
+  Predecessors: BB45
+  Instructions:
+    bt t$47 c2i_l27
+    TAC_ConditionalJump  Successors: BB47, BB48
+
+Block BB68:
+  Predecessors: BB67, BB66, BB8
+  Instructions:
+    label c2i_l5
+    t$61 <- t$60
+    jmp c2i_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB22:
+  Predecessors: BB21
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB23
+
+Block BB27:
+  Predecessors: BB26
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB28
+
+Block BB63:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB64
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- char
+    t$1 <- string
+0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 c2i_l1
+    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+Block BB20:
+  Predecessors: BB19, BB15
+  Instructions:
+    label c2i_l10
+    t$20 <- char
+    t$21 <- string
+4
+    t$22 <- = t$20 t$21
+    t$23 <- not t$22
+    bt t$23 c2i_l13
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB21, BB25
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label c2i_l6
+    t$14 <- int 2
+    t$59 <- t$14
+    jmp c2i_l8
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB49:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB50
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB69:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB70
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label c2i_l1
+    t$5 <- char
+    t$6 <- string
+1
+    t$7 <- = t$5 t$6
+    t$8 <- not t$7
+    bt t$8 c2i_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB40:
+  Predecessors: BB39, BB35
+  Instructions:
+    label c2i_l22
+    t$40 <- char
+    t$41 <- string
+8
+    t$42 <- = t$40 t$41
+    t$43 <- not t$42
+    bt t$43 c2i_l25
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB41, BB45
+
+Block BB48:
+  Predecessors: BB47, BB46
+  Instructions:
+    label c2i_l27
+    t$49 <- int 9
+    t$52 <- t$49
+    jmp c2i_l29
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label c2i_l0
+    t$4 <- int 0
+    t$61 <- t$4
+    jmp c2i_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label c2i_l7
+    t$15 <- char
+    t$16 <- string
+3
+    t$17 <- = t$15 t$16
+    t$18 <- not t$17
+    bt t$18 c2i_l10
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB16, BB20
+
+Block BB56:
+  Predecessors: BB55, BB54, BB38
+  Instructions:
+    label c2i_l23
+    t$55 <- t$54
+    jmp c2i_l20
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: c2i
+Class attributes (0):
+Parameters (1):
+  char: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: c2i
+
+Class attributes (0):
+
+Temp variables (62):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Int
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Int
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Int
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Int
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Object
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Int
+  t$30: offset=-248, type=Object
+  t$31: offset=-256, type=Object
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Object
+  t$34: offset=-280, type=Int
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Object
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Int
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Object
+  t$42: offset=-344, type=Object
+  t$43: offset=-352, type=Object
+  t$44: offset=-360, type=Int
+  t$45: offset=-368, type=Object
+  t$46: offset=-376, type=Object
+  t$47: offset=-384, type=Object
+  t$48: offset=-392, type=Object
+  t$49: offset=-400, type=Int
+  t$50: offset=-408, type=Object
+  t$51: offset=-416, type=Int
+  t$52: offset=-424, type=Object
+  t$53: offset=-432, type=Object
+  t$54: offset=-440, type=Object
+  t$55: offset=-448, type=Object
+  t$56: offset=-456, type=Object
+  t$57: offset=-464, type=Object
+  t$58: offset=-472, type=Object
+  t$59: offset=-480, type=Object
+  t$60: offset=-488, type=Object
+  t$61: offset=-496, type=Object
+
+Parameters (1):
+  char: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- char
+t$1 <- string
+0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 c2i_l1
+## BB1
+bt t$2 c2i_l0
+## BB2
+comment then branch
+## BB3
+label c2i_l0
+t$4 <- int 0
+t$61 <- t$4
+jmp c2i_l2
+## BB4
+comment else branch
+## BB5
+label c2i_l1
+t$5 <- char
+t$6 <- string
+1
+t$7 <- = t$5 t$6
+t$8 <- not t$7
+bt t$8 c2i_l4
+## BB6
+bt t$7 c2i_l3
+## BB7
+comment then branch
+## BB8
+label c2i_l3
+t$9 <- int 1
+t$60 <- t$9
+jmp c2i_l5
+## BB9
+comment else branch
+## BB10
+label c2i_l4
+t$10 <- char
+t$11 <- string
+2
+t$12 <- = t$10 t$11
+t$13 <- not t$12
+bt t$13 c2i_l7
+## BB11
+bt t$12 c2i_l6
+## BB12
+comment then branch
+## BB13
+label c2i_l6
+t$14 <- int 2
+t$59 <- t$14
+jmp c2i_l8
+## BB14
+comment else branch
+## BB15
+label c2i_l7
+t$15 <- char
+t$16 <- string
+3
+t$17 <- = t$15 t$16
+t$18 <- not t$17
+bt t$18 c2i_l10
+## BB16
+bt t$17 c2i_l9
+## BB17
+comment then branch
+## BB18
+label c2i_l9
+t$19 <- int 3
+t$58 <- t$19
+jmp c2i_l11
+## BB19
+comment else branch
+## BB20
+label c2i_l10
+t$20 <- char
+t$21 <- string
+4
+t$22 <- = t$20 t$21
+t$23 <- not t$22
+bt t$23 c2i_l13
+## BB21
+bt t$22 c2i_l12
+## BB22
+comment then branch
+## BB23
+label c2i_l12
+t$24 <- int 4
+t$57 <- t$24
+jmp c2i_l14
+## BB24
+comment else branch
+## BB25
+label c2i_l13
+t$25 <- char
+t$26 <- string
+5
+t$27 <- = t$25 t$26
+t$28 <- not t$27
+bt t$28 c2i_l16
+## BB26
+bt t$27 c2i_l15
+## BB27
+comment then branch
+## BB28
+label c2i_l15
+t$29 <- int 5
+t$56 <- t$29
+jmp c2i_l17
+## BB29
+comment else branch
+## BB30
+label c2i_l16
+t$30 <- char
+t$31 <- string
+6
+t$32 <- = t$30 t$31
+t$33 <- not t$32
+bt t$33 c2i_l19
+## BB31
+bt t$32 c2i_l18
+## BB32
+comment then branch
+## BB33
+label c2i_l18
+t$34 <- int 6
+t$55 <- t$34
+jmp c2i_l20
+## BB34
+comment else branch
+## BB35
+label c2i_l19
+t$35 <- char
+t$36 <- string
+7
+t$37 <- = t$35 t$36
+t$38 <- not t$37
+bt t$38 c2i_l22
+## BB36
+bt t$37 c2i_l21
+## BB37
+comment then branch
+## BB38
+label c2i_l21
+t$39 <- int 7
+t$54 <- t$39
+jmp c2i_l23
+## BB39
+comment else branch
+## BB40
+label c2i_l22
+t$40 <- char
+t$41 <- string
+8
+t$42 <- = t$40 t$41
+t$43 <- not t$42
+bt t$43 c2i_l25
+## BB41
+bt t$42 c2i_l24
+## BB42
+comment then branch
+## BB43
+label c2i_l24
+t$44 <- int 8
+t$53 <- t$44
+jmp c2i_l26
+## BB44
+comment else branch
+## BB45
+label c2i_l25
+t$45 <- char
+t$46 <- string
+9
+t$47 <- = t$45 t$46
+t$48 <- not t$47
+bt t$48 c2i_l28
+## BB46
+bt t$47 c2i_l27
+## BB47
+comment then branch
+## BB48
+label c2i_l27
+t$49 <- int 9
+t$52 <- t$49
+jmp c2i_l29
+## BB49
+comment else branch
+## BB50
+label c2i_l28
+comment receiver: self
+t$50 <- call abort 
+t$51 <- int 0
+t$52 <- t$51
+jmp c2i_l29
+## BB51
+comment if-join
+## BB52
+label c2i_l29
+t$53 <- t$52
+jmp c2i_l26
+## BB53
+comment if-join
+## BB54
+label c2i_l26
+t$54 <- t$53
+jmp c2i_l23
+## BB55
+comment if-join
+## BB56
+label c2i_l23
+t$55 <- t$54
+jmp c2i_l20
+## BB57
+comment if-join
+## BB58
+label c2i_l20
+t$56 <- t$55
+jmp c2i_l17
+## BB59
+comment if-join
+## BB60
+label c2i_l17
+t$57 <- t$56
+jmp c2i_l14
+## BB61
+comment if-join
+## BB62
+label c2i_l14
+t$58 <- t$57
+jmp c2i_l11
+## BB63
+comment if-join
+## BB64
+label c2i_l11
+t$59 <- t$58
+jmp c2i_l8
+## BB65
+comment if-join
+## BB66
+label c2i_l8
+t$60 <- t$59
+jmp c2i_l5
+## BB67
+comment if-join
+## BB68
+label c2i_l5
+t$61 <- t$60
+jmp c2i_l2
+## BB69
+comment if-join
+## BB70
+label c2i_l2
+return t$61
+Control Flow Graph:
+Block BB50:
+  Predecessors: BB49, BB45
+  Instructions:
+    label i2c_l28
+    comment receiver: self
+    t$50 <- call abort 
+    t$51 <- string
+
+    t$52 <- t$51
+    jmp i2c_l29
+    TAC_Label    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB32:
+  Predecessors: BB31
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB33
+
+Block BB55:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB56
+
+Block BB16:
+  Predecessors: BB15
+  Instructions:
+    bt t$17 i2c_l9
+    TAC_ConditionalJump  Successors: BB17, BB18
+
+Block BB29:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB30
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB19:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB20
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB39:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB40
+
+Block BB35:
+  Predecessors: BB34, BB30
+  Instructions:
+    label i2c_l19
+    t$35 <- i
+    t$36 <- int 7
+    t$37 <- = t$35 t$36
+    t$38 <- not t$37
+    bt t$38 i2c_l22
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB36, BB40
+
+Block BB30:
+  Predecessors: BB29, BB25
+  Instructions:
+    label i2c_l16
+    t$30 <- i
+    t$31 <- int 6
+    t$32 <- = t$30 t$31
+    t$33 <- not t$32
+    bt t$33 i2c_l19
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB31, BB35
+
+Block BB66:
+  Predecessors: BB65, BB64, BB13
+  Instructions:
+    label i2c_l8
+    t$60 <- t$59
+    jmp i2c_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB42:
+  Predecessors: BB41
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB43
+
+Block BB21:
+  Predecessors: BB20
+  Instructions:
+    bt t$22 i2c_l12
+    TAC_ConditionalJump  Successors: BB22, BB23
+
+Block BB51:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB52
+
+Block BB31:
+  Predecessors: BB30
+  Instructions:
+    bt t$32 i2c_l18
+    TAC_ConditionalJump  Successors: BB32, BB33
+
+Block BB45:
+  Predecessors: BB44, BB40
+  Instructions:
+    label i2c_l25
+    t$45 <- i
+    t$46 <- int 9
+    t$47 <- = t$45 t$46
+    t$48 <- not t$47
+    bt t$48 i2c_l28
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB46, BB50
+
+Block BB37:
+  Predecessors: BB36
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB38
+
+Block BB67:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB68
+
+Block BB33:
+  Predecessors: BB32, BB31
+  Instructions:
+    label i2c_l18
+    t$34 <- string
+6
+    t$55 <- t$34
+    jmp i2c_l20
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+Block BB43:
+  Predecessors: BB42, BB41
+  Instructions:
+    label i2c_l24
+    t$44 <- string
+8
+    t$53 <- t$44
+    jmp i2c_l26
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB44:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB45
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label i2c_l4
+    t$10 <- i
+    t$11 <- int 2
+    t$12 <- = t$10 t$11
+    t$13 <- not t$12
+    bt t$13 i2c_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB23:
+  Predecessors: BB22, BB21
+  Instructions:
+    label i2c_l12
+    t$24 <- string
+4
+    t$57 <- t$24
+    jmp i2c_l14
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB17:
+  Predecessors: BB16
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB18
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 i2c_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB18:
+  Predecessors: BB17, BB16
+  Instructions:
+    label i2c_l9
+    t$19 <- string
+3
+    t$58 <- t$19
+    jmp i2c_l11
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB58:
+  Predecessors: BB57, BB56, BB33
+  Instructions:
+    label i2c_l20
+    t$56 <- t$55
+    jmp i2c_l17
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB26:
+  Predecessors: BB25
+  Instructions:
+    bt t$27 i2c_l15
+    TAC_ConditionalJump  Successors: BB27, BB28
+
+Block BB34:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB35
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label i2c_l3
+    t$9 <- string
+1
+    t$60 <- t$9
+    jmp i2c_l5
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB68
+
+Block BB62:
+  Predecessors: BB61, BB60, BB23
+  Instructions:
+    label i2c_l14
+    t$58 <- t$57
+    jmp i2c_l11
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB64
+
+Block BB52:
+  Predecessors: BB51, BB50, BB48
+  Instructions:
+    label i2c_l29
+    t$53 <- t$52
+    jmp i2c_l26
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB54
+
+Block BB70:
+  Predecessors: BB69, BB68, BB3
+  Instructions:
+    label i2c_l2
+    return t$61
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB47:
+  Predecessors: BB46
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB48
+
+Block BB54:
+  Predecessors: BB53, BB52, BB43
+  Instructions:
+    label i2c_l26
+    t$54 <- t$53
+    jmp i2c_l23
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB38:
+  Predecessors: BB37, BB36
+  Instructions:
+    label i2c_l21
+    t$39 <- string
+7
+    t$54 <- t$39
+    jmp i2c_l23
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB56
+
+Block BB65:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB66
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB60:
+  Predecessors: BB59, BB58, BB28
+  Instructions:
+    label i2c_l17
+    t$57 <- t$56
+    jmp i2c_l14
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB62
+
+Block BB36:
+  Predecessors: BB35
+  Instructions:
+    bt t$37 i2c_l21
+    TAC_ConditionalJump  Successors: BB37, BB38
+
+Block BB24:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB25
+
+Block BB59:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB60
+
+Block BB53:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB54
+
+Block BB25:
+  Predecessors: BB24, BB20
+  Instructions:
+    label i2c_l13
+    t$25 <- i
+    t$26 <- int 5
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 i2c_l16
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB26, BB30
+
+Block BB57:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB58
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$12 i2c_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB41:
+  Predecessors: BB40
+  Instructions:
+    bt t$42 i2c_l24
+    TAC_ConditionalJump  Successors: BB42, BB43
+
+Block BB28:
+  Predecessors: BB27, BB26
+  Instructions:
+    label i2c_l15
+    t$29 <- string
+5
+    t$56 <- t$29
+    jmp i2c_l17
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB60
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$7 i2c_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB64:
+  Predecessors: BB63, BB62, BB18
+  Instructions:
+    label i2c_l11
+    t$59 <- t$58
+    jmp i2c_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB61:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB62
+
+Block BB46:
+  Predecessors: BB45
+  Instructions:
+    bt t$47 i2c_l27
+    TAC_ConditionalJump  Successors: BB47, BB48
+
+Block BB68:
+  Predecessors: BB67, BB66, BB8
+  Instructions:
+    label i2c_l5
+    t$61 <- t$60
+    jmp i2c_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB22:
+  Predecessors: BB21
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB23
+
+Block BB27:
+  Predecessors: BB26
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB28
+
+Block BB63:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB64
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- i
+    t$1 <- int 0
+    t$2 <- = t$0 t$1
+    t$3 <- not t$2
+    bt t$3 i2c_l1
+    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+Block BB20:
+  Predecessors: BB19, BB15
+  Instructions:
+    label i2c_l10
+    t$20 <- i
+    t$21 <- int 4
+    t$22 <- = t$20 t$21
+    t$23 <- not t$22
+    bt t$23 i2c_l13
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB21, BB25
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label i2c_l6
+    t$14 <- string
+2
+    t$59 <- t$14
+    jmp i2c_l8
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB66
+
+Block BB49:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB50
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB69:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB70
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label i2c_l1
+    t$5 <- i
+    t$6 <- int 1
+    t$7 <- = t$5 t$6
+    t$8 <- not t$7
+    bt t$8 i2c_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB40:
+  Predecessors: BB39, BB35
+  Instructions:
+    label i2c_l22
+    t$40 <- i
+    t$41 <- int 8
+    t$42 <- = t$40 t$41
+    t$43 <- not t$42
+    bt t$43 i2c_l25
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB41, BB45
+
+Block BB48:
+  Predecessors: BB47, BB46
+  Instructions:
+    label i2c_l27
+    t$49 <- string
+9
+    t$52 <- t$49
+    jmp i2c_l29
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB52
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label i2c_l0
+    t$4 <- string
+0
+    t$61 <- t$4
+    jmp i2c_l2
+    TAC_Label    TAC_Assign_String    TAC_Assign_Variable    TAC_Jump  Successors: BB70
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label i2c_l7
+    t$15 <- i
+    t$16 <- int 3
+    t$17 <- = t$15 t$16
+    t$18 <- not t$17
+    bt t$18 i2c_l10
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB16, BB20
+
+Block BB56:
+  Predecessors: BB55, BB54, BB38
+  Instructions:
+    label i2c_l23
+    t$55 <- t$54
+    jmp i2c_l20
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB58
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: i2c
+Class attributes (0):
+Parameters (1):
+  i: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: i2c
+
+Class attributes (0):
+
+Temp variables (62):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Int
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Int
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Int
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Int
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Object
+  t$24: offset=-200, type=Object
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Int
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Object
+  t$30: offset=-248, type=Object
+  t$31: offset=-256, type=Int
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Object
+  t$34: offset=-280, type=Object
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Int
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Object
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Int
+  t$42: offset=-344, type=Object
+  t$43: offset=-352, type=Object
+  t$44: offset=-360, type=Object
+  t$45: offset=-368, type=Object
+  t$46: offset=-376, type=Int
+  t$47: offset=-384, type=Object
+  t$48: offset=-392, type=Object
+  t$49: offset=-400, type=Object
+  t$50: offset=-408, type=Object
+  t$51: offset=-416, type=Object
+  t$52: offset=-424, type=Object
+  t$53: offset=-432, type=Object
+  t$54: offset=-440, type=Object
+  t$55: offset=-448, type=Object
+  t$56: offset=-456, type=Object
+  t$57: offset=-464, type=Object
+  t$58: offset=-472, type=Object
+  t$59: offset=-480, type=Object
+  t$60: offset=-488, type=Object
+  t$61: offset=-496, type=Object
+
+Parameters (1):
+  i: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- i
+t$1 <- int 0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 i2c_l1
+## BB1
+bt t$2 i2c_l0
+## BB2
+comment then branch
+## BB3
+label i2c_l0
+t$4 <- string
+0
+t$61 <- t$4
+jmp i2c_l2
+## BB4
+comment else branch
+## BB5
+label i2c_l1
+t$5 <- i
+t$6 <- int 1
+t$7 <- = t$5 t$6
+t$8 <- not t$7
+bt t$8 i2c_l4
+## BB6
+bt t$7 i2c_l3
+## BB7
+comment then branch
+## BB8
+label i2c_l3
+t$9 <- string
+1
+t$60 <- t$9
+jmp i2c_l5
+## BB9
+comment else branch
+## BB10
+label i2c_l4
+t$10 <- i
+t$11 <- int 2
+t$12 <- = t$10 t$11
+t$13 <- not t$12
+bt t$13 i2c_l7
+## BB11
+bt t$12 i2c_l6
+## BB12
+comment then branch
+## BB13
+label i2c_l6
+t$14 <- string
+2
+t$59 <- t$14
+jmp i2c_l8
+## BB14
+comment else branch
+## BB15
+label i2c_l7
+t$15 <- i
+t$16 <- int 3
+t$17 <- = t$15 t$16
+t$18 <- not t$17
+bt t$18 i2c_l10
+## BB16
+bt t$17 i2c_l9
+## BB17
+comment then branch
+## BB18
+label i2c_l9
+t$19 <- string
+3
+t$58 <- t$19
+jmp i2c_l11
+## BB19
+comment else branch
+## BB20
+label i2c_l10
+t$20 <- i
+t$21 <- int 4
+t$22 <- = t$20 t$21
+t$23 <- not t$22
+bt t$23 i2c_l13
+## BB21
+bt t$22 i2c_l12
+## BB22
+comment then branch
+## BB23
+label i2c_l12
+t$24 <- string
+4
+t$57 <- t$24
+jmp i2c_l14
+## BB24
+comment else branch
+## BB25
+label i2c_l13
+t$25 <- i
+t$26 <- int 5
+t$27 <- = t$25 t$26
+t$28 <- not t$27
+bt t$28 i2c_l16
+## BB26
+bt t$27 i2c_l15
+## BB27
+comment then branch
+## BB28
+label i2c_l15
+t$29 <- string
+5
+t$56 <- t$29
+jmp i2c_l17
+## BB29
+comment else branch
+## BB30
+label i2c_l16
+t$30 <- i
+t$31 <- int 6
+t$32 <- = t$30 t$31
+t$33 <- not t$32
+bt t$33 i2c_l19
+## BB31
+bt t$32 i2c_l18
+## BB32
+comment then branch
+## BB33
+label i2c_l18
+t$34 <- string
+6
+t$55 <- t$34
+jmp i2c_l20
+## BB34
+comment else branch
+## BB35
+label i2c_l19
+t$35 <- i
+t$36 <- int 7
+t$37 <- = t$35 t$36
+t$38 <- not t$37
+bt t$38 i2c_l22
+## BB36
+bt t$37 i2c_l21
+## BB37
+comment then branch
+## BB38
+label i2c_l21
+t$39 <- string
+7
+t$54 <- t$39
+jmp i2c_l23
+## BB39
+comment else branch
+## BB40
+label i2c_l22
+t$40 <- i
+t$41 <- int 8
+t$42 <- = t$40 t$41
+t$43 <- not t$42
+bt t$43 i2c_l25
+## BB41
+bt t$42 i2c_l24
+## BB42
+comment then branch
+## BB43
+label i2c_l24
+t$44 <- string
+8
+t$53 <- t$44
+jmp i2c_l26
+## BB44
+comment else branch
+## BB45
+label i2c_l25
+t$45 <- i
+t$46 <- int 9
+t$47 <- = t$45 t$46
+t$48 <- not t$47
+bt t$48 i2c_l28
+## BB46
+bt t$47 i2c_l27
+## BB47
+comment then branch
+## BB48
+label i2c_l27
+t$49 <- string
+9
+t$52 <- t$49
+jmp i2c_l29
+## BB49
+comment else branch
+## BB50
+label i2c_l28
+comment receiver: self
+t$50 <- call abort 
+t$51 <- string
+
+t$52 <- t$51
+jmp i2c_l29
+## BB51
+comment if-join
+## BB52
+label i2c_l29
+t$53 <- t$52
+jmp i2c_l26
+## BB53
+comment if-join
+## BB54
+label i2c_l26
+t$54 <- t$53
+jmp i2c_l23
+## BB55
+comment if-join
+## BB56
+label i2c_l23
+t$55 <- t$54
+jmp i2c_l20
+## BB57
+comment if-join
+## BB58
+label i2c_l20
+t$56 <- t$55
+jmp i2c_l17
+## BB59
+comment if-join
+## BB60
+label i2c_l17
+t$57 <- t$56
+jmp i2c_l14
+## BB61
+comment if-join
+## BB62
+label i2c_l14
+t$58 <- t$57
+jmp i2c_l11
+## BB63
+comment if-join
+## BB64
+label i2c_l11
+t$59 <- t$58
+jmp i2c_l8
+## BB65
+comment if-join
+## BB66
+label i2c_l8
+t$60 <- t$59
+jmp i2c_l5
+## BB67
+comment if-join
+## BB68
+label i2c_l5
+t$61 <- t$60
+jmp i2c_l2
+## BB69
+comment if-join
+## BB70
+label i2c_l2
+return t$61
+Control Flow Graph:
+Block BB20:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB21
+
+Block BB13:
+  Predecessors: BB12, BB11
+  Instructions:
+    label a2i_l6
+    t$29 <- s
+    t$30 <- int 1
+    t$31 <- s
+    comment receiver: t$31
+    t$32 <- call length 
+    t$33 <- int 1
+    t$34 <- - t$32 t$33
+    comment receiver: t$29
+    t$35 <- call substr t$30, t$34
+    comment receiver: self
+    t$36 <- call a2i_aux t$35
+    t$39 <- t$36
+    jmp a2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB17
+
+Block BB14:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB15
+
+Block BB16:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB17
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB5
+  Instructions:
+    label a2i_l4
+    t$22 <- s
+    t$23 <- int 0
+    t$24 <- int 1
+    comment receiver: t$22
+    t$25 <- call substr t$23, t$24
+    t$26 <- string
++
+    t$27 <- = t$25 t$26
+    t$28 <- not t$27
+    bt t$28 a2i_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Int    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB11, BB15
+
+Block BB7:
+  Predecessors: BB6
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB8
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label a2i_l1
+    t$6 <- s
+    t$7 <- int 0
+    t$8 <- int 1
+    comment receiver: t$6
+    t$9 <- call substr t$7, t$8
+    t$10 <- string
+-
+    t$11 <- = t$9 t$10
+    t$12 <- not t$11
+    bt t$12 a2i_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Int    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB6, BB10
+
+Block BB17:
+  Predecessors: BB16, BB15, BB13
+  Instructions:
+    label a2i_l8
+    t$40 <- t$39
+    jmp a2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB19:
+  Predecessors: BB18, BB17, BB8
+  Instructions:
+    label a2i_l5
+    t$41 <- t$40
+    jmp a2i_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB12:
+  Predecessors: BB11
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB13
+
+Block BB11:
+  Predecessors: BB10
+  Instructions:
+    bt t$27 a2i_l6
+    TAC_ConditionalJump  Successors: BB12, BB13
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$3 a2i_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: BB5
+  Instructions:
+    bt t$11 a2i_l3
+    TAC_ConditionalJump  Successors: BB7, BB8
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label a2i_l0
+    t$5 <- int 0
+    t$41 <- t$5
+    jmp a2i_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB18:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB19
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB21:
+  Predecessors: BB20, BB19, BB3
+  Instructions:
+    label a2i_l2
+    return t$41
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB8:
+  Predecessors: BB7, BB6
+  Instructions:
+    label a2i_l3
+    t$13 <- s
+    t$14 <- int 1
+    t$15 <- s
+    comment receiver: t$15
+    t$16 <- call length 
+    t$17 <- int 1
+    t$18 <- - t$16 t$17
+    comment receiver: t$13
+    t$19 <- call substr t$14, t$18
+    comment receiver: self
+    t$20 <- call a2i_aux t$19
+    t$21 <- ~ t$20
+    t$40 <- t$21
+    jmp a2i_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Minus    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Assign_Negate    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB15:
+  Predecessors: BB14, BB10
+  Instructions:
+    label a2i_l7
+    t$37 <- s
+    comment receiver: self
+    t$38 <- call a2i_aux t$37
+    t$39 <- t$38
+    jmp a2i_l8
+    TAC_Label    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB17
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- s
+    comment receiver: t$0
+    t$1 <- call length 
+    t$2 <- int 0
+    t$3 <- = t$1 t$2
+    t$4 <- not t$3
+    bt t$4 a2i_l1
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: A2I, Method: a2i
+Class attributes (0):
+Parameters (1):
+  s: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: A2I, Method: a2i
+
+Class attributes (0):
+
+Temp variables (42):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Int
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Int
+  t$8: offset=-72, type=Int
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Int
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Int
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+  t$23: offset=-192, type=Int
+  t$24: offset=-200, type=Int
+  t$25: offset=-208, type=Object
+  t$26: offset=-216, type=Object
+  t$27: offset=-224, type=Object
+  t$28: offset=-232, type=Object
+  t$29: offset=-240, type=Object
+  t$30: offset=-248, type=Int
+  t$31: offset=-256, type=Object
+  t$32: offset=-264, type=Object
+  t$33: offset=-272, type=Int
+  t$34: offset=-280, type=Object
+  t$35: offset=-288, type=Object
+  t$36: offset=-296, type=Object
+  t$37: offset=-304, type=Object
+  t$38: offset=-312, type=Object
+  t$39: offset=-320, type=Object
+  t$40: offset=-328, type=Object
+  t$41: offset=-336, type=Object
+
+Parameters (1):
+  s: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- s
+comment receiver: t$0
+t$1 <- call length 
+Your code generator failed for atoi
+=== Testing attr ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- default Int
+    t$3 <- t$2
+    t$4 <- t$3
+    comment receiver: self
+    t$5 <- call out_int t$4
+    return t$5
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (6):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- default Int
+t$3 <- t$2
+t$4 <- t$3
+comment receiver: self
+t$5 <- call out_int t$4
+return t$5
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: attr.s
+attr: PASS
+=== Testing bool2 ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$4 <- y
+    comment receiver: self
+    t$5 <- call out_int t$4
+    t$8 <- t$5
+    jmp main_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    return t$8
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$6 <- string
+false
+    comment receiver: self
+    t$7 <- call out_string t$6
+    t$8 <- t$7
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- bool false
+    t$1 <- not t$0
+    here <- t$1
+    t$2 <- here
+    t$3 <- not t$2
+    bt t$3 main_l1
+    TAC_Assign_Bool    TAC_Assign_Not    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (5):
+  [3] istrue: Bool
+  [4] here: Bool
+  [5] x: Int
+  [6] z: Int
+  [7] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (5):
+  [3] istrue: Bool
+  [4] here: Bool
+  [5] x: Int
+  [6] z: Int
+  [7] y: Int
+
+Temp variables (9):
+  t$0: offset=-8, type=Bool
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- bool false
+t$1 <- not t$0
+here <- t$1
+t$2 <- here
+t$3 <- not t$2
+bt t$3 main_l1
+## BB1
+bt t$2 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$4 <- y
+comment receiver: self
+t$5 <- call out_int t$4
+t$8 <- t$5
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$6 <- string
+false
+comment receiver: self
+t$7 <- call out_string t$6
+t$8 <- t$7
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+return t$8
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute istrue with context attributes: istrue, here, x, z, y
+DEBUG: Initializing attribute here with context attributes: istrue, here, x, z, y
+DEBUG: Initializing attribute x with context attributes: istrue, here, x, z, y
+DEBUG: Initializing attribute z with context attributes: istrue, here, x, z, y
+DEBUG: Initializing attribute y with context attributes: istrue, here, x, z, y
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: bool2.s
+bool2: PASS
+=== Testing boolean ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$4 <- x
+    t$2 <- t$4
+    t$6 <- t$4
+    jmp main_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB13:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB14
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB14:
+  Predecessors: BB13, BB12, BB10
+  Instructions:
+    label main_l5
+    t$16 <- new IO
+    t$17 <- t$2
+    comment receiver: t$16
+    t$18 <- call out_int t$17
+    return t$18
+    TAC_Label    TAC_Assign_New    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+Block BB9:
+  Predecessors: BB8
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB8
+  Instructions:
+    label main_l3
+    t$9 <- t$2
+    t$10 <- y
+    t$11 <- - t$9 t$10
+    t$2 <- t$11
+    t$15 <- t$11
+    jmp main_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Minus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    t$7 <- isFalse
+    t$8 <- not t$7
+    bt t$8 main_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB8, BB12
+
+Block BB8:
+  Predecessors: BB7
+  Instructions:
+    bt t$7 main_l3
+    TAC_ConditionalJump  Successors: BB9, BB10
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$5 <- int 0
+    t$2 <- t$5
+    t$6 <- t$5
+    jmp main_l2
+    TAC_Label    TAC_Assign_Int    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB12:
+  Predecessors: BB11, BB7
+  Instructions:
+    label main_l4
+    t$12 <- t$2
+    t$13 <- y
+    t$14 <- + t$12 t$13
+    t$2 <- t$14
+    t$15 <- t$14
+    jmp main_l5
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB11:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB12
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 0
+    t$1 <- t$0
+    t$2 <- isTrue
+    t$3 <- not t$2
+    bt t$3 main_l1
+    TAC_Assign_Int    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] isTrue: Bool
+  [4] isFalse: Bool
+  [5] x: Int
+  [6] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] isTrue: Bool
+  [4] isFalse: Bool
+  [5] x: Int
+  [6] y: Int
+
+Temp variables (19):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Int
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 0
+t$1 <- t$0
+t$2 <- isTrue
+t$3 <- not t$2
+bt t$3 main_l1
+## BB1
+bt t$2 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$4 <- x
+t$2 <- t$4
+t$6 <- t$4
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$5 <- int 0
+t$2 <- t$5
+t$6 <- t$5
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+t$7 <- isFalse
+t$8 <- not t$7
+bt t$8 main_l4
+## BB8
+bt t$7 main_l3
+## BB9
+comment then branch
+## BB10
+label main_l3
+t$9 <- t$2
+t$10 <- y
+t$11 <- - t$9 t$10
+t$2 <- t$11
+t$15 <- t$11
+jmp main_l5
+## BB11
+comment else branch
+## BB12
+label main_l4
+t$12 <- t$2
+t$13 <- y
+t$14 <- + t$12 t$13
+t$2 <- t$14
+t$15 <- t$14
+jmp main_l5
+## BB13
+comment if-join
+## BB14
+label main_l5
+t$16 <- new IO
+t$17 <- t$2
+comment receiver: t$16
+t$18 <- call out_int t$17
+Your code generator failed for boolean
+=== Testing box ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    comment receiver: self
+    t$1 <- call out_int t$0
+    return t$1
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (3):
+  [3] y: Int
+  [4] x: Int
+  [5] z: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (3):
+  [3] y: Int
+  [4] x: Int
+  [5] z: Int
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+comment receiver: self
+t$1 <- call out_int t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute y with context attributes: y, x, z
+DEBUG: Initializing attribute x with context attributes: y, x, z
+DEBUG: Initializing attribute z with context attributes: y, x, z
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: box.s
+box: PASS
+=== Testing cells ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- map
+    population_map <- t$0
+    return self
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: CellularAutomaton, Method: init
+Class attributes (1):
+  [3] population_map: String
+Parameters (1):
+  map: offset 1
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: CellularAutomaton, Method: init
+
+Class attributes (1):
+  [3] population_map: String
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (1):
+  map: offset=1
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- map
+population_map <- t$0
+return self
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- population_map
+    t$1 <- string
+\n
+    comment receiver: t$0
+    t$2 <- call concat t$1
+    comment receiver: self
+    t$3 <- call out_string t$2
+    return self
+    TAC_Assign_Variable    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: CellularAutomaton, Method: print
+Class attributes (1):
+  [3] population_map: String
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: CellularAutomaton, Method: print
+
+Class attributes (1):
+  [3] population_map: String
+
+Temp variables (4):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- population_map
+t$1 <- string
+\n
+comment receiver: t$0
+t$2 <- call concat t$1
+Your code generator failed for cells
+=== Testing constest ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- y
+    comment receiver: self
+    t$1 <- call out_int t$0
+    return t$1
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (2):
+  [3] x: Int
+  [4] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (2):
+  [3] x: Int
+  [4] y: Int
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- y
+comment receiver: self
+t$1 <- call out_int t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x, y
+DEBUG: Initializing attribute y with context attributes: x, y
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: constest.s
+constest: PASS
+=== Testing ding ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$4 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$6 <- string
+good\n\n
+    comment receiver: self
+    t$7 <- call out_string t$6
+    t$10 <- t$7
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    return t$10
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$8 <- string
+:(\n
+    comment receiver: self
+    t$9 <- call out_string t$8
+    t$10 <- t$9
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- bool true
+    t$1 <- not t$0
+    a <- t$1
+    t$2 <- bool false
+    t$3 <- not t$2
+    x <- t$3
+    t$4 <- x
+    t$5 <- not t$4
+    bt t$5 main_l1
+    TAC_Assign_Bool    TAC_Assign_Not    TAC_Assign_Variable    TAC_Assign_Bool    TAC_Assign_Not    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] y: Bool
+  [4] x: Bool
+  [5] z: Bool
+  [6] a: Bool
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] y: Bool
+  [4] x: Bool
+  [5] z: Bool
+  [6] a: Bool
+
+Temp variables (11):
+  t$0: offset=-8, type=Bool
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Bool
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- bool true
+t$1 <- not t$0
+a <- t$1
+t$2 <- bool false
+t$3 <- not t$2
+x <- t$3
+t$4 <- x
+t$5 <- not t$4
+bt t$5 main_l1
+## BB1
+bt t$4 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$6 <- string
+good\n\n
+comment receiver: self
+t$7 <- call out_string t$6
+t$10 <- t$7
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$8 <- string
+:(\n
+comment receiver: self
+t$9 <- call out_string t$8
+t$10 <- t$9
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+return t$10
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute y with context attributes: y, x, z, a
+DEBUG: Initializing attribute x with context attributes: y, x, z, a
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: ding.s
+ding: PASS
+=== Testing dis ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: foo
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: foo
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    comment receiver: self
+    t$0 <- call foo 
+    return t$0
+    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+comment receiver: self
+t$0 <- call foo 
+return t$0
+ generating construtor for : BoolDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: dis.s
+Warning: Test executable timed out or crashed for dis
+=== Testing dispatch ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    label foo_l0
+    jmp foo_l1
+    TAC_Label    TAC_Jump  Successors: BB3
+
+Block BB6:
+  Predecessors: BB5, BB3
+  Instructions:
+    label foo_l3
+    t$3 <- x
+    t$4 <- x
+    t$5 <- int 1
+    t$6 <- + t$4 t$5
+    t$7 <- = t$3 t$6
+    t$8 <- y
+    t$9 <- y
+    t$10 <- = t$8 t$9
+    t$11 <- i
+    t$12 <- int 1
+    t$13 <- + t$11 t$12
+    i <- t$13
+    t$14 <- i
+    comment receiver: self
+    t$15 <- call out_int t$14
+    jmp foo_l1
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Eq    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Eq    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Jump  Successors: BB3
+
+Block BB3:
+  Predecessors: BB6, BB2, BB1
+  Instructions:
+    label foo_l1
+    t$0 <- i
+    t$1 <- int 10
+    t$2 <- < t$0 t$1
+    t$16 <- t$2
+    bt t$16 foo_l3
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Lt    TAC_Assign    TAC_ConditionalJump  Successors: BB4, BB6
+
+Block BB2:
+  Predecessors: 
+  Instructions:
+    comment while-pred
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: BB3
+  Instructions:
+    jmp foo_l2
+    TAC_Jump  Successors: BB8
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    t$17 <- string
+Done\n
+    comment receiver: self
+    t$18 <- call out_string t$17
+    return t$18
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+Block BB7:
+  Predecessors: 
+  Instructions:
+    comment while-join
+    TAC_Comment  Successors: BB8
+
+Block BB8:
+  Predecessors: BB7, BB4
+  Instructions:
+    label foo_l2
+    t$0 <- default Object
+    return t$0
+    TAC_Label    TAC_Assign_Default    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: 
+  Instructions:
+    comment while-body
+    TAC_Comment  Successors: BB6
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    comment start
+    TAC_Comment  Successors: BB1
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: foo
+Class attributes (3):
+  [3] i: Int
+  [4] x: Int
+  [5] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: foo
+
+Class attributes (3):
+  [3] i: Int
+  [4] x: Int
+  [5] y: Int
+
+Temp variables (19):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Int
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Int
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+comment start
+## BB1
+label foo_l0
+jmp foo_l1
+## BB2
+comment while-pred
+## BB3
+label foo_l1
+t$0 <- i
+t$1 <- int 10
+t$2 <- < t$0 t$1
+t$16 <- t$2
+bt t$16 foo_l3
+## BB4
+jmp foo_l2
+## BB5
+comment while-body
+## BB6
+label foo_l3
+t$3 <- x
+t$4 <- x
+t$5 <- int 1
+t$6 <- + t$4 t$5
+t$7 <- = t$3 t$6
+t$8 <- y
+t$9 <- y
+t$10 <- = t$8 t$9
+t$11 <- i
+t$12 <- int 1
+t$13 <- + t$11 t$12
+i <- t$13
+t$14 <- i
+comment receiver: self
+t$15 <- call out_int t$14
+jmp foo_l1
+## BB7
+comment while-join
+## BB8
+label foo_l2
+t$0 <- default Object
+return t$0
+## BB9
+t$17 <- string
+Done\n
+comment receiver: self
+t$18 <- call out_string t$17
+return t$18
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    comment receiver: self
+    t$0 <- call foo 
+    return t$0
+    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (3):
+  [3] i: Int
+  [4] x: Int
+  [5] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (3):
+  [3] i: Int
+  [4] x: Int
+  [5] y: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+comment receiver: self
+t$0 <- call foo 
+return t$0
+ generating construtor for : BoolDEBUG: Initializing attribute i with context attributes: i, x, y
+DEBUG: Initializing attribute x with context attributes: i, x, y
+DEBUG: Initializing attribute y with context attributes: i, x, y
+ generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute i with context attributes: i, x, y
+DEBUG: Initializing attribute x with context attributes: i, x, y
+DEBUG: Initializing attribute y with context attributes: i, x, y
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: dispatch.s
+dispatch: PASS
+=== Testing div ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    t$1 <- int 4
+    t$2 <- / t$0 t$1
+    t$3 <- int 5
+    t$4 <- / t$2 t$3
+    x <- t$4
+    t$5 <- x
+    comment receiver: self
+    t$6 <- call out_int t$5
+    t$7 <- string
+\n
+    comment receiver: self
+    t$8 <- call out_string t$7
+    return t$8
+    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Divide    TAC_Assign_Int    TAC_Assign_Divide    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (2):
+  [3] x: Int
+  [4] y: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (2):
+  [3] x: Int
+  [4] y: Int
+
+Temp variables (9):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+t$1 <- int 4
+t$2 <- / t$0 t$1
+t$3 <- int 5
+t$4 <- / t$2 t$3
+x <- t$4
+t$5 <- x
+comment receiver: self
+t$6 <- call out_int t$5
+t$7 <- string
+\n
+comment receiver: self
+t$8 <- call out_string t$7
+return t$8
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x, y
+DEBUG: Initializing attribute y with context attributes: x, y
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: div.s
+div: PASS
+=== Testing equal ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$6 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$8 <- string
+yes
+    comment receiver: self
+    t$9 <- call out_string t$8
+    t$12 <- t$9
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    t$13 <- string
+\n
+    comment receiver: self
+    t$14 <- call out_string t$13
+    return t$14
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$10 <- string
+no
+    comment receiver: self
+    t$11 <- call out_string t$10
+    t$12 <- t$11
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 5
+    t$1 <- int 5
+    t$2 <- <= t$0 t$1
+    x <- t$2
+    t$3 <- int 10
+    t$4 <- int 10
+    t$5 <- = t$3 t$4
+    y <- t$5
+    t$6 <- x
+    t$7 <- not t$6
+    bt t$7 main_l1
+    TAC_Assign_Int    TAC_Assign_Int    TAC_Assign_Le    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Int    TAC_Assign_Eq    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (2):
+  [3] x: Bool
+  [4] y: Bool
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (2):
+  [3] x: Bool
+  [4] y: Bool
+
+Temp variables (15):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Int
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 5
+t$1 <- int 5
+t$2 <- <= t$0 t$1
+x <- t$2
+t$3 <- int 10
+t$4 <- int 10
+t$5 <- = t$3 t$4
+y <- t$5
+t$6 <- x
+t$7 <- not t$6
+bt t$7 main_l1
+## BB1
+bt t$6 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$8 <- string
+yes
+comment receiver: self
+t$9 <- call out_string t$8
+t$12 <- t$9
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$10 <- string
+no
+comment receiver: self
+t$11 <- call out_string t$10
+t$12 <- t$11
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+t$13 <- string
+\n
+comment receiver: self
+t$14 <- call out_string t$13
+return t$14
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: equal.s
+equal: PASS
+=== Testing extra1 ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- new A
+    return t$0
+    TAC_Assign_New    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- new A
+return t$0
+DEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: extra1.s
+Warning: Reference executable timed out or crashed for extra1
+=== Testing false ===
+Control Flow Graph:
+Block BB20:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB21
+
+Block BB13:
+  Predecessors: BB12
+  Instructions:
+    bt t$12 main_l6
+    TAC_ConditionalJump  Successors: BB14, BB15
+
+Block BB14:
+  Predecessors: BB13
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB15
+
+Block BB16:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB17
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB8, BB6
+  Instructions:
+    label main_l5
+    t$19 <- t$11
+    jmp main_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB7:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB8
+
+Block BB5:
+  Predecessors: BB4
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB6
+
+Block BB17:
+  Predecessors: BB16, BB12
+  Instructions:
+    label main_l7
+    t$16 <- string
+dfs\t
+    comment receiver: self
+    t$17 <- call out_string t$16
+    t$18 <- t$17
+    jmp main_l8
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB19:
+  Predecessors: BB18, BB17, BB15
+  Instructions:
+    label main_l8
+    t$19 <- t$18
+    jmp main_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB21
+
+Block BB12:
+  Predecessors: BB11, BB0
+  Instructions:
+    label main_l1
+    t$12 <- t$1
+    t$13 <- not t$12
+    bt t$13 main_l7
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB13, BB17
+
+Block BB11:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB12
+
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$2 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: BB5, BB4
+  Instructions:
+    label main_l3
+    t$7 <- string
+wrong\n
+    comment receiver: self
+    t$8 <- call out_string t$7
+    t$11 <- t$8
+    jmp main_l5
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB10
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$4 <- t$1
+    t$5 <- not t$4
+    t$6 <- not t$5
+    bt t$6 main_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Not    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB4, BB8
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB18:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB19
+
+Block BB4:
+  Predecessors: BB3
+  Instructions:
+    bt t$5 main_l3
+    TAC_ConditionalJump  Successors: BB5, BB6
+
+Block BB21:
+  Predecessors: BB20, BB19, BB10
+  Instructions:
+    label main_l2
+    return t$19
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB8:
+  Predecessors: BB7, BB3
+  Instructions:
+    label main_l4
+    t$9 <- string
+hi\n\t
+    comment receiver: self
+    t$10 <- call out_string t$9
+    t$11 <- t$10
+    jmp main_l5
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB10
+
+Block BB15:
+  Predecessors: BB14, BB13
+  Instructions:
+    label main_l6
+    t$14 <- string
+correct\n
+    comment receiver: self
+    t$15 <- call out_string t$14
+    t$18 <- t$15
+    jmp main_l8
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB19
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- bool true
+    t$1 <- t$0
+    t$2 <- t$1
+    t$3 <- not t$2
+    bt t$3 main_l1
+    TAC_Assign_Bool    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB12
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (20):
+  t$0: offset=-8, type=Bool
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- bool true
+t$1 <- t$0
+t$2 <- t$1
+t$3 <- not t$2
+bt t$3 main_l1
+## BB1
+bt t$2 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$4 <- t$1
+t$5 <- not t$4
+t$6 <- not t$5
+bt t$6 main_l4
+## BB4
+bt t$5 main_l3
+## BB5
+comment then branch
+## BB6
+label main_l3
+t$7 <- string
+wrong\n
+comment receiver: self
+t$8 <- call out_string t$7
+t$11 <- t$8
+jmp main_l5
+## BB7
+comment else branch
+## BB8
+label main_l4
+t$9 <- string
+hi\n\t
+comment receiver: self
+t$10 <- call out_string t$9
+t$11 <- t$10
+jmp main_l5
+## BB9
+comment if-join
+## BB10
+label main_l5
+t$19 <- t$11
+jmp main_l2
+## BB11
+comment else branch
+## BB12
+label main_l1
+t$12 <- t$1
+t$13 <- not t$12
+bt t$13 main_l7
+## BB13
+bt t$12 main_l6
+## BB14
+comment then branch
+## BB15
+label main_l6
+t$14 <- string
+correct\n
+comment receiver: self
+t$15 <- call out_string t$14
+t$18 <- t$15
+jmp main_l8
+## BB16
+comment else branch
+## BB17
+label main_l7
+t$16 <- string
+dfs\t
+comment receiver: self
+t$17 <- call out_string t$16
+t$18 <- t$17
+jmp main_l8
+## BB18
+comment if-join
+## BB19
+label main_l8
+t$19 <- t$18
+jmp main_l2
+## BB20
+comment if-join
+## BB21
+label main_l2
+return t$19
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: false.s
+false: PASS
+=== Testing foo ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- y
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- string
+foo\n
+    comment receiver: self
+    t$3 <- call out_string t$2
+    return t$3
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: foo
+Class attributes (3):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: foo
+
+Class attributes (3):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+
+Temp variables (4):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- y
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- string
+foo\n
+comment receiver: self
+t$3 <- call out_string t$2
+return t$3
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+main\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    comment receiver: self
+    t$2 <- call foo 
+    return t$2
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+  [6] a: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] x: Int
+  [4] y: Int
+  [5] z: Int
+  [6] a: Int
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+main\n
+comment receiver: self
+t$1 <- call out_string t$0
+comment receiver: self
+t$2 <- call foo 
+return t$2
+ generating construtor for : BoolDEBUG: Initializing attribute x with context attributes: x, y, z
+DEBUG: Initializing attribute y with context attributes: x, y, z
+DEBUG: Initializing attribute z with context attributes: x, y, z
+ generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x, y, z, a
+DEBUG: Initializing attribute y with context attributes: x, y, z, a
+DEBUG: Initializing attribute z with context attributes: x, y, z, a
+DEBUG: Initializing attribute a with context attributes: x, y, z, a
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: foo.s
+foo: FAIL
+Differences:
+1c1,2
+< ERROR: 4: Exception: division by zero
+---
+> main
+> 6foo
+=== Testing funky ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- int 3
+    return t$0
+    TAC_Assign_Int    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: foo
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: foo
+
+Class attributes (0):
+
+Temp variables (1):
+  t$0: offset=-8, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- int 3
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+return t$0
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: funky.s
+Warning: Test executable timed out or crashed for funky
+=== Testing hello-world ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+Hello, world.\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    return t$1
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+Hello, world.\n
+comment receiver: self
+t$1 <- call out_string t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: hello-world.s
+hello-world: PASS
+=== Testing helloworld ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+Hello World\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    return t$1
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+Hello World\n
+comment receiver: self
+t$1 <- call out_string t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: helloworld.s
+helloworld: PASS
+=== Testing hi ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    return t$1
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (2):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+\n
+comment receiver: self
+t$1 <- call out_string t$0
+return t$1
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: hi.s
+hi: PASS
+=== Testing hs ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- int 0
+    return t$2
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Int    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Bazz, Method: printh
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Bazz, Method: printh
+
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- int 0
+return t$2
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    t$1 <- t$0
+    t$2 <- h
+    t$3 <- int 2
+    t$4 <- + t$2 t$3
+    h <- t$4
+    t$5 <- t$2
+    return t$5
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: doh
+Class attributes (5):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+  [6] a: Razz
+  [7] b: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: doh
+
+Class attributes (5):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+  [6] a: Razz
+  [7] b: Int
+
+Temp variables (6):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+t$1 <- t$0
+t$2 <- h
+t$3 <- int 2
+t$4 <- + t$2 t$3
+h <- t$4
+t$5 <- t$2
+return t$5
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- h
+    t$1 <- t$0
+    t$2 <- h
+    t$3 <- int 1
+    t$4 <- + t$2 t$3
+    h <- t$4
+    t$5 <- t$2
+    return t$5
+    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Plus    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Bazz, Method: doh
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Bazz, Method: doh
+
+Class attributes (3):
+  [3] h: Int
+  [4] g: Foo
+  [5] i: Object
+
+Temp variables (6):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Int
+  t$4: offset=-40, type=Object
+  t$5: offset=-48, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- h
+t$1 <- t$0
+t$2 <- h
+t$3 <- int 1
+t$4 <- + t$2 t$3
+h <- t$4
+t$5 <- t$2
+return t$5
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- string
+\n
+    comment receiver: self
+    t$1 <- call out_string t$0
+    t$2 <- string
+do nothing
+    return t$2
+    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (4):
+  [3] a: Bazz
+  [4] b: Foo
+  [5] c: Razz
+  [6] d: Bar
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (4):
+  [3] a: Bazz
+  [4] b: Foo
+  [5] c: Razz
+  [6] d: Bar
+
+Temp variables (3):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- string
+\n
+comment receiver: self
+t$1 <- call out_string t$0
+t$2 <- string
+do nothing
+return t$2
+DEBUG: Initializing attribute h with context attributes: h, g, i, a, b, e, f, c, d
+DEBUG: Initializing attribute g with context attributes: h, g, i, a, b, e, f, c, d
+Your code generator failed for hs
+=== Testing if ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$8 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: BB5, BB4
+  Instructions:
+    label main_l3
+    t$12 <- string
+hi\n
+    comment receiver: self
+    t$13 <- call out_string t$12
+    t$16 <- t$13
+    jmp main_l5
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB10
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$10 <- t$2
+    t$11 <- not t$10
+    bt t$11 main_l4
+    TAC_Label    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB4, BB8
+
+Block BB13:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB14
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: BB3
+  Instructions:
+    bt t$10 main_l3
+    TAC_ConditionalJump  Successors: BB5, BB6
+
+Block BB14:
+  Predecessors: BB13, BB12, BB10
+  Instructions:
+    label main_l2
+    return t$19
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB9:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB10
+
+Block BB10:
+  Predecessors: BB9, BB8, BB6
+  Instructions:
+    label main_l5
+    t$19 <- t$16
+    jmp main_l2
+    TAC_Label    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB7:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB8
+
+Block BB8:
+  Predecessors: BB7, BB3
+  Instructions:
+    label main_l4
+    t$14 <- string
+no\n
+    comment receiver: self
+    t$15 <- call out_string t$14
+    t$16 <- t$15
+    jmp main_l5
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB10
+
+Block BB5:
+  Predecessors: BB4
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB6
+
+Block BB12:
+  Predecessors: BB11, BB0
+  Instructions:
+    label main_l1
+    t$17 <- string
+yes\n
+    comment receiver: self
+    t$18 <- call out_string t$17
+    t$19 <- t$18
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB14
+
+Block BB11:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB12
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- default Int
+    t$1 <- t$0
+    t$2 <- default Bool
+    t$3 <- t$2
+    t$4 <- int 4
+    t$5 <- ~ t$4
+    t$6 <- int 10
+    t$7 <- < t$5 t$6
+    t$2 <- t$7
+    t$8 <- t$2
+    t$9 <- not t$8
+    bt t$9 main_l1
+    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Negate    TAC_Assign_Int    TAC_Assign_Lt    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB12
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (20):
+  t$0: offset=-8, type=Int
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Bool
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Int
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- default Int
+t$1 <- t$0
+t$2 <- default Bool
+t$3 <- t$2
+t$4 <- int 4
+t$5 <- ~ t$4
+t$6 <- int 10
+t$7 <- < t$5 t$6
+t$2 <- t$7
+t$8 <- t$2
+t$9 <- not t$8
+bt t$9 main_l1
+## BB1
+bt t$8 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$10 <- t$2
+t$11 <- not t$10
+bt t$11 main_l4
+## BB4
+bt t$10 main_l3
+## BB5
+comment then branch
+## BB6
+label main_l3
+t$12 <- string
+hi\n
+comment receiver: self
+t$13 <- call out_string t$12
+t$16 <- t$13
+jmp main_l5
+## BB7
+comment else branch
+## BB8
+label main_l4
+t$14 <- string
+no\n
+comment receiver: self
+t$15 <- call out_string t$14
+t$16 <- t$15
+jmp main_l5
+## BB9
+comment if-join
+## BB10
+label main_l5
+t$19 <- t$16
+jmp main_l2
+## BB11
+comment else branch
+## BB12
+label main_l1
+t$17 <- string
+yes\n
+comment receiver: self
+t$18 <- call out_string t$17
+t$19 <- t$18
+jmp main_l2
+## BB13
+comment if-join
+## BB14
+label main_l2
+return t$19
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: if.s
+if: PASS
+=== Testing inherit ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- z
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Foo, Method: foo
+Class attributes (1):
+  [3] z: Object
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Foo, Method: foo
+
+Class attributes (1):
+  [3] z: Object
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- z
+return t$0
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- y
+    return t$0
+    TAC_Assign_Variable    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (3):
+  [3] z: Object
+  [4] x: Int
+  [5] y: String
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (3):
+  [3] z: Object
+  [4] x: Int
+  [5] y: String
+
+Temp variables (1):
+  t$0: offset=-8, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- y
+return t$0
+ generating construtor for : BoolDEBUG: Initializing attribute z with context attributes: z
+ generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute z with context attributes: z, x, y
+DEBUG: Initializing attribute x with context attributes: z, x, y
+DEBUG: Initializing attribute y with context attributes: z, x, y
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: inherit.s
+inherit: PASS
+=== Testing instring ===
+Control Flow Graph:
+Block BB1:
+  Predecessors: BB0
+  Instructions:
+    bt t$16 main_l0
+    TAC_ConditionalJump  Successors: BB2, BB3
+
+Block BB6:
+  Predecessors: 
+  Instructions:
+    comment if-join
+    TAC_Comment  Successors: BB7
+
+Block BB3:
+  Predecessors: BB2, BB1
+  Instructions:
+    label main_l0
+    t$18 <- string
+foo\n
+    comment receiver: self
+    t$19 <- call out_string t$18
+    t$22 <- t$19
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB2:
+  Predecessors: BB1
+  Instructions:
+    comment then branch
+    TAC_Comment  Successors: BB3
+
+Block BB4:
+  Predecessors: 
+  Instructions:
+    comment else branch
+    TAC_Comment  Successors: BB5
+
+Block BB7:
+  Predecessors: BB6, BB5, BB3
+  Instructions:
+    label main_l2
+    return t$22
+    TAC_Label    TAC_Return  Successors: 
+
+Block BB5:
+  Predecessors: BB4, BB0
+  Instructions:
+    label main_l1
+    t$20 <- string
+bar\n
+    comment receiver: self
+    t$21 <- call out_string t$20
+    t$22 <- t$21
+    jmp main_l2
+    TAC_Label    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Jump  Successors: BB7
+
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- default String
+    t$1 <- t$0
+    t$2 <- default Bool
+    t$3 <- t$2
+    t$4 <- default Int
+    t$5 <- t$4
+    t$6 <- default Int
+    t$7 <- t$6
+    t$8 <- bool false
+    t$9 <- not t$8
+    t$10 <- not t$9
+    t$11 <- not t$10
+    t$2 <- t$11
+    t$12 <- t$2
+    t$13 <- not t$12
+    t$14 <- not t$13
+    t$15 <- not t$14
+    t$16 <- not t$15
+    t$17 <- not t$16
+    bt t$17 main_l1
+    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Bool    TAC_Assign_Not    TAC_Assign_Not    TAC_Assign_Not    TAC_Assign_Variable    TAC_Assign_Variable    TAC_Assign_Not    TAC_Assign_Not    TAC_Assign_Not    TAC_Assign_Not    TAC_Assign_Not    TAC_ConditionalJump  Successors: BB1, BB5
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (0):
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (0):
+
+Temp variables (23):
+  t$0: offset=-8, type=String
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Bool
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Int
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Bool
+  t$9: offset=-80, type=Object
+  t$10: offset=-88, type=Object
+  t$11: offset=-96, type=Object
+  t$12: offset=-104, type=Object
+  t$13: offset=-112, type=Object
+  t$14: offset=-120, type=Object
+  t$15: offset=-128, type=Object
+  t$16: offset=-136, type=Object
+  t$17: offset=-144, type=Object
+  t$18: offset=-152, type=Object
+  t$19: offset=-160, type=Object
+  t$20: offset=-168, type=Object
+  t$21: offset=-176, type=Object
+  t$22: offset=-184, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- default String
+t$1 <- t$0
+t$2 <- default Bool
+t$3 <- t$2
+t$4 <- default Int
+t$5 <- t$4
+t$6 <- default Int
+t$7 <- t$6
+t$8 <- bool false
+t$9 <- not t$8
+t$10 <- not t$9
+t$11 <- not t$10
+t$2 <- t$11
+t$12 <- t$2
+t$13 <- not t$12
+t$14 <- not t$13
+t$15 <- not t$14
+t$16 <- not t$15
+t$17 <- not t$16
+bt t$17 main_l1
+## BB1
+bt t$16 main_l0
+## BB2
+comment then branch
+## BB3
+label main_l0
+t$18 <- string
+foo\n
+comment receiver: self
+t$19 <- call out_string t$18
+t$22 <- t$19
+jmp main_l2
+## BB4
+comment else branch
+## BB5
+label main_l1
+t$20 <- string
+bar\n
+comment receiver: self
+t$21 <- call out_string t$20
+t$22 <- t$21
+jmp main_l2
+## BB6
+comment if-join
+## BB7
+label main_l2
+return t$22
+ generating construtor for : Bool generating construtor for : IO generating construtor for : Int generating construtor for : Object generating construtor for : StringGenerated assembly file: instring.s
+instring: PASS
+=== Testing int ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- default Int
+    t$3 <- t$2
+    t$4 <- int 4
+    t$3 <- t$4
+    t$5 <- string
+\n
+    comment receiver: self
+    t$6 <- call out_string t$5
+    t$7 <- t$3
+    comment receiver: self
+    t$8 <- call out_int t$7
+    return t$8
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_Default    TAC_Assign_Variable    TAC_Assign_Int    TAC_Assign_Variable    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (9):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Int
+  t$3: offset=-32, type=Object
+  t$4: offset=-40, type=Int
+  t$5: offset=-48, type=Object
+  t$6: offset=-56, type=Object
+  t$7: offset=-64, type=Object
+  t$8: offset=-72, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- default Int
+t$3 <- t$2
+t$4 <- int 4
+t$3 <- t$4
+t$5 <- string
+\n
+comment receiver: self
+t$6 <- call out_string t$5
+t$7 <- t$3
+comment receiver: self
+t$8 <- call out_int t$7
+return t$8
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: int.s
+int: PASS
+=== Testing internaltest ===
+Control Flow Graph:
+Block BB0:
+  Predecessors: 
+  Instructions:
+    t$0 <- x
+    comment receiver: self
+    t$1 <- call out_int t$0
+    t$2 <- string
+\n
+    comment receiver: self
+    t$3 <- call out_string t$2
+    return t$3
+    TAC_Assign_Variable    TAC_Comment    TAC_Call    TAC_Assign_String    TAC_Comment    TAC_Call    TAC_Return  Successors: 
+
+=== DEBUG CONTEXT ===
+Class: Main, Method: main
+Class attributes (1):
+  [3] x: Int
+Parameters (0):
+
+==== DETAILED CONTEXT BEFORE CODEGEN ====
+Class: Main, Method: main
+
+Class attributes (1):
+  [3] x: Int
+
+Temp variables (4):
+  t$0: offset=-8, type=Object
+  t$1: offset=-16, type=Object
+  t$2: offset=-24, type=Object
+  t$3: offset=-32, type=Object
+
+Parameters (0):
+
+==== END OF CONTEXT DUMP ====
+
+## BB0
+t$0 <- x
+comment receiver: self
+t$1 <- call out_int t$0
+t$2 <- string
+\n
+comment receiver: self
+t$3 <- call out_string t$2
+return t$3
+ generating construtor for : Bool generating construtor for : IO generating construtor for : IntDEBUG: Initializing attribute x with context attributes: x
+ generating construtor for : Object generating construtor for : StringGenerated assembly file: internaltest.s
