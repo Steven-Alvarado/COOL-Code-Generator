@@ -1,5 +1,4 @@
 class Main inherits IO{
-
     i :  Int <- 0;
     main () : Object {
         while ( i <= 10) loop {

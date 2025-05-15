@@ -1,7 +1,7 @@
 class Foo inherits IO{
     x : Int <-5;
     y : Int <- x + 1;
-    z : Int <- x / z;
+    z : Int <- x / 4;
     foo () : Object{
         {
 

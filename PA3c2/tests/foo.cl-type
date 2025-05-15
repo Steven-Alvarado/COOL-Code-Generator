@@ -39,9 +39,8 @@ identifier
 x
 4
 Int
-identifier
+integer
 4
-z
 IO
 0
 Int
@@ -83,9 +82,8 @@ identifier
 x
 4
 Int
-identifier
+integer
 4
-z
 initializer
 a
 Int
@@ -516,9 +514,8 @@ identifier
 x
 4
 Int
-identifier
+integer
 4
-z
 method
 5
 foo
