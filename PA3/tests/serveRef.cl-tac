@@ -1,0 +1,51 @@
+comment start
+label Main_main_0
+t$4 <- int 49
+t$5 <- int 235
+t$2 <- - t$4 t$5
+t$3 <- int 43
+z <- + t$2 t$3
+t$1 <- z
+t$7 <- int 4
+t$11 <- y
+t$12 <- z
+t$9 <- * t$11 t$12
+t$10 <- int 2
+t$8 <- * t$9 t$10
+x <- + t$7 t$8
+t$6 <- x
+t$14 <- z
+t$13 <- call out_int t$14
+t$16 <- z
+t$17 <- x
+t <- < t$16 t$17
+t$15 <- t
+t$18 <- t
+t$25 <- not t$18
+bt t$25 Main_main_4
+bt t$18 Main_main_3
+comment then branch
+label Main_main_3
+t$20 <- string
+ t\n
+jmp Main_main_6
+comment else branch
+label Main_main_4
+t$23 <- string
+o\n
+jmp Main_main_10
+comment if-join
+label Main_main_5
+return t$0
+comment fcall-pre to out_string
+label Main_main_6
+t$19 <- call out_string t$20
+t$21 <- x
+t$0 <- call out_int t$21
+jmp Main_main_5
+comment fcall-pre to out_string
+label Main_main_10
+t$22 <- call out_string t$23
+t$24 <- z
+t$0 <- call out_int t$24
+jmp Main_main_5

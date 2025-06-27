@@ -1,0 +1,395 @@
+comment start
+label Main_main_0
+t$1 <- default Int
+t$2 <- default Int
+t$3 <- default Int
+t$4 <- default Int
+t$5 <- default Int
+t$6 <- default Int
+t$7 <- default Bool
+t$8 <- default Bool
+t$9 <- default Bool
+t$10 <- default String
+t$11 <- default String
+t$13 <- string
+Enter a value for x: 
+t$12 <- call out_string t$13
+t$5 <- call in_int
+t$14 <- t$5
+t$16 <- int 4
+t$17 <- int 6
+t$7 <- < t$16 t$17
+t$15 <- t$7
+t$19 <- t$5
+t$20 <- int 5
+t$8 <- <= t$19 t$20
+t$18 <- t$8
+t$22 <- t$3
+t$23 <- t$4
+t$9 <- = t$22 t$23
+t$21 <- t$9
+t$25 <- string
+Enter a value for c: 
+t$24 <- call out_string t$25
+t$3 <- call in_int
+t$26 <- t$3
+t$28 <- string
+Enter a value for d: 
+t$27 <- call out_string t$28
+t$4 <- call in_int
+t$29 <- t$4
+t$31 <- t$3
+t$32 <- t$4
+t$9 <- = t$31 t$32
+t$30 <- t$9
+t$34 <- string
+\nBoolean test results:\n
+t$33 <- call out_string t$34
+t$36 <- t$7
+t$131 <- not t$36
+bt t$131 Main_main_16
+bt t$36 Main_main_15
+comment then branch
+label Main_main_15
+t$37 <- string
+4 < 6 is true\n
+jmp Main_main_18
+comment else branch
+label Main_main_16
+t$38 <- string
+4 < 6 is false\n
+jmp Main_main_20
+comment if-join
+label Main_main_17
+t$40 <- t$8
+t$132 <- not t$40
+bt t$132 Main_main_23
+bt t$40 Main_main_22
+comment fcall-pre to out_string
+label Main_main_18
+t$35 <- call out_string t$37
+jmp Main_main_17
+comment fcall-pre to out_string
+label Main_main_20
+t$35 <- call out_string t$38
+jmp Main_main_17
+comment then branch
+label Main_main_22
+t$41 <- string
+x <= 5 is true\n
+jmp Main_main_25
+comment else branch
+label Main_main_23
+t$42 <- string
+x <= 5 is false\n
+jmp Main_main_27
+comment if-join
+label Main_main_24
+t$44 <- t$9
+t$133 <- not t$44
+bt t$133 Main_main_30
+bt t$44 Main_main_29
+comment fcall-pre to out_string
+label Main_main_25
+t$39 <- call out_string t$41
+jmp Main_main_24
+comment fcall-pre to out_string
+label Main_main_27
+t$39 <- call out_string t$42
+jmp Main_main_24
+comment then branch
+label Main_main_29
+t$45 <- string
+c = d is true\n
+jmp Main_main_32
+comment else branch
+label Main_main_30
+t$46 <- string
+c = d is false\n
+jmp Main_main_34
+comment if-join
+label Main_main_31
+t$48 <- string
+\nTesting nested if statements:\n
+jmp Main_main_36
+comment fcall-pre to out_string
+label Main_main_32
+t$43 <- call out_string t$45
+jmp Main_main_31
+comment fcall-pre to out_string
+label Main_main_34
+t$43 <- call out_string t$46
+jmp Main_main_31
+comment fcall-pre to out_string
+label Main_main_36
+t$47 <- call out_string t$48
+t$51 <- t$5
+t$52 <- int 10
+t$50 <- < t$51 t$52
+t$134 <- not t$50
+bt t$134 Main_main_39
+bt t$50 Main_main_38
+comment then branch
+label Main_main_38
+t$54 <- t$5
+t$55 <- int 5
+t$53 <- < t$54 t$55
+t$135 <- not t$53
+bt t$135 Main_main_42
+bt t$53 Main_main_41
+comment else branch
+label Main_main_39
+t$59 <- t$5
+t$60 <- int 20
+t$58 <- <= t$59 t$60
+t$136 <- not t$58
+bt t$136 Main_main_49
+bt t$58 Main_main_48
+comment if-join
+label Main_main_40
+t$64 <- string
+\nComplex arithmetic with conditions:\n
+jmp Main_main_55
+comment then branch
+label Main_main_41
+t$56 <- string
+x is less than 5\n
+jmp Main_main_44
+comment else branch
+label Main_main_42
+t$57 <- string
+x is between 5 and 9\n
+jmp Main_main_46
+comment if-join
+label Main_main_43
+jmp Main_main_40
+comment fcall-pre to out_string
+label Main_main_44
+t$49 <- call out_string t$56
+jmp Main_main_43
+comment fcall-pre to out_string
+label Main_main_46
+t$49 <- call out_string t$57
+jmp Main_main_43
+comment then branch
+label Main_main_48
+t$61 <- string
+x is between 10 and 20\n
+jmp Main_main_51
+comment else branch
+label Main_main_49
+t$62 <- string
+x is greater than 20\n
+jmp Main_main_53
+comment if-join
+label Main_main_50
+jmp Main_main_40
+comment fcall-pre to out_string
+label Main_main_51
+t$49 <- call out_string t$61
+jmp Main_main_50
+comment fcall-pre to out_string
+label Main_main_53
+t$49 <- call out_string t$62
+jmp Main_main_50
+comment fcall-pre to out_string
+label Main_main_55
+t$63 <- call out_string t$64
+t$66 <- t$7
+t$137 <- not t$66
+bt t$137 Main_main_58
+bt t$66 Main_main_57
+comment then branch
+label Main_main_57
+t$69 <- t$5
+t$70 <- int 2
+t$67 <- * t$69 t$70
+t$68 <- int 10
+t$1 <- + t$67 t$68
+t$65 <- t$1
+jmp Main_main_59
+comment else branch
+label Main_main_58
+t$73 <- t$5
+t$74 <- int 3
+t$71 <- * t$73 t$74
+t$72 <- int 5
+t$1 <- - t$71 t$72
+t$65 <- t$1
+jmp Main_main_59
+comment if-join
+label Main_main_59
+t$76 <- t$8
+t$138 <- not t$76
+bt t$138 Main_main_61
+bt t$76 Main_main_60
+comment then branch
+label Main_main_60
+t$77 <- t$1
+t$79 <- t$5
+t$80 <- int 4
+t$78 <- * t$79 t$80
+t$2 <- + t$77 t$78
+t$75 <- t$2
+jmp Main_main_62
+comment else branch
+label Main_main_61
+t$81 <- t$1
+t$83 <- t$5
+t$84 <- int 2
+t$82 <- * t$83 t$84
+t$2 <- - t$81 t$82
+t$75 <- t$2
+jmp Main_main_62
+comment if-join
+label Main_main_62
+t$86 <- string
+a = 
+t$85 <- call out_string t$86
+t$88 <- t$1
+t$87 <- call out_int t$88
+t$90 <- string
+\nb = 
+t$89 <- call out_string t$90
+t$92 <- t$2
+t$91 <- call out_int t$92
+t$94 <- string
+\n
+t$93 <- call out_string t$94
+t$96 <- string
+\nEnter a string: 
+t$95 <- call out_string t$96
+t$98 <- string
+\nBoolean combinations:\n
+t$97 <- call out_string t$98
+t$100 <- t$7
+t$139 <- not t$100
+bt t$139 Main_main_78
+bt t$100 Main_main_77
+comment then branch
+label Main_main_77
+t$101 <- t$8
+t$140 <- not t$101
+bt t$140 Main_main_81
+bt t$101 Main_main_80
+comment else branch
+label Main_main_78
+t$104 <- t$9
+t$141 <- not t$104
+bt t$141 Main_main_88
+bt t$104 Main_main_87
+comment if-join
+label Main_main_79
+t$6 <- int 0
+t$107 <- t$6
+t$109 <- t$7
+t$142 <- not t$109
+bt t$142 Main_main_95
+bt t$109 Main_main_94
+comment then branch
+label Main_main_80
+t$102 <- string
+Both bool1 and bool2 are true\n
+jmp Main_main_83
+comment else branch
+label Main_main_81
+t$103 <- string
+bool1 is true but bool2 is false\n
+jmp Main_main_85
+comment if-join
+label Main_main_82
+jmp Main_main_79
+comment fcall-pre to out_string
+label Main_main_83
+t$99 <- call out_string t$102
+jmp Main_main_82
+comment fcall-pre to out_string
+label Main_main_85
+t$99 <- call out_string t$103
+jmp Main_main_82
+comment then branch
+label Main_main_87
+t$105 <- string
+bool1 is false but bool3 is true\n
+jmp Main_main_90
+comment else branch
+label Main_main_88
+t$106 <- string
+bool1 and bool3 are both false\n
+jmp Main_main_92
+comment if-join
+label Main_main_89
+jmp Main_main_79
+comment fcall-pre to out_string
+label Main_main_90
+t$99 <- call out_string t$105
+jmp Main_main_89
+comment fcall-pre to out_string
+label Main_main_92
+t$99 <- call out_string t$106
+jmp Main_main_89
+comment then branch
+label Main_main_94
+t$110 <- t$6
+t$111 <- int 100
+t$6 <- + t$110 t$111
+t$108 <- t$6
+jmp Main_main_96
+comment else branch
+label Main_main_95
+t$112 <- t$6
+t$113 <- int 50
+t$6 <- - t$112 t$113
+t$108 <- t$6
+jmp Main_main_96
+comment if-join
+label Main_main_96
+t$115 <- t$8
+t$143 <- not t$115
+bt t$143 Main_main_98
+bt t$115 Main_main_97
+comment then branch
+label Main_main_97
+t$116 <- t$6
+t$117 <- int 200
+t$6 <- + t$116 t$117
+t$114 <- t$6
+jmp Main_main_99
+comment else branch
+label Main_main_98
+t$118 <- t$6
+t$119 <- int 25
+t$6 <- - t$118 t$119
+t$114 <- t$6
+jmp Main_main_99
+comment if-join
+label Main_main_99
+t$121 <- t$9
+t$144 <- not t$121
+bt t$144 Main_main_101
+bt t$121 Main_main_100
+comment then branch
+label Main_main_100
+t$122 <- t$6
+t$123 <- int 300
+t$6 <- + t$122 t$123
+t$120 <- t$6
+jmp Main_main_102
+comment else branch
+label Main_main_101
+t$124 <- t$6
+t$125 <- int 75
+t$6 <- - t$124 t$125
+t$120 <- t$6
+jmp Main_main_102
+comment if-join
+label Main_main_102
+t$127 <- string
+\nFinal result: 
+t$126 <- call out_string t$127
+t$129 <- t$6
+t$128 <- call out_int t$129
+t$130 <- string
+\n
+t$0 <- call out_string t$130
+return t$0

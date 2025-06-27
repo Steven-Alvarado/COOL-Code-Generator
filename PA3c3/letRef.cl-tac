@@ -1,0 +1,110 @@
+comment start
+label Main_main_0
+t$1 <- default Bool
+t$2 <- default Bool
+t$3 <- default Int
+t$4 <- default Int
+t$3 <- call in_int
+t$5 <- t$3
+t$4 <- call in_int
+t$6 <- t$4
+t$10 <- t$3
+t$11 <- t$4
+t$9 <- = t$10 t$11
+t$8 <- not t$9
+t$29 <- not t$8
+bt t$29 Main_main_6
+bt t$8 Main_main_5
+comment then branch
+label Main_main_5
+t$1 <- bool true
+t$7 <- t$1
+jmp Main_main_7
+comment else branch
+label Main_main_6
+t$1 <- bool false
+t$7 <- t$1
+jmp Main_main_7
+comment if-join
+label Main_main_7
+t$12 <- default Bool
+t$12 <- bool false
+t$13 <- t$12
+t$14 <- default Bool
+t$14 <- bool false
+t$15 <- t$14
+t$18 <- t$1
+t$19 <- t$12
+t$17 <- = t$18 t$19
+t$30 <- not t$17
+bt t$30 Main_main_9
+bt t$17 Main_main_8
+comment then branch
+label Main_main_8
+t$20 <- string
+hi\n
+jmp Main_main_11
+comment else branch
+label Main_main_9
+t$21 <- string
+bye\n
+jmp Main_main_13
+comment if-join
+label Main_main_10
+t$23 <- t$12
+t$31 <- not t$23
+bt t$31 Main_main_16
+bt t$23 Main_main_15
+comment fcall-pre to out_string
+label Main_main_11
+t$16 <- call out_string t$20
+jmp Main_main_10
+comment fcall-pre to out_string
+label Main_main_13
+t$16 <- call out_string t$21
+jmp Main_main_10
+comment then branch
+label Main_main_15
+t$24 <- string
+b\n
+jmp Main_main_18
+comment else branch
+label Main_main_16
+t$25 <- string
+no\n
+jmp Main_main_20
+comment if-join
+label Main_main_17
+t$26 <- t$14
+t$32 <- not t$26
+bt t$32 Main_main_23
+bt t$26 Main_main_22
+comment fcall-pre to out_string
+label Main_main_18
+t$22 <- call out_string t$24
+jmp Main_main_17
+comment fcall-pre to out_string
+label Main_main_20
+t$22 <- call out_string t$25
+jmp Main_main_17
+comment then branch
+label Main_main_22
+t$27 <- string
+x\n
+jmp Main_main_25
+comment else branch
+label Main_main_23
+t$28 <- string
+no\n
+jmp Main_main_27
+comment if-join
+label Main_main_24
+return t$0
+comment fcall-pre to out_string
+label Main_main_25
+t$0 <- call out_string t$27
+jmp Main_main_24
+comment fcall-pre to out_string
+label Main_main_27
+t$0 <- call out_string t$28
+jmp Main_main_24

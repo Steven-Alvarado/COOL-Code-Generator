@@ -1,0 +1,8 @@
+comment start
+label Main_main_0
+t$2 <- x
+t$1 <- call out_int t$2
+t$3 <- string
+\n
+t$0 <- call out_string t$3
+return t$0

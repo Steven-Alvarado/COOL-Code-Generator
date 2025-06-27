@@ -1,0 +1,13 @@
+comment start
+label Main_main_0
+z <- int 5
+t$1 <- z
+t$3 <- string
+ World\n
+t$2 <- call out_string t$3
+t$5 <- string
+ after
+t$4 <- call out_string t$5
+t$6 <- z
+t$0 <- call out_int t$6
+return t$0

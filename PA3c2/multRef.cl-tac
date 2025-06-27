@@ -1,0 +1,54 @@
+comment start
+label Main_main_0
+t$1 <- default Int
+t$2 <- default Bool
+t$3 <- default Int
+t$5 <- t$2
+t$26 <- not t$5
+bt t$26 Main_main_2
+bt t$5 Main_main_1
+comment then branch
+label Main_main_1
+t$6 <- string
+wrong\n
+jmp Main_main_4
+comment else branch
+label Main_main_2
+t$7 <- b
+jmp Main_main_6
+comment if-join
+label Main_main_3
+t$3 <- int 4
+t$8 <- t$3
+t$14 <- t$3
+t$16 <- int 4
+t$17 <- int 4
+t$15 <- / t$16 t$17
+t$12 <- + t$14 t$15
+t$22 <- int 10
+t$20 <- ~ t$22
+t$21 <- int 43
+t$18 <- * t$20 t$21
+t$19 <- int 89234
+t$13 <- / t$18 t$19
+t$10 <- - t$12 t$13
+t$11 <- int 4
+t$1 <- + t$10 t$11
+t$9 <- t$1
+t$24 <- string
+\n
+jmp Main_main_8
+comment fcall-pre to out_string
+label Main_main_4
+t$4 <- call out_string t$6
+jmp Main_main_3
+comment fcall-pre to out_int
+label Main_main_6
+t$4 <- call out_int t$7
+jmp Main_main_3
+comment fcall-pre to out_string
+label Main_main_8
+t$23 <- call out_string t$24
+t$25 <- t$1
+t$0 <- call out_int t$25
+return t$0

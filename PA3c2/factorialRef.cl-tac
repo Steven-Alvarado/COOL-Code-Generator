@@ -1,0 +1,27 @@
+comment start
+label Factorial_fact_0
+t$2 <- n
+t$3 <- int 0
+t$1 <- = t$2 t$3
+t$9 <- not t$1
+bt t$9 Factorial_fact_2
+bt t$1 Factorial_fact_1
+comment then branch
+label Factorial_fact_1
+t$0 <- int 1
+jmp Factorial_fact_3
+comment else branch
+label Factorial_fact_2
+t$4 <- n
+t$7 <- n
+t$8 <- int 1
+t$6 <- - t$7 t$8
+jmp Factorial_fact_4
+comment if-join
+label Factorial_fact_3
+return t$0
+comment fcall-pre to fact
+label Factorial_fact_4
+t$5 <- call fact t$6
+t$0 <- * t$4 t$5
+jmp Factorial_fact_3

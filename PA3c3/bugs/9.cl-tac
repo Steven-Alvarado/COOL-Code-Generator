@@ -1,0 +1,21 @@
+comment start
+label Main_main_0
+t$1 <- self
+t$2 <- new Object
+t$0 <- call type_name 
+t$3 <- int 4
+t$4 <- int 1
+t$0 <- call substr t$3, t$4
+t$0 <- call out_string t$0
+t$5 <- self
+t$6 <- isvoid t$5
+t$0 <- call type_name 
+t$7 <- int 1
+t$8 <- int 3
+t$0 <- call substr t$7, t$8
+t$0 <- call out_string t$0
+t$9 <- self
+t$10 <- string
+\n
+t$0 <- call out_string t$10
+return t$0

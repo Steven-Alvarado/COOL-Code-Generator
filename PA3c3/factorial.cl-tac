@@ -1,0 +1,33 @@
+comment start
+label Factorial_fact_0
+t$0 <- t$2
+t$1 <- int 0
+t$2 <- = t$0 t$1
+t$3 <- not t$2
+bt t$3 fact_l2
+bt t$2 fact_l1
+comment then branch
+label fact_l1
+t$4 <- int 1
+t$10 <- t$4
+jmp fact_l3
+comment else branch
+label fact_l2
+t$5 <- t$2
+t$6 <- t$2
+t$7 <- int 1
+t$8 <- - t$6 t$7
+t$0 <- call fact t$8
+t$9 <- * t$5 t$0
+t$10 <- t$9
+jmp fact_l3
+comment if-join
+label fact_l3
+t$0 <- t$10
+return t$0
+comment start
+label Main_main_0
+t$11 <- new Factorial
+t$12 <- int 5
+t$0 <- call fact t$12
+return t$0
