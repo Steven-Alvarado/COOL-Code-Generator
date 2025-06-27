@@ -17,7 +17,7 @@ class Main inherits IO{
                     out_string("o\n");
                     out_int(z);
                 }
-                        fi;
+                fi;
         }
     };
 };

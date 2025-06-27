@@ -463,7 +463,6 @@ Main.main:              ## method definition
 						subq %r14, %rsp
 						## return address handling
 						## method body begins
-                        ## Basic block: BB0
                         ## new int t$0 <- 5
                         pushq %rbp
                         pushq %r12

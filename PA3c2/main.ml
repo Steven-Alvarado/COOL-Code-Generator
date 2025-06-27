@@ -1101,25 +1101,25 @@ let build_cfg (blocks : basic_block list) : cfg =
     ) blocks; 
     cfg_map
 
-(*  debugging *)
-let print_cfg cfg =
-    Printf.printf "Control Flow Graph:\n";
-    Hashtbl.iter
-        (fun _ block ->
-            Printf.printf "Block %s:\n" block.id;
-            Printf.printf "  Predecessors: %s\n"
-                (String.concat ", " block.predecessors);
-            Printf.printf "  Instructions:\n";
-            List.iter
-                (fun instr -> Printf.printf "    %s" (tac_instr_to_str instr))
-                block.instructions;
-            List.iter
-                (fun instr -> Printf.printf "    %s" (tac_instr_name instr))
-                block.instructions;
-
-            Printf.printf "  Successors: %s\n\n" (String.concat ", " block.successors))
-        cfg
-
+(* (*  debugging *) *)
+(* let print_cfg cfg = *)
+(*     Printf.printf "Control Flow Graph:\n"; *)
+(*     Hashtbl.iter *)
+(*         (fun _ block -> *)
+(*             Printf.printf "Block %s:\n" block.id; *)
+(*             Printf.printf "  Predecessors: %s\n" *)
+(*                 (String.concat ", " block.predecessors); *)
+(*             Printf.printf "  Instructions:\n"; *)
+(*             List.iter *)
+(*                 (fun instr -> Printf.printf "    %s" (tac_instr_to_str instr)) *)
+(*                 block.instructions; *)
+(*             List.iter *)
+(*                 (fun instr -> Printf.printf "    %s" (tac_instr_name instr)) *)
+(*                 block.instructions; *)
+(**)
+(*             Printf.printf "  Successors: %s\n\n" (String.concat ", " block.successors)) *)
+(*         cfg *)
+(**)
 (* Helper function for method generation code *)
 let rec get_all_methods parent_map method_order class_name =
     (* Get parent's methods first, if any *)
@@ -1296,7 +1296,6 @@ let generate_object_copy_method () =
         "                        popq %rbp";
         "                        ret";
     ]
-
 let generate_object_type_name_method () =
     [
         "                        ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
@@ -1329,7 +1328,6 @@ let generate_object_type_name_method () =
         "                        popq %rbp";
         "                        ret";
     ]
-
 let generate_io_in_int_method () =
     [
         "          ## ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;";
@@ -1363,7 +1361,6 @@ let generate_io_in_int_method () =
         "                        movq %rbp, %rsp";
         "                        popq %rbp";
         "                        ret";
-
     ]
 
 let generate_io_in_string_method () =
@@ -3043,9 +3040,9 @@ let generate_custom_constructor class_map class_name
                     } in
 
                     (* Debug the context *)
-                    Printf.printf "DEBUG: Initializing attribute %s with context attributes: %s\n"
-                        attr_name
-                        (String.concat ", " (List.map (fun (name, _, _) -> name) attributes_with_index));
+                    (* Printf.printf "DEBUG: Initializing attribute %s with context attributes: %s\n" *)
+                        (* attr_name *)
+                        (* (String.concat ", " (List.map (fun (name, _, _) -> name) attributes_with_index)); *)
 
                     (* Convert the initializer expression *)
                     let tac_instrs, tac_result, _, final_context =
@@ -3158,7 +3155,7 @@ let generate_constructors (class_order : string list) (class_map : class_map) =
         (fun class_name ->
             match class_name with
             | "Bool" | "Int" | "IO" | "Object" | "String" ->
-                let () = Printf.printf " generating construtor for : %s"  class_name in
+                (* let () = Printf.printf " generating construtor for : %s"  class_name in *)
                 generate_internal_constructor class_name
             | _ ->
                 let attributes, _ =
@@ -3385,7 +3382,7 @@ let generate_method_definition class_name method_name params return_type body
     let basic_blocks = create_basic_blocks tac_with_return leaders in
     let cfg = build_cfg basic_blocks in
 
-    print_cfg cfg;
+    (* print_cfg cfg; *)
 
     (* Create codegen context with all necessary information *)
     let context = {
@@ -3396,72 +3393,72 @@ let generate_method_definition class_name method_name params return_type body
         method_name = method_name;
     } in
 
-    let debug_print_context context =
-        Printf.printf "=== DEBUG CONTEXT ===\n";
-        Printf.printf "Class: %s, Method: %s\n" context.class_name context.method_name;
-        Printf.printf "Class attributes (%d):\n" (List.length context.class_attributes);
-        List.iter (fun (field_name, field_type, index) ->
-            Printf.printf "  [%d] %s: %s\n" index field_name field_type
-        ) context.class_attributes;
-        Printf.printf "Parameters (%d):\n" (List.length context.params);
-        List.iter (fun (param_name, loc) ->
-            Printf.printf "  %s: offset %d\n" param_name loc
-        ) context.params;
-        flush stdout
-    in
-
+    (* let debug_print_context context = *)
+    (*     Printf.printf "=== DEBUG CONTEXT ===\n"; *)
+    (*     Printf.printf "Class: %s, Method: %s\n" context.class_name context.method_name; *)
+    (*     Printf.printf "Class attributes (%d):\n" (List.length context.class_attributes); *)
+    (*     List.iter (fun (field_name, field_type, index) -> *)
+    (*         Printf.printf "  [%d] %s: %s\n" index field_name field_type *)
+    (*     ) context.class_attributes; *)
+    (*     Printf.printf "Parameters (%d):\n" (List.length context.params); *)
+    (*     List.iter (fun (param_name, loc) -> *)
+    (*         Printf.printf "  %s: offset %d\n" param_name loc *)
+    (*     ) context.params; *)
+    (*     flush stdout *)
+    (* in *)
+    (**)
     (* Call the basic debug print function *)
-    let () = debug_print_context context in
+    (* let () = debug_print_context context in *)
 
     (* Detailed context debugging before generating assembly *)
-    let () =
-        Printf.printf "\n==== DETAILED CONTEXT BEFORE CODEGEN ====\n";
-        (* Print class and method info *)
-        Printf.printf "Class: %s, Method: %s\n" context.class_name context.method_name;
-
-        (* Print class attributes *)
-        Printf.printf "\nClass attributes (%d):\n" (List.length context.class_attributes);
-        List.iter (fun (field_name, field_type, index) ->
-            Printf.printf "  [%d] %s: %s\n" index field_name field_type
-        ) context.class_attributes;
-
-        (* Print temp variables with their locations and types *)
-        Printf.printf "\nTemp variables (%d):\n" (List.length context.temp_vars);
-        List.iter (fun (temp_name, loc) ->
-            Printf.printf "  %s: offset=%d%s\n"
-                temp_name loc.offset
-                (try
-                    ", type=" ^ loc.var_type
-                with
-                    _ -> "")
-        ) context.temp_vars;
-
-        (* Print parameters *)
-        Printf.printf "\nParameters (%d):\n" (List.length context.params);
-        List.iter (fun (param_name, loc) ->
-            Printf.printf "  %s: offset=%d\n" param_name loc
-        ) context.params;
-
-        Printf.printf "\n==== END OF CONTEXT DUMP ====\n\n";
-        flush stdout
-    in
+    (* let () = *)
+    (*     Printf.printf "\n==== DETAILED CONTEXT BEFORE CODEGEN ====\n"; *)
+    (*     (* Print class and method info *) *)
+    (*     Printf.printf "Class: %s, Method: %s\n" context.class_name context.method_name; *)
+    (**)
+    (*     (* Print class attributes *) *)
+    (*     Printf.printf "\nClass attributes (%d):\n" (List.length context.class_attributes); *)
+    (*     List.iter (fun (field_name, field_type, index) -> *)
+    (*         Printf.printf "  [%d] %s: %s\n" index field_name field_type *)
+    (*     ) context.class_attributes; *)
+    (**)
+    (*     (* Print temp variables with their locations and types *) *)
+    (*     Printf.printf "\nTemp variables (%d):\n" (List.length context.temp_vars); *)
+    (*     List.iter (fun (temp_name, loc) -> *)
+    (*         Printf.printf "  %s: offset=%d%s\n" *)
+    (*             temp_name loc.offset *)
+    (*             (try *)
+    (*                 ", type=" ^ loc.var_type *)
+    (*             with *)
+    (*                 _ -> "") *)
+    (*     ) context.temp_vars; *)
+    (**)
+    (*     (* Print parameters *) *)
+    (*     Printf.printf "\nParameters (%d):\n" (List.length context.params); *)
+    (*     List.iter (fun (param_name, loc) -> *)
+    (*         Printf.printf "  %s: offset=%d\n" param_name loc *)
+    (*     ) context.params; *)
+    (**)
+    (*     Printf.printf "\n==== END OF CONTEXT DUMP ====\n\n"; *)
+    (*     flush stdout *)
+    (* in *)
     let sorted_blocks = sort_cfg_blocks cfg in
     (* Generate assembly for each basic block *)
     let body_asm =
         List.concat_map (fun block_id ->
             let block = Hashtbl.find cfg block_id in
-            let block_comment = [ "                        ## Basic block: " ^ block_id ] in
-            Printf.printf "## %s\n" block_id;
+            (* let block_comment = [ "                        ## Basic block: " ^ block_id ] in *)
+            (* Printf.printf "## %s\n" block_id; *)
             flush stdout;
 
             (* Debug each instruction before codegen *)
             let block_code = List.concat_map (fun instr ->
-                Printf.printf "%s" (tac_instr_to_str instr);
+                (* Printf.printf "%s" (tac_instr_to_str instr); *)
                 flush stdout;
                 codegen context instr
             ) block.instructions in
 
-            block_comment @ block_code
+            (*block_comment @*) block_code
         ) sorted_blocks
     in
     (* Method epilogue *)
@@ -4867,7 +4864,7 @@ let main () =
     write_assembly_file asmname assembly;
 
     (* Printf.printf "Generated TAC file: %s\n" tacname; *)
-    Printf.printf "Generated assembly file: %s\n" asmname
+    (* Printf.printf "Generated assembly file: %s\n" asmname *)
 ;;
 
 main ()
